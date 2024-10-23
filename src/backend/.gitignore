@@ -40,3 +40,6 @@ out/
 ### application.yml
 application.yml
 application-*.yml
+
+### MacOS ###
+/../.DS_Store
