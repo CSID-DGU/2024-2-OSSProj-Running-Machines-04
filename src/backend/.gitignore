@@ -19,7 +19,7 @@ bin/
 
 ### IntelliJ IDEA ###
 .idea
-/../.idea
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -42,4 +42,4 @@ application.yml
 application-*.yml
 
 ### MacOS ###
-/../.DS_Store
+.DS_Store
