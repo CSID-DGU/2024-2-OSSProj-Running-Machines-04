@@ -36,7 +36,7 @@ public class UserCourse extends BaseEntity {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @OneToMany(mappedBy = "userCourse", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userCourse")
     private List<Review> reviews = new ArrayList<>();
 
 }

@@ -23,9 +23,9 @@ public class Crew extends BaseEntity {
 
     private int passcode; // 크루 가입 코드
 
-    @OneToMany(mappedBy = "crew", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "crew")
     private List<CrewUser> crewUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "crew", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "crew")
     private List<CrewPost> crewPosts = new ArrayList<>();
 }

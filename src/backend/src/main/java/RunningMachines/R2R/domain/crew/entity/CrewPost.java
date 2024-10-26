@@ -33,10 +33,10 @@ public class CrewPost extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "crewPost", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "crewPost")
     private List<CrewPostComment> comments = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "crewPost", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "crewPost")
     private List<CrewPostImage> images = new ArrayList<>();
 }

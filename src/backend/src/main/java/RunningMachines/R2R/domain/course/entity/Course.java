@@ -27,7 +27,7 @@ public class Course extends BaseEntity {
 
     private boolean isOfficial; // 관리자 등록 여부
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "course")
     private List<Review> reviews = new ArrayList<>();
 
 }

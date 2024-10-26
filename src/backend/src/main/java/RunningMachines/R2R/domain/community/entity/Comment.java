@@ -7,7 +7,6 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletionException;
 
 @Entity
 @Getter
@@ -35,10 +34,10 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "parent_id")
     private Comment parentComment;  // 부모 댓글 (대댓글이 아닌 경우 null)
 
-    @OneToMany(mappedBy = "parentComment", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parentComment")
     private List<Comment> replies = new ArrayList<>();  // 대댓글 리스트
 
-    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "comment")
     private List<CommentLike> hearts = new ArrayList<>();
 
 }
