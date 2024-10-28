@@ -28,13 +28,18 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
+    @Column(unique = true, nullable = false)
     private String nickname;
 
     private String profileImage;
+
+    private String refreshToken;
 
     @OneToOne(mappedBy = "user")
     private Prefer prefer;
@@ -65,5 +70,15 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     private List<CourseLike> courseLikes = new ArrayList<>();
+
+    public void updateRefreshToken(String newRefreshToken) {
+        this.refreshToken = newRefreshToken;
+    }
+
+    // 이메일, 패스워드만 받는 생성자
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
 }
