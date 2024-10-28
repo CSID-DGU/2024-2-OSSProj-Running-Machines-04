@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorResponse<String>> handleAllException(Exception e) {
         log.error(">>>>> Internal Server Error: ", e);
-        BaseErrorCode errorCode = GlobalErrorCode.INTERNAL_SERVER_ERROR;
+        ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
         ErrorResponse<String> errorResponse = ErrorResponse.onFailure(
                 errorCode.getCode(),
                 errorCode.getMessage(),
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({CustomException.class})
     public ResponseEntity<ErrorResponse<Void>> handleCustomException(CustomException e) {
         log.warn(">>>>> Custom Exception : {}", e.getMessage());
-        BaseErrorCode errorCode = e.getErrorCode();
+        ErrorCode errorCode = e.getErrorCode();
         return ResponseEntity.status(errorCode.getHttpStatus()).body(errorCode.getErrorResponse());
     }
 
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({DataIntegrityViolationException.class})
     public ErrorResponse<Object> handleIntegrityConstraint(DataIntegrityViolationException e) {
         log.warn(">>>>> Data Integrity Violation Exception: {}", e.getMessage());
-        BaseErrorCode errorStatus = ErrorCode.USER_ALREADY_EXIST;
+        ErrorCode errorStatus = ErrorCode.USER_ALREADY_EXIST;
         return ErrorResponse.onFailure(errorStatus.getCode(), errorStatus.getMessage());
     }
 
@@ -53,8 +53,8 @@ public class GlobalExceptionHandler {
         fieldErrors.forEach(error -> failedValidations.put(error.getField(), error.getDefaultMessage()));
 
         ErrorResponse<Map<String, String>> errorResponse = ErrorResponse.onFailure(
-                GlobalErrorCode.VALIDATION_FAILED.getCode(),
-                GlobalErrorCode.VALIDATION_FAILED.getMessage(),
+                ErrorCode.BAD_REQUEST.getCode(),
+                ErrorCode.BAD_REQUEST.getMessage(),
                 failedValidations // 유효성 검사 실패 데이터
         );
         return ResponseEntity.status(ex.getStatusCode()).body(errorResponse);
