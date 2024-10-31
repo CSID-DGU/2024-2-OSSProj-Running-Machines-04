@@ -2,15 +2,12 @@ package RunningMachines.R2R.global.auth;
 
 import RunningMachines.R2R.domain.user.entity.User;
 import RunningMachines.R2R.domain.user.repository.UserRepository;
-import RunningMachines.R2R.global.auth.CustomUserDetails;
 import RunningMachines.R2R.global.exception.CustomException;
 import RunningMachines.R2R.global.exception.ErrorCode;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
