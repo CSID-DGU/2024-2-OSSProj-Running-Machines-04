@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({DataIntegrityViolationException.class})
     public ErrorResponse<Object> handleIntegrityConstraint(DataIntegrityViolationException e) {
         log.warn(">>>>> Data Integrity Violation Exception: {}", e.getMessage());
-        ErrorCode errorStatus = ErrorCode.USER_ALREADY_EXIST;
+        ErrorCode errorStatus = ErrorCode.ALREADY_EXIST;
         return ErrorResponse.onFailure(errorStatus.getCode(), errorStatus.getMessage());
     }
 
