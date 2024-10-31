@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserQueryService {
+public class AuthQueryService {
 
     private final UserRepository userRepository;
 
