@@ -37,7 +37,7 @@ public class User extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String nickname;
 
-    private String profileImage;
+    private String profileImageUrl;
 
     private String refreshToken;
 
@@ -79,6 +79,10 @@ public class User extends BaseEntity {
     public User(String email, String password) {
         this.email = email;
         this.password = password;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 
 }

@@ -12,7 +12,6 @@ public class UserSignupRequestDto {
     private String email;
     private String password;
     private String nickname;
-    // TODO - 프로필 사진 추가
 
     public User toEntity(String encodedPassword) {
         return User.builder()

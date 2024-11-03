@@ -8,6 +8,8 @@ import RunningMachines.R2R.domain.user.repository.UserRepository;
 import RunningMachines.R2R.global.auth.*;
 import RunningMachines.R2R.global.exception.CustomException;
 import RunningMachines.R2R.global.exception.ErrorCode;
+import RunningMachines.R2R.global.s3.S3Provider;
+import RunningMachines.R2R.global.s3.S3RequestDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -27,13 +30,23 @@ public class AuthCommandService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final CustomUserDetailsService customUserDetailsService;
+    private final S3Provider s3Provider;
 
-    public UserResponseDto signup(UserSignupRequestDto signupRequestDto) {
+    public UserResponseDto signup(UserSignupRequestDto signupRequestDto, MultipartFile image) {
         if (userRepository.existsByEmail(signupRequestDto.getEmail())) {
             throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
         }
 
         User user = signupRequestDto.toEntity(passwordEncoder.encode(signupRequestDto.getPassword()));
+        user = userRepository.save(user);
+
+        String imageUrl = null; // 프로필 사진 입력 안 했을 때 null로 저장할 수 있도록 함
+        imageUrl = s3Provider.uploadFile(image, S3RequestDto.builder()
+                .userId(user.getId())
+                .dirName("profile")
+                .build());
+
+        user.setProfileImageUrl(imageUrl);
         return UserResponseDto.of(userRepository.save(user));
     }
 

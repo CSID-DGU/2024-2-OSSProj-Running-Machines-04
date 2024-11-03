@@ -14,13 +14,14 @@ public class UserResponseDto {
     private Long id;
     private String email;
     private String nickname;
-    // TODO - 프로필 사진 추가
+    private String profileImageUrl;
 
     public static UserResponseDto of(User user) {
         return UserResponseDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .nickname(user.getNickname())
+                .profileImageUrl(user.getProfileImageUrl())
                 .build();
     }
 }
