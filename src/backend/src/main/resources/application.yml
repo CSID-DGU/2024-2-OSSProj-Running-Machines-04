@@ -18,3 +18,15 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET}
+
+cloud:
+  aws:
+    s3:
+      bucket: ${BUCKET_NAME}
+    stack:
+      auto: false
+    region:
+      static: ${BUCKET_REGION}
+    credentials:
+      accessKey: ${BUCKET_ACCESSKEY}
+      secretKey: ${BUCKET_SECRETKEY}
