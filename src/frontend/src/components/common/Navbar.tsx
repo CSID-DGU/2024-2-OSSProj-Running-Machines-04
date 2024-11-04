@@ -1,7 +1,56 @@
-import React from "react";
+import { ReactComponent as HomeIcon } from "@/assets/icons/HomeIcon.svg";
+import { ReactComponent as RecordIcon } from "@/assets/icons/RecordIcon.svg";
+import { ReactComponent as CommunityIcon } from "@/assets/icons/CommunityIcon.svg";
+import { ReactComponent as CrewIcon } from "@/assets/icons/CrewIcon.svg";
+import { ReactComponent as MypageIcon } from "@/assets/icons/MypageIcon.svg";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
-  return <div>Navbar</div>;
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const getIconColor = (path: string) =>
+    location.pathname === path ? "#9993E5" : "black";
+
+  return (
+    <div className="fixed bottom-0 w-screen flex justify-around py-4 shadow-navbarShadow">
+      <div
+        onClick={() => navigate("/")}
+        className="flex flex-col items-center justify-center gap-1"
+      >
+        <HomeIcon fill={getIconColor("/")} />
+        <div className="text-[8px]">홈</div>
+      </div>
+      <div
+        onClick={() => navigate("/record")}
+        className="flex flex-col items-center justify-center gap-1"
+      >
+        <RecordIcon fill={getIconColor("/record")} />
+        <div className="text-[8px]">기록</div>
+      </div>
+      <div
+        onClick={() => navigate("/community")}
+        className="flex flex-col items-center justify-center gap-1"
+      >
+        <CommunityIcon fill={getIconColor("/community")} />
+        <div className="text-[8px]">커뮤니티</div>
+      </div>
+      <div
+        onClick={() => navigate("/crew")}
+        className="flex flex-col items-center justify-center gap-1"
+      >
+        <CrewIcon fill={getIconColor("/crew")} />
+        <div className="text-[8px]">나의 크루</div>
+      </div>
+      <div
+        onClick={() => navigate("/mypage")}
+        className="flex flex-col items-center justify-center gap-1"
+      >
+        <MypageIcon stroke={getIconColor("/mypage")} />
+        <div className="text-[8px]">마이페이지</div>
+      </div>
+    </div>
+  );
 };
 
 export default Navbar;

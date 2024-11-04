@@ -4,7 +4,18 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+      },
+      backgroundImage: {
+        navbarGradient: "linear-gradient(180deg, #000 0%, #242142 100%)",
+      },
+      boxShadow:{
+        navbarShadow: '0px -2px 2px 0px rgba(83, 83, 83, 0.25)'
+      }
+    },
   },
   plugins: [],
 }
