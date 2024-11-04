@@ -16,17 +16,15 @@ public class Prefer extends BaseEntity {
     @Column(nullable = false)
     private Long id;
 
-    private boolean experience; // 러닝 경험 여부
+    @Enumerated(EnumType.STRING)
+    private Elevation elevation;  // 고도
 
     private boolean convenience;  // 편의시설 여부
 
-    private int elevation;  // 고도 (0~10)
+    private boolean nature; // 자연 여부
 
-    private boolean together;  // 함께 달리기 여부
-
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", unique = true, nullable = false)
     private User user;
 
 }
-
