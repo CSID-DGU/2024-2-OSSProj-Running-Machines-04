@@ -9,7 +9,7 @@ const queryClient = new QueryClient();
 const Layout = () => {
   return (
     <div className="w-screen min-h-screen bg-white">
-      <div className="w-full max-w-[430px] flex flex-col shadow-lg">
+      <div className="w-full max-w-[430px] flex flex-col shadow-lg border-solid border-2 border-black bg-slate-300">
         <Header />
         <Outlet />
         <Navbar />
