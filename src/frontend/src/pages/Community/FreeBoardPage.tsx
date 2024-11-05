@@ -1,12 +1,11 @@
 import CommnunityHeader from "@/components/community/CommnunityHeader";
-import CommunityCard from "@/components/community/CommunityCard";
-import React from "react";
+import CommunityList from "@/components/community/CommunityList";
 
 const FreeBoardPage = () => {
   return (
     <div>
       <CommnunityHeader />
-      <CommunityCard />
+      <CommunityList />
     </div>
   );
 };

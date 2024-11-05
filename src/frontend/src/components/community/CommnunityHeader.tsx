@@ -8,7 +8,7 @@ const CommnunityHeader = () => {
     location.pathname === path ? "text-[#9993E5]" : "text-black";
 
   return (
-    <div className="flex p-5 bg-searchbarShadow justify-between">
+    <div className="flex p-5 shadow-searchbarShadow justify-between">
       <div
         onClick={() => navigate("/community/free")}
         className={`${getFontColor(

@@ -9,8 +9,16 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const getIconColor = (path: string) =>
-    location.pathname === path ? "#9993E5" : "black";
+  const getIconColor = (path: string) => {
+    // 홈 경로 처리
+    if (path === "/" && location.pathname === "/") return "#9993E5";
+
+    // 그 외 뎁스 페이지까지 경로 처리
+    if (path !== "/" && location.pathname.startsWith(path)) return "#9993E5";
+
+    // 해당 경로가 아닐 경우 기본 색상
+    return "black";
+  };
 
   return (
     <div className="z-50 bg-white fixed bottom-0 left-0 w-full flex justify-around py-4 shadow-navbarShadow">
