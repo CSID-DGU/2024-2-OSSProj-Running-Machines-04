@@ -1,10 +1,15 @@
 import KakaoMap from "@/components/common/KakaoMap";
+import { ReactComponent as PlayIcon } from "@/assets/images/play.svg";
+import HomeCategory from "@/components/home/HomeCategory";
+import Searchbar from "@/components/home/Searchbar";
 
 const HomePage = () => {
   return (
-    <div>
+    <div className="flex flex-col justify-center items-center">
+      <Searchbar />
+      <HomeCategory />
       <KakaoMap />
-      map
+      <PlayIcon className="fixed bottom-[20vh] z-50" />
     </div>
   );
 };

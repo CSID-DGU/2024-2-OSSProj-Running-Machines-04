@@ -47,8 +47,11 @@ const KakaoMap = () => {
     <Map
       center={state.center}
       style={{
+        position: "fixed",
+        top: "0",
+        left: "0",
         width: "100%",
-        height: "450px",
+        height: "100vh",
       }}
       level={3}
     >
