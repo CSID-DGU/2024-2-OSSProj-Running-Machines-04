@@ -12,10 +12,15 @@ import axios, { AxiosInstance } from "axios";
  * 이 함수는 요청 인터셉터를 설정하여 각 API 요청에 인증 토큰을 추가합니다.
  * 클라이언트 사이드에서만 토큰을 추가하며, 서버 사이드 렌더링 시에는 토큰을 추가하지 않습니다.
  */
-
 function setInterceptors(instance: AxiosInstance, type: string) {
   instance.interceptors.request.use(
     (config) => {
+      if (type === "kakao") {
+        if (typeof window !== "undefined" && config.headers) {
+          config.headers.Authorization = `KakaoAK ${process.env.REACT_APP_KAKAO_APP_KEY}`;
+        }
+        return config;
+      }
       if (typeof window !== "undefined" && config.headers) {
         config.headers.Authorization = `Bearer ${getAccessToken()}`;
       }
@@ -41,7 +46,10 @@ function setInterceptors(instance: AxiosInstance, type: string) {
  */
 function createInstance(type: string) {
   const instance = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_KEY,
+    baseURL:
+      type === "kakao"
+        ? process.env.REACT_APP_KAKAO_APP_KEY
+        : process.env.REACT_APP_API_URL,
   });
   return setInterceptors(instance, type);
 }
@@ -59,7 +67,7 @@ function createInstance(type: string) {
 // Todo: .env 파일에서 환경변수로 api 주소를 가져오고 있지만, 서버 주소가 나오면 env 파일 없이도 사용 가능하게 수정해야 함.
 function createInstanceWithoutAuth() {
   const instance = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_KEY,
+    baseURL: process.env.REACT_APP_API_URL,
   });
   return instance;
 }
@@ -75,3 +83,9 @@ export const api = createInstance("server");
  * @const {AxiosInstance}
  */
 export const apiWithoutAuth = createInstanceWithoutAuth();
+
+/**
+ * Kakao API 요청에 사용할 Axios 인스턴스
+ * @const {AxiosInstance}
+ */
+export const apiKaKao = createInstance("kakao");

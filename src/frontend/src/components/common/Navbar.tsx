@@ -13,7 +13,7 @@ const Navbar = () => {
     location.pathname === path ? "#9993E5" : "black";
 
   return (
-    <div className="fixed bottom-0 w-screen flex justify-around py-4 shadow-navbarShadow">
+    <div className="fixed bottom-0 left-0 w-full flex justify-around py-4 shadow-navbarShadow">
       <div
         onClick={() => navigate("/")}
         className="flex flex-col items-center justify-center gap-1"
