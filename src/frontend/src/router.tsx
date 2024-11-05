@@ -3,8 +3,11 @@ import App from "@/App";
 import HomePage from "@pages/Home/HomePage";
 import RecordPage from "@pages/Record/RecordPage";
 import CrewPage from "@pages/Crew/CrewPage";
-import CommunityPage from "@pages/Community/CommunityPage";
 import MyPage from "@pages/Mypage/MyPage";
+import FreeBoardPage from "@/pages/Community/FreeBoardPage";
+import GroupRunBoardPage from "@/pages/Community/GroupRunBoardPage";
+import RunningShoesBoardPage from "@/pages/Community/RunningShoesBoardPage";
+import MarathonEventsBoardPage from "@/pages/Community/MarathonEventsBoardPage";
 
 const router = createBrowserRouter([
   {
@@ -14,7 +17,16 @@ const router = createBrowserRouter([
       { path: "/", element: <HomePage /> },
       { path: "/record", element: <RecordPage /> },
       { path: "/crew", element: <CrewPage /> },
-      { path: "/community", element: <CommunityPage /> },
+      { path: "/community/free", element: <FreeBoardPage /> },
+      { path: "/community/run-together", element: <GroupRunBoardPage /> },
+      {
+        path: "/community/recommend-shoes",
+        element: <RunningShoesBoardPage />,
+      },
+      {
+        path: "/community/marathon-schedule",
+        element: <MarathonEventsBoardPage />,
+      },
       { path: "/mypage", element: <MyPage /> },
     ],
   },
