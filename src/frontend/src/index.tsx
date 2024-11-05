@@ -5,6 +5,19 @@ import router from "./router";
 import reportWebVitals from "./reportWebVitals";
 import { RouterProvider } from "react-router-dom";
 
+// Dynamically load Kakao Maps API script
+const loadKakaoMapScript = () => {
+  const script = document.createElement("script");
+  script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_APP_KEY}`;
+  script.async = true;
+  script.onerror = () => {
+    console.error("Kakao Maps API failed to load.");
+  };
+  document.head.appendChild(script);
+};
+
+loadKakaoMapScript();
+
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
@@ -14,7 +27,4 @@ root.render(
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

@@ -13,7 +13,8 @@ module.exports = {
         navbarGradient: "linear-gradient(180deg, #000 0%, #242142 100%)",
       },
       boxShadow:{
-        navbarShadow: '0px -2px 2px 0px rgba(83, 83, 83, 0.25)'
+        navbarShadow: '0px -2px 2px 0px rgba(83, 83, 83, 0.25)',
+        searchbarShadow: '0px 2px 5px 0px rgba(0, 0, 0, 0.25)'
       }
     },
   },
