@@ -33,17 +33,17 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // csrf 비활성화
                 .authorizeHttpRequests(auth -> auth // 인증, 인가 설정
                         // requestMatchers(): 특정 요청과 일치하는 url에 대한 액세스 설정
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/courses/**").permitAll()
-                        .requestMatchers("/v3/**").permitAll()
-                        // TODO - 크루 관련 설정 추가 필요
+//                        .requestMatchers("/auth/**").permitAll()
+//                        .requestMatchers("/swagger-ui/**").permitAll()
+//                        .requestMatchers("/courses/**").permitAll()
+//                        .requestMatchers("/v3/**").permitAll()
+                        // TODO - 크루 관련 설정 추가 필요 / 테스트 위해 권한 설정 x
+                      .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용하지 않도록 설정
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
-        ;
         return http.build();
     }
 
