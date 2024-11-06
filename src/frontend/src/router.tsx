@@ -6,6 +6,7 @@ import CrewPage from "@pages/Crew/CrewPage";
 import MyPage from "@pages/Mypage/MyPage";
 import CommunityPage from "@/pages/Community/CommunityPage";
 import CommunityDetailPage from "@/pages/CommunityDetail/CommunityDetailPage";
+import CommunityWritePage from "./pages/CommunityWrite/CommunityWritePage";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
 
       { path: "/community", element: <CommunityPage /> },
       { path: "/community/:id", element: <CommunityDetailPage /> },
+      { path: "/community/write", element: <CommunityWritePage /> },
 
       { path: "/crew", element: <CrewPage /> },
       { path: "/mypage", element: <MyPage /> },
