@@ -35,6 +35,7 @@ public class WebSecurityConfig {
                         // requestMatchers(): 특정 요청과 일치하는 url에 대한 액세스 설정
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/courses/**").permitAll()
                         .requestMatchers("/v3/**").permitAll()
                         // TODO - 크루 관련 설정 추가 필요
                         .anyRequest().authenticated()
