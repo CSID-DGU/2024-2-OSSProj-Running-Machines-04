@@ -1,43 +1,46 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { boardType } from "@/constants/board";
+import { Dispatch, SetStateAction } from "react";
 
-const CommnunityHeader = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+type CommnunityHeaderProps = {
+  board: boardType;
+  setBoard: Dispatch<SetStateAction<boardType>>;
+};
 
+const CommnunityHeader = ({ board, setBoard }: CommnunityHeaderProps) => {
   const getFontColor = (path: string) =>
-    location.pathname === path ? "text-[#9993E5]" : "text-black";
+    board === path ? "text-[#9993E5]" : "text-black";
 
   return (
     <div className="flex p-5 shadow-searchbarShadow justify-between">
       <div
-        onClick={() => navigate("/community/free")}
+        onClick={() => setBoard(boardType.FREE)}
         className={`${getFontColor(
-          "/community/free"
-        )} text-[14px] font-semibold`}
+          boardType.FREE
+        )} text-[14px] font-semibold cursor-pointer`}
       >
         자유 게시판
       </div>
       <div
-        onClick={() => navigate("/community/run-together")}
+        onClick={() => setBoard(boardType.TOGETHER)}
         className={`${getFontColor(
-          "/community/run-together"
-        )} text-[14px] font-semibold`}
+          boardType.TOGETHER
+        )} text-[14px] font-semibold cursor-pointer`}
       >
         함께 달려요
       </div>
       <div
-        onClick={() => navigate("/community/recommend-shoes")}
+        onClick={() => setBoard(boardType.RECOMMEND)}
         className={`${getFontColor(
-          "/community/recommend-shoes"
-        )} text-[14px] font-semibold`}
+          boardType.RECOMMEND
+        )} text-[14px] font-semibold cursor-pointer`}
       >
         러닝화 추천
       </div>
       <div
-        onClick={() => navigate("/community/marathon-schedule")}
+        onClick={() => setBoard(boardType.MARATHON)}
         className={`${getFontColor(
-          "/community/marathon-schedule"
-        )} text-[14px] font-semibold`}
+          boardType.MARATHON
+        )} text-[14px] font-semibold cursor-pointer`}
       >
         마라톤 일정
       </div>
