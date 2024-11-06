@@ -11,7 +11,7 @@ const CommunityPage = () => {
   const [board, setBoard] = useState<boardType>(boardType.FREE);
 
   return (
-    <div>
+    <div className="mb-24">
       <CommnunityHeader board={board} setBoard={setBoard} />
       <WriteIcon
         className="fixed bottom-[12%] right-[6%] cursor-pointer"
