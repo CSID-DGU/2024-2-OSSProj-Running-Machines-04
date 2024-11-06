@@ -1,6 +1,14 @@
-const MarathonCard = () => {
+import { useNavigate } from "react-router-dom";
+
+type MarathonCardProps = {
+  id: number;
+};
+
+const MarathonCard = ({ id }: MarathonCardProps) => {
+  const navigate = useNavigate();
+
   return (
-    <div>
+    <div onClick={() => navigate(`/community/${id}`)}>
       <div className="mb-3 w-[150px] h-[210px] overflow-hidden">
         <img className="w-full h-full object-cover" src="" alt="" />
       </div>

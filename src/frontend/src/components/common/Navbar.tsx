@@ -37,7 +37,7 @@ const Navbar = () => {
         <div className="text-[8px]">기록</div>
       </div>
       <div
-        onClick={() => navigate("/community/free")}
+        onClick={() => navigate("/community")}
         className="flex flex-col items-center justify-center gap-1"
       >
         <CommunityIcon fill={getIconColor("/community")} />

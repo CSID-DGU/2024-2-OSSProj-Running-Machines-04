@@ -1,6 +1,17 @@
-const CommunityCard = () => {
+import { useNavigate } from "react-router-dom";
+
+type CommunityCardProps = {
+  id: number;
+};
+
+const CommunityCard = ({ id }: CommunityCardProps) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="px-8 py-6 flex items-center justify-between border-b border-[#DFDFDF]">
+    <div
+      onClick={() => navigate(`/community/${id}`)}
+      className="px-8 py-6 flex items-center justify-between border-b border-[#DFDFDF]"
+    >
       <div className="flex flex-col">
         <div className="text-[18px] text-[#444] font-semibold">
           러닝 고수님들!!

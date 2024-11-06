@@ -1,16 +1,13 @@
 import CommunityCard from "./CommunityCard";
 
 const CommunityList = () => {
+  const cards = Array.from({ length: 8 });
+
   return (
     <div className="flex flex-col">
-      <CommunityCard />
-      <CommunityCard />
-      <CommunityCard />
-      <CommunityCard />
-      <CommunityCard />
-      <CommunityCard />
-      <CommunityCard />
-      <CommunityCard />
+      {cards.map((_, index) => (
+        <CommunityCard key={index} id={index} />
+      ))}
     </div>
   );
 };
