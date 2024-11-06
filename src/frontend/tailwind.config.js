@@ -14,7 +14,7 @@ module.exports = {
       },
       boxShadow:{
         navbarShadow: '0px -2px 2px 0px rgba(83, 83, 83, 0.25)',
-        searchbarShadow: '0px 2px 5px 0px rgba(0, 0, 0, 0.25)'
+        searchbarShadow: '0px 2px 4px 0px rgba(0, 0, 0, 0.25)',
       }
     },
   },
