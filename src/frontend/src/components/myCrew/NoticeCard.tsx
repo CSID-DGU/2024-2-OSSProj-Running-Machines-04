@@ -1,6 +1,13 @@
+import { useNavigate } from "react-router-dom";
+
 const NoticeCard = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="w-full relative rounded-md flex items-center px-6 bg-slate-100">
+    <div
+      onClick={() => navigate("/crew/notice/1")}
+      className="w-full relative rounded-md flex items-center px-6 bg-slate-100"
+    >
       <div className="absolute top-3 left-4 text-[10px] font-medium">
         작성자 <span className="text-[#9993e5] font-semibold">크루 리더</span>
       </div>
