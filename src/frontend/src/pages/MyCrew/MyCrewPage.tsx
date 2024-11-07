@@ -3,7 +3,7 @@ import MyCrewProfile from "@/components/myCrew/MyCrewProfile";
 
 const MyCrewPage = () => {
   return (
-    <div>
+    <div className="mb-24">
       <MyCrewProfile />
       <ContentsSection />
     </div>

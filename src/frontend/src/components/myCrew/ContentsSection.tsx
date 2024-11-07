@@ -31,16 +31,38 @@ const ContentsSection = () => {
         </div>
       </div>
       {/* 필독 공지 섹션 */}
-      <div className="flex items-center h-[35px]">
-        <div className="h-full w-[50px] flex justify-center items-center bg-[#F3F3F3]">
-          필독
+      {menu === crewMenu.NOTICE && (
+        <div className="flex items-center h-[35px]">
+          <div className="h-full w-[50px] flex justify-center items-center bg-[#F3F3F3]">
+            필독
+          </div>
+          <div className="h-full flex justify-center items-center px-2.5">
+            서울 집단 러닝 제한 구역 안내
+          </div>
         </div>
-        <div className="h-full flex justify-center items-center px-2.5">
-          서울 집단 러닝 제한 구역 안내
-        </div>
+      )}
+      <div>
+        {menu === crewMenu.NOTICE && (
+          <div className="flex flex-wrap gap-3 p-5">
+            <NoticeCard />
+            <NoticeCard />
+            <NoticeCard />
+            <NoticeCard />
+          </div>
+        )}
       </div>
-      <div>{menu === crewMenu.NOTICE && <NoticeCard />}</div>
-      <div>{menu === crewMenu.GALLERY && <GalleryCard />}</div>
+      <div>
+        {menu === crewMenu.GALLERY && (
+          <div className="flex justify-center px-[0.5vw]">
+            <div className="flex flex-wrap justify-start">
+              <GalleryCard />
+              <GalleryCard />
+              <GalleryCard />
+              <GalleryCard />
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
