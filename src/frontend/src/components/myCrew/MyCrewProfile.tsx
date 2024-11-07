@@ -2,8 +2,8 @@ import React from "react";
 
 const MyCrewProfile = () => {
   return (
-    <div className="flex items-center justify-between">
-      <div className="w-[128px] h-[128px] rounded-full overflow-hidden">
+    <div className="px-10 py-6 flex items-center justify-between gap-5">
+      <div className="w-[30vw] h-[30vw] rounded-full overflow-hidden">
         <img className="w-full h-full object-cover" src="" alt="" />
       </div>
       <div className="flex flex-col gap-3">
