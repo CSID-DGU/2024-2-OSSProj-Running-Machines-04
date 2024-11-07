@@ -16,9 +16,9 @@ public class CourseQueryService {
     private final GpxQueryService gpxQueryService;
 
     // 위경도를 기반으로 가져온 코스 정보 추출
-    public List<CourseResponseDto> getCourses(double latitude, double longitude) {
+    public List<CourseResponseDto> getCourses(double lat, double lon) {
         // 코스 리스트
-        List<GpxResponseDto> gpxs = gpxQueryService.parseGpxs(latitude, longitude);
+        List<GpxResponseDto> gpxs = gpxQueryService.parseGpxs(lat, lon);
         // 반환값을 담을 리스트
         List<CourseResponseDto> courseResponses = new ArrayList<>();
 
