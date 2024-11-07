@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 import HomePage from "@pages/Home/HomePage";
 import RecordPage from "@pages/Record/RecordPage";
-import CrewPage from "@pages/Crew/CrewPage";
+import MyCrewPage from "@/pages/MyCrew/MyCrewPage";
 import MyPage from "@pages/Mypage/MyPage";
 import CommunityPage from "@/pages/Community/CommunityPage";
 import CommunityDetailPage from "@/pages/CommunityDetail/CommunityDetailPage";
@@ -21,7 +21,7 @@ const router = createBrowserRouter([
       { path: "/community/:id", element: <CommunityDetailPage /> },
       { path: "/community/write", element: <CommunityWritePage /> },
 
-      { path: "/crew", element: <CrewPage /> },
+      { path: "/crew", element: <MyCrewPage /> },
       { path: "/mypage", element: <MyPage /> },
     ],
   },

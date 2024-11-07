@@ -1,0 +1,48 @@
+import { crewMenu } from "@/constants/crew";
+import { useState } from "react";
+import NoticeCard from "./NoticeCard";
+import GalleryCard from "./GalleryCard";
+
+const ContentsSection = () => {
+  const [menu, setMenu] = useState<crewMenu>(crewMenu.NOTICE);
+  return (
+    <div>
+      {/* 공지/갤러리 메뉴 선택 */}
+      <div className="flex w-full">
+        <div
+          onClick={() => setMenu(crewMenu.NOTICE)}
+          className={`w-[50%] flex justify-center items-center py-2 border-y border-[#444] ${
+            menu === crewMenu.NOTICE
+              ? "bg-[rgba(177,255,140,0.60)]"
+              : "bg-white"
+          }`}
+        >
+          공지
+        </div>
+        <div
+          onClick={() => setMenu(crewMenu.GALLERY)}
+          className={`w-[50%] flex justify-center items-center py-2 border-y border-[#444] ${
+            menu === crewMenu.GALLERY
+              ? "bg-[rgba(177,255,140,0.60)]"
+              : "bg-white"
+          }`}
+        >
+          갤러리
+        </div>
+      </div>
+      {/* 필독 공지 섹션 */}
+      <div className="flex items-center h-[35px]">
+        <div className="h-full w-[50px] flex justify-center items-center bg-[#F3F3F3]">
+          필독
+        </div>
+        <div className="h-full flex justify-center items-center px-2.5">
+          서울 집단 러닝 제한 구역 안내
+        </div>
+      </div>
+      <div>{menu === crewMenu.NOTICE && <NoticeCard />}</div>
+      <div>{menu === crewMenu.GALLERY && <GalleryCard />}</div>
+    </div>
+  );
+};
+
+export default ContentsSection;
