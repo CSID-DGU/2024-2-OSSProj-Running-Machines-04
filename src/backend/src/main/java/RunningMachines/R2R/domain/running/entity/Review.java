@@ -29,7 +29,7 @@ public class Review extends BaseEntity {
     private int convenience;
 
     @Enumerated(EnumType.STRING)
-    private ReivewTag tag;
+    private ReviewTag tag;
 
     private String summary; // 한줄평
 
