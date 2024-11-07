@@ -1,4 +1,5 @@
 import { crewMenu } from "@/constants/crew";
+import { ReactComponent as NoticeIcon } from "@/assets/icons/NoticeIcon.svg";
 import { useState } from "react";
 import NoticeCard from "./NoticeCard";
 import GalleryCard from "./GalleryCard";
@@ -11,7 +12,7 @@ const ContentsSection = () => {
       <div className="flex w-full">
         <div
           onClick={() => setMenu(crewMenu.NOTICE)}
-          className={`w-[50%] flex justify-center items-center py-2 border-y border-[#444] ${
+          className={`w-[50%] flex justify-center items-center py-2 text-[14px] border-y border-[#444] ${
             menu === crewMenu.NOTICE
               ? "bg-[rgba(177,255,140,0.60)]"
               : "bg-white"
@@ -21,7 +22,7 @@ const ContentsSection = () => {
         </div>
         <div
           onClick={() => setMenu(crewMenu.GALLERY)}
-          className={`w-[50%] flex justify-center items-center py-2 border-y border-[#444] ${
+          className={`w-[50%] flex justify-center items-center py-2 text-[14px] border-y border-[#444] ${
             menu === crewMenu.GALLERY
               ? "bg-[rgba(177,255,140,0.60)]"
               : "bg-white"
@@ -32,8 +33,9 @@ const ContentsSection = () => {
       </div>
       {/* 필독 공지 섹션 */}
       {menu === crewMenu.NOTICE && (
-        <div className="flex items-center h-[35px]">
-          <div className="h-full w-[50px] flex justify-center items-center bg-[#F3F3F3]">
+        <div className="flex items-center h-[35px] text-[12px]">
+          <div className="h-full w-[50px] flex justify-center items-center gap-1 bg-[#F3F3F3]">
+            <NoticeIcon />
             필독
           </div>
           <div className="h-full flex justify-center items-center px-2.5">
