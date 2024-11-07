@@ -1,4 +1,4 @@
-package RunningMachines.R2R.global;
+package RunningMachines.R2R.global.util;
 
 import RunningMachines.R2R.domain.course.dto.UserCourseRequestDto;
 

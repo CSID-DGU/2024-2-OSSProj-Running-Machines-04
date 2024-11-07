@@ -1,4 +1,4 @@
-package RunningMachines.R2R.domain.course.service;
+package RunningMachines.R2R.global.util;
 
 import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
 import RunningMachines.R2R.global.exception.CustomException;
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class GpxQueryService {
+public class GpxParser {
 
     private final S3Provider s3Provider;
 

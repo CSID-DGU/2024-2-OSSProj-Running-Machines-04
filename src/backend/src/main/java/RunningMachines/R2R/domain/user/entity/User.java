@@ -9,7 +9,7 @@ import RunningMachines.R2R.domain.course.entity.UserCourse;
 import RunningMachines.R2R.domain.crew.entity.CrewPost;
 import RunningMachines.R2R.domain.crew.entity.CrewPostComment;
 import RunningMachines.R2R.domain.crew.entity.CrewUser;
-import RunningMachines.R2R.global.BaseEntity;
+import RunningMachines.R2R.global.util.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

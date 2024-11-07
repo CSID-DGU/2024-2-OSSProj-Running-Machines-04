@@ -1,7 +1,7 @@
 package RunningMachines.R2R.global.s3;
 
 import RunningMachines.R2R.domain.course.dto.UserCourseRequestDto;
-import RunningMachines.R2R.global.GpxFileGenerator;
+import RunningMachines.R2R.global.util.GpxFileGenerator;
 import RunningMachines.R2R.global.exception.CustomException;
 import RunningMachines.R2R.global.exception.ErrorCode;
 import com.amazonaws.services.s3.AmazonS3;

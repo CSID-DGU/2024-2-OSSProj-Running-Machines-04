@@ -2,6 +2,7 @@ package RunningMachines.R2R.domain.course.service;
 
 import RunningMachines.R2R.domain.course.dto.CourseResponseDto;
 import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
+import RunningMachines.R2R.global.util.GpxParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +14,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CourseQueryService {
 
-    private final GpxQueryService gpxQueryService;
+    private final GpxParser gpxParser;
 
     // 위경도를 기반으로 가져온 코스 정보 추출
     public List<CourseResponseDto> getCourses(double lat, double lon) {
         // 코스 리스트
-        List<GpxResponseDto> gpxs = gpxQueryService.parseGpxs(lat, lon);
+        List<GpxResponseDto> gpxs = gpxParser.parseGpxs(lat, lon);
         // 반환값을 담을 리스트
         List<CourseResponseDto> courseResponses = new ArrayList<>();
 
