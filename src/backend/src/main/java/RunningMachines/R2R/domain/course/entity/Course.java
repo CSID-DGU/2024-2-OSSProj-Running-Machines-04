@@ -1,4 +1,4 @@
-package RunningMachines.R2R.domain.running.entity;
+package RunningMachines.R2R.domain.course.entity;
 
 import RunningMachines.R2R.global.BaseEntity;
 import jakarta.persistence.*;

@@ -1,6 +1,6 @@
-package RunningMachines.R2R.domain.running.service;
+package RunningMachines.R2R.domain.course.service;
 
-import RunningMachines.R2R.domain.running.dto.GpxResponseDto;
+import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
 import RunningMachines.R2R.global.exception.CustomException;
 import RunningMachines.R2R.global.exception.ErrorCode;
 import RunningMachines.R2R.global.s3.S3Provider;

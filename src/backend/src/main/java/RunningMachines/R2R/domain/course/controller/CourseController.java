@@ -1,8 +1,8 @@
-package RunningMachines.R2R.domain.running.controller;
+package RunningMachines.R2R.domain.course.controller;
 
-import RunningMachines.R2R.domain.running.dto.CourseResponseDto;
-import RunningMachines.R2R.domain.running.service.CourseCommandService;
-import RunningMachines.R2R.domain.running.service.CourseQueryService;
+import RunningMachines.R2R.domain.course.dto.CourseResponseDto;
+import RunningMachines.R2R.domain.course.service.CourseCommandService;
+import RunningMachines.R2R.domain.course.service.CourseQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
