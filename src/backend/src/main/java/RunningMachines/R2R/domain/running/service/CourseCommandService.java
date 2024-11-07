@@ -1,7 +1,7 @@
-package RunningMachines.R2R.domain.course.service;
+package RunningMachines.R2R.domain.running.service;
 
-import RunningMachines.R2R.domain.course.entity.Course;
-import RunningMachines.R2R.domain.course.repository.CourseRepository;
+import RunningMachines.R2R.domain.running.entity.Course;
+import RunningMachines.R2R.domain.running.repository.CourseRepository;
 import RunningMachines.R2R.global.s3.S3Provider;
 import RunningMachines.R2R.global.s3.S3RequestDto;
 import lombok.RequiredArgsConstructor;

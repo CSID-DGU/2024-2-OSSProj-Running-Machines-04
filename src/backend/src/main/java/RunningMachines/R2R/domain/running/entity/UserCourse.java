@@ -1,4 +1,4 @@
-package RunningMachines.R2R.domain.course.entity;
+package RunningMachines.R2R.domain.running.entity;
 
 import RunningMachines.R2R.domain.user.entity.User;
 import RunningMachines.R2R.global.BaseEntity;

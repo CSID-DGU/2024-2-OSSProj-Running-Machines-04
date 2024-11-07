@@ -1,7 +1,7 @@
-package RunningMachines.R2R.domain.course.service;
+package RunningMachines.R2R.domain.running.service;
 
-import RunningMachines.R2R.domain.course.dto.CourseResponseDto;
-import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
+import RunningMachines.R2R.domain.running.dto.CourseResponseDto;
+import RunningMachines.R2R.domain.running.dto.GpxResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
