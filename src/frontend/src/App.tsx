@@ -9,10 +9,12 @@ const queryClient = new QueryClient();
 const Layout = () => {
   const { pathname } = useLocation();
 
+  const noHeaderPath = ["/", "/community/write"];
+
   return (
     <div className="w-screen min-h-screen bg-white flex justify-center items-center">
       <div className="w-full max-w-[430px] min-h-screen flex flex-col shadow-lg">
-        {pathname !== "/" && <Header />}
+        {!noHeaderPath.includes(pathname) && <Header />}
         <Outlet />
         <Navbar />
       </div>

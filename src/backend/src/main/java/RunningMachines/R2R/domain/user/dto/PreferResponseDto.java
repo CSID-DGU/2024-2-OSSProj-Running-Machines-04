@@ -4,7 +4,6 @@ import RunningMachines.R2R.domain.user.entity.Prefer;
 import lombok.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
