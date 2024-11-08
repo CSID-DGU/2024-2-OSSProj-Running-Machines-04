@@ -3,7 +3,7 @@ package RunningMachines.R2R.domain.community.entity;
 import RunningMachines.R2R.domain.user.entity.User;
 import jakarta.persistence.Entity;
 
-import RunningMachines.R2R.global.BaseEntity;
+import RunningMachines.R2R.global.util.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
