@@ -1,5 +1,6 @@
-package RunningMachines.R2R.domain.community.entity;
+package RunningMachines.R2R.domain.community.comment.entity;
 
+import RunningMachines.R2R.domain.community.post.entity.Post;
 import RunningMachines.R2R.domain.user.entity.User;
 import RunningMachines.R2R.global.BaseEntity;
 import jakarta.persistence.*;

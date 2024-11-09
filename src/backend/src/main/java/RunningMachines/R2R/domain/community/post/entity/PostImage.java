@@ -1,4 +1,4 @@
-package RunningMachines.R2R.domain.community.entity;
+package RunningMachines.R2R.domain.community.post.entity;
 
 import RunningMachines.R2R.global.BaseEntity;
 import jakarta.persistence.*;
