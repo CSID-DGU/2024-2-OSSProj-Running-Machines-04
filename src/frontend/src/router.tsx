@@ -9,6 +9,8 @@ import CommunityDetailPage from "@/pages/CommunityDetail/CommunityDetailPage";
 import CommunityWritePage from "@/pages/CommunityWrite/CommunityWritePage";
 import NoticeDetailPage from "@/pages/NoticeDetail/NoticeDetailPage";
 import GalleryDetailPage from "@/pages/GalleryDetail/GalleryDetailPage";
+import CrewMembersPage from "@/pages/CrewMembers/CrewMembersPage";
+import CrewMemberDetailPage from "@/pages/CrewMemberDetail/CrewMemberDetailPage";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +28,8 @@ const router = createBrowserRouter([
       { path: "/crew", element: <MyCrewPage /> },
       { path: "/crew/notice/:id", element: <NoticeDetailPage /> },
       { path: "/crew/gallery/:id", element: <GalleryDetailPage /> },
+      { path: "/crew/members", element: <CrewMembersPage /> },
+      { path: "/crew/members/:id", element: <CrewMemberDetailPage /> },
 
       { path: "/mypage", element: <MyPage /> },
     ],
