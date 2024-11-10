@@ -14,7 +14,7 @@ const Header = () => {
     } else if (pathname.includes("/mypage")) {
       return "마이페이지";
     } else {
-      return "";
+      return "홈";
     }
   };
 

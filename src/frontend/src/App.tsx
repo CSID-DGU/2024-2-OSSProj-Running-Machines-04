@@ -9,7 +9,7 @@ const queryClient = new QueryClient();
 const Layout = () => {
   const { pathname } = useLocation();
 
-  const noHeaderPath = ["/", "/community/write"];
+  const noHeaderPath = ["/record", "/community/write"];
 
   return (
     <div className="w-screen min-h-screen bg-white flex justify-center items-center">

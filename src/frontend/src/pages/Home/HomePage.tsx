@@ -1,9 +1,9 @@
 import KakaoMap from "@/components/common/KakaoMap";
 import { ReactComponent as PlayIcon } from "@/assets/images/play.svg";
-import HomeCategory from "@/components/home/HomeCategory";
-import Searchbar from "@/components/home/Searchbar";
+import HomeCategory from "@/components/record/HomeCategory";
+import Searchbar from "@/components/record/Searchbar";
 import { useState } from "react";
-import BottomSheet from "@/components/home/BottomSheet";
+import BottomSheet from "@/components/record/BottomSheet";
 
 const HomePage = () => {
   const [openSheet, setOpenSheet] = useState(false);
@@ -11,16 +11,7 @@ const HomePage = () => {
 
   return (
     <>
-      {openSheet && <BottomSheet setOpenSheet={setOpenSheet} />}
-      <div className="flex flex-col justify-center items-center">
-        <Searchbar />
-        <HomeCategory
-          setOpenSheet={setOpenSheet}
-          setSelectedCategory={setSelectedCategory}
-        />
-        <KakaoMap />
-        <PlayIcon className="fixed bottom-[20vh] z-50" />
-      </div>
+      <div></div>
     </>
   );
 };
