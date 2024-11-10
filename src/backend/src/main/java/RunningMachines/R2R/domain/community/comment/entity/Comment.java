@@ -41,4 +41,17 @@ public class Comment extends BaseEntity {
     @OneToMany(mappedBy = "comment")
     private List<CommentLike> hearts = new ArrayList<>();
 
+    public Comment(String content, Post post, User user, Comment parentComment) {
+        this.content = content;
+        this.post = post;
+        this.user = user;
+        this.parentComment = parentComment;
+        if (parentComment != null) {
+            parentComment.addReply(this);
+        }
+    }
+
+    public void addReply(Comment reply) {
+        this.replies.add(reply);
+    }
 }
