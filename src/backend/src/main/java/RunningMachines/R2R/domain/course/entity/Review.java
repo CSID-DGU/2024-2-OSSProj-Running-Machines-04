@@ -1,11 +1,9 @@
 package RunningMachines.R2R.domain.course.entity;
 
 import RunningMachines.R2R.domain.user.entity.User;
-import RunningMachines.R2R.global.BaseEntity;
+import RunningMachines.R2R.global.util.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
 
 @Entity
 @Getter
@@ -31,7 +29,7 @@ public class Review extends BaseEntity {
     private int convenience;
 
     @Enumerated(EnumType.STRING)
-    private ReivewTag tag;
+    private ReviewTag tag;
 
     private String summary; // 한줄평
 

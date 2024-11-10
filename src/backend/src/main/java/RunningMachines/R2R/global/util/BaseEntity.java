@@ -1,4 +1,4 @@
-package RunningMachines.R2R.global;
+package RunningMachines.R2R.global.util;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

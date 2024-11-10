@@ -1,6 +1,6 @@
 package RunningMachines.R2R.domain.course.entity;
 
-import RunningMachines.R2R.global.BaseEntity;
+import RunningMachines.R2R.global.util.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,4 +30,13 @@ public class Course extends BaseEntity {
     @OneToMany(mappedBy = "course")
     private List<Review> reviews = new ArrayList<>();
 
+    public void setCourseUrl(String courseUrl) {
+        this.courseUrl = courseUrl;
+    }
+
+    public static Course createCourse(String courseUrl) {
+        Course course = new Course();
+        course.setCourseUrl(courseUrl);
+        return course;
+    }
 }
