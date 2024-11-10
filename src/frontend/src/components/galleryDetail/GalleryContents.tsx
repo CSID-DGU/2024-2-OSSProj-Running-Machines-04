@@ -1,7 +1,7 @@
 import { ReactComponent as HeartIcon } from "@/assets/icons/HeartIcon.svg";
 import { ReactComponent as CommentIcon } from "@/assets/icons/CommentIcon.svg";
 import { useState } from "react";
-import BottomSheet from "../home/BottomSheet";
+import BottomSheet from "../record/BottomSheet";
 import Comment from "../common/Comment";
 import Reply from "../common/Reply";
 
