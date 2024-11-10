@@ -4,7 +4,7 @@ type CrewRankingCardProps = {
 
 const CrewRankingCard = ({ rank }: CrewRankingCardProps) => {
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center px-8 py-4">
       <div
         className={`${
           rank === 1
@@ -12,7 +12,7 @@ const CrewRankingCard = ({ rank }: CrewRankingCardProps) => {
             : rank === 2
             ? "text-[#C0BDAC]"
             : "text-[#A89215]"
-        } text-[30px] font-bold`}
+        } text-[30px] font-bold w-[50px]`}
       >
         {rank}
       </div>

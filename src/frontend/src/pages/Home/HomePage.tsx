@@ -4,7 +4,7 @@ import HomeRecord from "@/components/home/HomeRecord";
 
 const HomePage = () => {
   return (
-    <div>
+    <div className="mb-24">
       <HomeRecord />
       <DistanceRanking />
       <FaceRanking />
