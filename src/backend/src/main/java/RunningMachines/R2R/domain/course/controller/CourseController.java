@@ -31,8 +31,8 @@ public class CourseController {
 
     @Operation(summary = "추천 코스 목록 조회")
     @GetMapping("/recommend")
-    public ResponseEntity<List<CourseResponseDto>> recommendCourse(double latitude, double longitude) {
-        return ResponseEntity.ok(courseQueryService.getCourses(latitude, longitude));
+    public ResponseEntity<List<CourseResponseDto>> recommendCourse(double lat, double lon) {
+        return ResponseEntity.ok(courseQueryService.getCourses(lat, lon));
     }
 }
 

@@ -1,4 +1,4 @@
-package RunningMachines.R2R.domain.course.service;
+package RunningMachines.R2R.global.util;
 
 import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
 import RunningMachines.R2R.global.exception.CustomException;
@@ -21,11 +21,11 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class GpxQueryService {
+public class GpxParser {
 
     private final S3Provider s3Provider;
 
-    public List<GpxResponseDto> parseGpxs(double latitude, double longitude) {
+    public List<GpxResponseDto> parseGpxs(double lat, double lon) {
         List<GpxResponseDto> gpxResponses = new ArrayList<>();
 
         try {
@@ -58,9 +58,9 @@ public class GpxQueryService {
                     NodeList nodeList = document.getElementsByTagName("trkpt");
                     for (int i = 0; i < nodeList.getLength(); i++) {
                         // 각 웨이포인트의 위경도 추출해 리스트에 추가
-                        String lat = nodeList.item(i).getAttributes().getNamedItem("lat").getNodeValue();
-                        String lon = nodeList.item(i).getAttributes().getNamedItem("lon").getNodeValue();
-                        waypoints.add("Lat: " + lat + ", Lon: " + lon);
+                        String latitude = nodeList.item(i).getAttributes().getNamedItem("lat").getNodeValue();
+                        String longitude = nodeList.item(i).getAttributes().getNamedItem("lon").getNodeValue();
+                        waypoints.add("lat: " + latitude + ", lon: " + longitude);
                     }
 
                     inputStream.close();
