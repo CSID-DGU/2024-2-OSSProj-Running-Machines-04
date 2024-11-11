@@ -10,4 +10,6 @@ import java.util.List;
 public class GpxResponseDto {
     private String fileName;
     private List<WaypointDto> waypoints;
+    private Double distance;
+    private String courseUrl;
 }

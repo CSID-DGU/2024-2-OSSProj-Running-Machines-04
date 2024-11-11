@@ -3,19 +3,23 @@ package RunningMachines.R2R.domain.course.service;
 import RunningMachines.R2R.domain.course.dto.CourseResponseDto;
 import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
 import RunningMachines.R2R.domain.course.dto.WaypointDto;
+import RunningMachines.R2R.domain.course.repository.CourseRepository;
 import RunningMachines.R2R.global.util.GpxParser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CourseQueryService {
 
     private final GpxParser gpxParser;
+    private final CourseRepository courseRepository;
 
     // 위경도를 기반으로 가져온 코스 정보 추출
     public List<CourseResponseDto> getCourses(double lat, double lon) {
@@ -25,11 +29,14 @@ public class CourseQueryService {
         List<CourseResponseDto> courseResponses = new ArrayList<>();
 
         for (GpxResponseDto gpx : gpxs) {
+            log.info("{}",gpx);
             String fileName = gpx.getFileName();
             List<WaypointDto> waypoints = gpx.getWaypoints();
 
             // TODO - 모델 서버와 연동하여 실제 거리 받아오기
-            double distance = 0; // 임시로 0으로 설정
+            double distance = courseRepository.findDistanceByFileName(fileName); // 임시 저장된 거리 데이터
+//            log.info("Course URL: {}, Distance: {}", gpx.getCourseUrl(), distance);
+//            log.info("Course URL: {}]", gpx.getCourseUrl());
 
             // 파일명으로부터 태그 생성
             List<String> tags = createTags(fileName);
