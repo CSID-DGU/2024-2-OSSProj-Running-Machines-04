@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import CrewRankingCard from "./CrewRankingCard";
+import CrewRankingCard from "@/components/home/CrewRankingCard";
 import { ReactComponent as RightArrowIcon } from "@/assets/icons/RightArrowIcon.svg";
 
 const FaceRanking = () => {
