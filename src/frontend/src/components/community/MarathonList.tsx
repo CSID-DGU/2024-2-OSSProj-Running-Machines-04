@@ -1,4 +1,4 @@
-import MarathonCard from "./MarathonCard";
+import MarathonCard from "@/components/community/MarathonCard";
 
 const MarathonList = () => {
   const cards = Array.from({ length: 7 });

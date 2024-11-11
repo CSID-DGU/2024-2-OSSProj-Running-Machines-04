@@ -1,4 +1,4 @@
-import CrewMemberCard from "./CrewMemberCard";
+import CrewMemberCard from "@/components/crewMembers/CrewMemberCard";
 
 const CrewMemberSection = () => {
   return (
