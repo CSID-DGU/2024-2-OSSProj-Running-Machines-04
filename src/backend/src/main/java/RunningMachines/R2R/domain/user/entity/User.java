@@ -65,7 +65,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private List<UserCourse> userCourses = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")

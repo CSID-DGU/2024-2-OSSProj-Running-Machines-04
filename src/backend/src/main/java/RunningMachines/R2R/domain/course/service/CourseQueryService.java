@@ -2,6 +2,7 @@ package RunningMachines.R2R.domain.course.service;
 
 import RunningMachines.R2R.domain.course.dto.CourseResponseDto;
 import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
+import RunningMachines.R2R.domain.course.dto.WaypointDto;
 import RunningMachines.R2R.global.util.GpxParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class CourseQueryService {
 
         for (GpxResponseDto gpx : gpxs) {
             String fileName = gpx.getFileName();
-            List<String> waypoints = gpx.getWaypoints();
+            List<WaypointDto> waypoints = gpx.getWaypoints();
 
             // TODO - 모델 서버와 연동하여 실제 거리 받아오기
             double distance = 0; // 임시로 0으로 설정
