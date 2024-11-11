@@ -1,8 +1,8 @@
 package RunningMachines.R2R.domain.user.entity;
 
-import RunningMachines.R2R.domain.community.entity.Comment;
-import RunningMachines.R2R.domain.community.entity.CommentLike;
-import RunningMachines.R2R.domain.community.entity.Post;
+import RunningMachines.R2R.domain.community.comment.entity.Comment;
+import RunningMachines.R2R.domain.community.comment.entity.CommentLike;
+import RunningMachines.R2R.domain.community.post.entity.Post;
 import RunningMachines.R2R.domain.course.entity.CourseLike;
 import RunningMachines.R2R.domain.course.entity.Review;
 import RunningMachines.R2R.domain.course.entity.UserCourse;
