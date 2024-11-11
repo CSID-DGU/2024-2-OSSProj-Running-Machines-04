@@ -13,8 +13,10 @@ const Header = () => {
       return "나의 크루";
     } else if (pathname.includes("/mypage")) {
       return "마이페이지";
+    } else if (pathname.includes("/other-crew")) {
+      return "러닝 크루";
     } else {
-      return "";
+      return "홈";
     }
   };
 

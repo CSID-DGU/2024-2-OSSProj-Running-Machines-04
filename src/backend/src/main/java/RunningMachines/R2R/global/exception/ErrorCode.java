@@ -22,7 +22,8 @@ public enum ErrorCode {
     INVALID_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "USER4003", "유효하지 않은 토큰입니다."),
     INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "USER4004", "유효하지 않은 토큰입니다."),
 
-    GPX_PARSING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "COURSE4000", "서버 에러: GPX 파싱에 실패했습니다.");
+    GPX_PARSING_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "COURSE5000", "서버 에러: GPX 파싱에 실패했습니다."),
+    GPX_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "COURSE5001", "서버 에러: GPX 업로드에 실패했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
