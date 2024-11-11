@@ -30,11 +30,4 @@ public class PostCommandService {
         log.info("게시글 저장 성공");
         return post.getId();
     }
-
-    @Transactional(readOnly = true)
-    public PostShowDetailResponseDto getPostWithComments(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-        return PostShowDetailResponseDto.fromPost(post);
-    }
 }
