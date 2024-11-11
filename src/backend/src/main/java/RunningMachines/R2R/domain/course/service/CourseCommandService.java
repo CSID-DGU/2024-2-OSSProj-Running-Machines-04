@@ -26,8 +26,10 @@ public class CourseCommandService {
                     .dirName("course")
                     .build());
 
+            String fileName = file.getOriginalFilename(); // 원본 파일명을 fileName에 저장
+
             // Course 엔티티 생성
-            Course course = Course.createCourse(gpxUrl);
+            Course course = Course.createCourse(gpxUrl, fileName);
 
             courseRepository.save(course);
         }
