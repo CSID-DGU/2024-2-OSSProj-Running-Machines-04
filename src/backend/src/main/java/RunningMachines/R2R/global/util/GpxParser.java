@@ -1,6 +1,7 @@
 package RunningMachines.R2R.global.util;
 
 import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
+import RunningMachines.R2R.domain.course.dto.WaypointDto;
 import RunningMachines.R2R.global.exception.CustomException;
 import RunningMachines.R2R.global.exception.ErrorCode;
 import RunningMachines.R2R.global.s3.S3Provider;
@@ -35,7 +36,7 @@ public class GpxParser {
 
             // GPX파일을 모두 열어 파싱
             for (String fileKey : fileKeys) {
-                List<String> waypoints = new ArrayList<>();
+                List<WaypointDto> waypoints = new ArrayList<>();
                 String fileName = "";
 
                 try {
@@ -60,7 +61,11 @@ public class GpxParser {
                         // 각 웨이포인트의 위경도 추출해 리스트에 추가
                         String latitude = nodeList.item(i).getAttributes().getNamedItem("lat").getNodeValue();
                         String longitude = nodeList.item(i).getAttributes().getNamedItem("lon").getNodeValue();
-                        waypoints.add("lat: " + latitude + ", lon: " + longitude);
+                        // Builder 패턴을 사용해 WaypointDto 객체 생성 후 리스트에 추가
+                        waypoints.add(WaypointDto.builder()
+                                .lat(Double.parseDouble(latitude))
+                                .lon(Double.parseDouble(longitude))
+                                .build());
                     }
 
                     inputStream.close();
