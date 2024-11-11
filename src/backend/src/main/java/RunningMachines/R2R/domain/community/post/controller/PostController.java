@@ -5,7 +5,7 @@ import RunningMachines.R2R.domain.community.board.service.BoardService;
 import RunningMachines.R2R.domain.community.post.dto.PostCreateRequestDto;
 import RunningMachines.R2R.domain.community.post.dto.PostShowDetailResponseDto;
 import RunningMachines.R2R.domain.community.post.dto.PostShowSimpleResponseDto;
-import RunningMachines.R2R.domain.community.post.dto.PostUpdateRequestDto;
+//import RunningMachines.R2R.domain.community.post.dto.PostUpdateRequestDto;
 import RunningMachines.R2R.domain.community.post.service.PostCommandService;
 import RunningMachines.R2R.domain.community.post.service.PostQueryService;
 import lombok.RequiredArgsConstructor;
