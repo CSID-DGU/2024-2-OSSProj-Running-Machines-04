@@ -32,14 +32,14 @@ public class PostCommandService {
         return post.getId();
     }
 
-    /*@Transactional
-    public PostShowDetailResponseDto updatePost(PostUpdateRequestDto postUpdateRequestDto) {
-        Post post = findPostById(postUpdateRequestDto.getPostId());
+    @Transactional
+    public PostShowDetailResponseDto updatePost(Long postId, PostUpdateRequestDto postUpdateRequestDto) {
+        Post post = findPostById(postId);
         validateWriter(post);
         post.update(postUpdateRequestDto.getTitle(), postUpdateRequestDto.getContent());
-        postRepository.save(post);
-        log.info("게시글 수정 완료");
-    }*/
+        log.info("게시글 수정 성공");
+        return PostShowDetailResponseDto.fromPost(post);
+    }
 
     private Post findPostById(Long postId) {
         return postRepository.findById(postId)

@@ -41,10 +41,9 @@ public class PostController {
         return ResponseEntity.ok(responseDto);
     }
 
-    /*@PatchMapping("/{boardName}/{postId}")
+    @PatchMapping("/{boardName}/{postId}")
     public ResponseEntity<PostShowDetailResponseDto> updatePost(@PathVariable String boardName, @PathVariable Long postId, @RequestBody PostUpdateRequestDto postUpdateRequestDto) {
-        postCommandService.updatePost(postId, postUpdateRequestDto);
-
-    }*/
-
+        PostShowDetailResponseDto updatePost = postCommandService.updatePost(postId, postUpdateRequestDto);
+        return ResponseEntity.ok(updatePost);
+    }
 }
