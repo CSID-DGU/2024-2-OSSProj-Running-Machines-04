@@ -1,7 +1,7 @@
 package RunningMachines.R2R.domain.crew.entity;
 
 import RunningMachines.R2R.domain.user.entity.User;
-import RunningMachines.R2R.global.BaseEntity;
+import RunningMachines.R2R.global.util.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

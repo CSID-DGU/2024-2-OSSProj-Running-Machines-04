@@ -1,4 +1,4 @@
-package RunningMachines.R2R.global;
+package RunningMachines.R2R.global.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
