@@ -11,6 +11,7 @@ module.exports = {
       },
       backgroundImage: {
         navbarGradient: "linear-gradient(180deg, #000 0%, #242142 100%)",
+        signatureGradient: 'linear-gradient(90deg, #9993E5 0%, #B1FF8C 100%)'
       },
       boxShadow:{
         navbarShadow: '0px -2px 2px 0px rgba(83, 83, 83, 0.25)',

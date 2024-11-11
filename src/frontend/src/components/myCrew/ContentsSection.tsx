@@ -1,8 +1,8 @@
 import { crewMenu } from "@/constants/crew";
 import { ReactComponent as NoticeIcon } from "@/assets/icons/NoticeIcon.svg";
 import { useState } from "react";
-import NoticeCard from "./NoticeCard";
-import GalleryCard from "./GalleryCard";
+import NoticeCard from "@/components/myCrew/NoticeCard";
+import GalleryCard from "@/components/myCrew/GalleryCard";
 
 const ContentsSection = () => {
   const [menu, setMenu] = useState<crewMenu>(crewMenu.NOTICE);
