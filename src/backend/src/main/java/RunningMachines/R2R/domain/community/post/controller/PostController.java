@@ -5,6 +5,7 @@ import RunningMachines.R2R.domain.community.board.service.BoardService;
 import RunningMachines.R2R.domain.community.post.dto.PostCreateRequestDto;
 import RunningMachines.R2R.domain.community.post.dto.PostShowDetailResponseDto;
 import RunningMachines.R2R.domain.community.post.dto.PostShowSimpleResponseDto;
+import RunningMachines.R2R.domain.community.post.dto.PostUpdateRequestDto;
 import RunningMachines.R2R.domain.community.post.service.PostCommandService;
 import RunningMachines.R2R.domain.community.post.service.PostQueryService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class PostController {
     private final PostQueryService postQueryService;
     private final BoardService boardService;
 
-    @PostMapping("/{boardName}")
+    @PostMapping("/{boardName}/post")
     public ResponseEntity<Long> createPost(@PathVariable String boardName, @RequestBody PostCreateRequestDto postCreateRequestDto) {
         Long postId = postCommandService.createPost(boardName, postCreateRequestDto);
         return ResponseEntity.ok(postId);
@@ -39,4 +40,11 @@ public class PostController {
         PostShowDetailResponseDto responseDto = postQueryService.getPostWithComments(postId);
         return ResponseEntity.ok(responseDto);
     }
+
+    /*@PatchMapping("/{boardName}/{postId}")
+    public ResponseEntity<PostShowDetailResponseDto> updatePost(@PathVariable String boardName, @PathVariable Long postId, @RequestBody PostUpdateRequestDto postUpdateRequestDto) {
+        postCommandService.updatePost(postId, postUpdateRequestDto);
+
+    }*/
+
 }

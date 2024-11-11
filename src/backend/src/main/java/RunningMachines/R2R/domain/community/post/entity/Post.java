@@ -2,6 +2,7 @@ package RunningMachines.R2R.domain.community.post.entity;
 
 import RunningMachines.R2R.domain.community.board.entity.Board;
 import RunningMachines.R2R.domain.community.comment.entity.Comment;
+import RunningMachines.R2R.domain.community.post.dto.PostUpdateRequestDto;
 import RunningMachines.R2R.domain.user.entity.User;
 import RunningMachines.R2R.global.util.BaseEntity;
 import jakarta.persistence.*;
@@ -38,6 +39,11 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post")
     private List<PostImage> postImages = new ArrayList<>();
+
+    public void update(PostUpdateRequestDto postUpdateRequestDto) {
+        this.title = postUpdateRequestDto.getTitle();
+        this.content = postUpdateRequestDto.getContent();
+    }
 
 }
 

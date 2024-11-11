@@ -4,6 +4,7 @@ import RunningMachines.R2R.domain.community.board.entity.Board;
 import RunningMachines.R2R.domain.community.board.service.BoardService;
 import RunningMachines.R2R.domain.community.post.dto.PostCreateRequestDto;
 import RunningMachines.R2R.domain.community.post.dto.PostShowDetailResponseDto;
+import RunningMachines.R2R.domain.community.post.dto.PostUpdateRequestDto;
 import RunningMachines.R2R.domain.community.post.entity.Post;
 import RunningMachines.R2R.domain.community.post.repository.PostRepository;
 import RunningMachines.R2R.domain.user.entity.User;
@@ -30,4 +31,26 @@ public class PostCommandService {
         log.info("게시글 저장 성공");
         return post.getId();
     }
+
+    /*@Transactional
+    public PostShowDetailResponseDto updatePost(PostUpdateRequestDto postUpdateRequestDto) {
+        Post post = findPostById(postUpdateRequestDto.getPostId());
+        validateWriter(post);
+        post.update(postUpdateRequestDto.getTitle(), postUpdateRequestDto.getContent());
+        postRepository.save(post);
+        log.info("게시글 수정 완료");
+    }*/
+
+    private Post findPostById(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+    }
+
+    private void validateWriter(Post post) {
+        User currentUser = authCommandService.getCurrentUser();
+        if (!post.getUser().equals(currentUser)) {
+            throw new IllegalStateException("작성자만 게시글을 수정할 수 있습니다.");
+        }
+    }
+
 }
