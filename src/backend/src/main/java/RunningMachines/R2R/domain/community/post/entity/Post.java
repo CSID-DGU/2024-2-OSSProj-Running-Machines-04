@@ -36,8 +36,12 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post")
-    private List<PostImage> postImages = new ArrayList<>();
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<PostImage> postImages;
+
+    public void setPostImages(List<PostImage> postImages) {
+        this.postImages = postImages;
+    }
 
 //    public void update(PostUpdateRequestDto postUpdateRequestDto) {
 //        this.title = postUpdateRequestDto.getTitle();
@@ -45,4 +49,3 @@ public class Post extends BaseEntity {
 //    }
 
 }
-

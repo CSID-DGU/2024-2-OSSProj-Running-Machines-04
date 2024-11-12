@@ -3,7 +3,7 @@ package RunningMachines.R2R.domain.community.board.entity;
 import java.util.Arrays;
 
 public enum Board {
-    FREE, Together, SHOES, MARATHON;
+    FREE, TOGETHER, SHOES, MARATHON;
 
     public static Board findByName(String name) {
         return Arrays.stream(Board.values())
