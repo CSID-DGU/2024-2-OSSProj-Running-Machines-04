@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,13 @@ public class AuthCommandService {
     private final TokenProvider tokenProvider;
     private final CustomUserDetailsService customUserDetailsService;
     private final S3Provider s3Provider;
+
+    // post 작성자 이름 가져오기
+    public User getCurrentUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
 
     public UserResponseDto signup(UserSignupRequestDto signupRequestDto, MultipartFile image) {
         if (userRepository.existsByEmail(signupRequestDto.getEmail())) {
