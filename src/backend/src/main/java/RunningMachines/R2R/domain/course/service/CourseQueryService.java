@@ -58,7 +58,7 @@ public class CourseQueryService {
     private List<String> createTags(String fileName) {
         String name = fileName.substring(0, fileName.lastIndexOf('.')); // 확장자 제거
         String[] tags = name.split("_"); // 파일명을 '_'로 구분하여 태그 리스트 생성
-        tags = Arrays.copyOf(tags, tags.length - 1); // 파일명 제일 앞에 있는 인덱스 제거
+        tags = Arrays.copyOfRange(tags, 1, tags.length); // 첫 번째 태그를 제외한 배열 생성 (파일명 제일 앞에 있는 인덱스 제거)
         return List.of(tags);
     }
 }
