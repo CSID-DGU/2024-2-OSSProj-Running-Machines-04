@@ -4,10 +4,11 @@ import HomeCategory from "@/components/record/HomeCategory";
 import Searchbar from "@/components/record/Searchbar";
 import { useEffect, useState } from "react";
 import BottomSheet from "@/components/record/BottomSheet";
-import { courseMenu, dummyCourseData } from "@/constants/course";
+import { courseMenu } from "@/constants/course";
 import { useRecommendCourseGet } from "@/hooks/useCourse";
 import { courseResponseType } from "@/types/course";
 import AlertModal from "@/components/common/AlertModal";
+import { dummyCourseData } from "@/constants/dummy";
 
 const RecordPage = () => {
   const [openSheet, setOpenSheet] = useState(false);
