@@ -27,6 +27,8 @@ public class Course extends BaseEntity {
 
     private boolean isOfficial; // 관리자 등록 여부
 
+    private String fileName; // gpx 원본 파일명
+
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
@@ -34,9 +36,14 @@ public class Course extends BaseEntity {
         this.courseUrl = courseUrl;
     }
 
-    public static Course createCourse(String courseUrl) {
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public static Course createCourse(String courseUrl, String fileName) {
         Course course = new Course();
         course.setCourseUrl(courseUrl);
+        course.setFileName(fileName);
         return course;
     }
 }
