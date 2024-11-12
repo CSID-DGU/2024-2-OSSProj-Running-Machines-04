@@ -1,9 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import CrewRankingCard from "@/components/home/CrewRankingCard";
 import { ReactComponent as RightArrowIcon } from "@/assets/icons/RightArrowIcon.svg";
+import { homeFaceRankingResponse } from "@/types/home";
+import { dummyFaceCrew } from "@/constants/dummy";
+import { useState } from "react";
 
 const FaceRanking = () => {
   const navigate = useNavigate();
+  const [faceData, setFaceData] =
+    useState<homeFaceRankingResponse[]>(dummyFaceCrew);
 
   return (
     <div className="m-5 mt-8">
@@ -11,9 +16,9 @@ const FaceRanking = () => {
         이번 주, 가장 높은 페이스를 기록한 크루를 확인해보세요.
       </div>
       <div className="bg-[#F3F3F3] rounded-[20px] gap-2.5">
-        <CrewRankingCard rank={1} />
-        <CrewRankingCard rank={2} />
-        <CrewRankingCard rank={3} />
+        {faceData.map((data) => (
+          <CrewRankingCard type="face" faceData={data} />
+        ))}
       </div>
       <div className="flex items-center justify-end gap-2.5 pt-3">
         <span className="text-[#444] text-[12px] font-bold cursor-pointer">
