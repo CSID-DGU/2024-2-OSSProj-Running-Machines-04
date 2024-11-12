@@ -3,6 +3,7 @@ package RunningMachines.R2R.domain.course.service;
 import RunningMachines.R2R.domain.course.dto.CourseResponseDto;
 import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
 import RunningMachines.R2R.domain.course.dto.WaypointDto;
+import RunningMachines.R2R.domain.course.entity.Course;
 import RunningMachines.R2R.domain.course.repository.CourseRepository;
 import RunningMachines.R2R.global.util.GpxParser;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -33,16 +35,20 @@ public class CourseQueryService {
             String fileName = gpx.getFileName();
             List<WaypointDto> waypoints = gpx.getWaypoints();
 
-            // TODO - 모델 서버와 연동하여 실제 거리 받아오기
-            double distance = courseRepository.findDistanceByFileName(fileName); // 임시 저장된 거리 데이터
+            // TODO - 모델 서버와 연동하여 실제 거리 및 코스명 받아오기
+//            double distance = courseRepository.findDistanceByFileName(fileName); // 임시 저장된 거리 데이터
 //            log.info("Course URL: {}, Distance: {}", gpx.getCourseUrl(), distance);
 //            log.info("Course URL: {}]", gpx.getCourseUrl());
+
+            Course course = courseRepository.findByFileName(fileName);
+            double distance = course.getDistance(); // 엔티티의 distance 가져오기
+            String name = course.getName();   // 엔티티의 name 가져오기
 
             // 파일명으로부터 태그 생성
             List<String> tags = createTags(fileName);
 
             // 각 파일에 대한 CourseResponseDto 생성 및 리스트에 추가
-            courseResponses.add(new CourseResponseDto(fileName, waypoints, distance, tags));
+            courseResponses.add(new CourseResponseDto(fileName, waypoints, distance, tags, name));
         }
         return courseResponses;
     }
