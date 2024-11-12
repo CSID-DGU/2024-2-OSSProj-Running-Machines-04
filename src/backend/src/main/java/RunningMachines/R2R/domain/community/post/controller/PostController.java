@@ -11,6 +11,7 @@ import RunningMachines.R2R.domain.community.post.service.PostQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,7 +24,18 @@ public class PostController {
     private final BoardService boardService;
 
     @PostMapping("/{boardName}/post")
-    public ResponseEntity<Long> createPost(@PathVariable String boardName, @RequestBody PostCreateRequestDto postCreateRequestDto) {
+    public ResponseEntity<Long> createPost(
+            @PathVariable String boardName,
+            @RequestParam String title,
+            @RequestParam String content,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+
+        PostCreateRequestDto postCreateRequestDto = PostCreateRequestDto.builder()
+                .title(title)
+                .content(content)
+                .images(images)
+                .build();
+
         Long postId = postCommandService.createPost(boardName, postCreateRequestDto);
         return ResponseEntity.ok(postId);
     }
