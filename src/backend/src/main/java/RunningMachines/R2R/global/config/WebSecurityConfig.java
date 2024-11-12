@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
@@ -39,7 +40,7 @@ public class WebSecurityConfig {
 //                        .requestMatchers("/v3/**").permitAll()
                         // TODO - 크루 관련 설정 추가 필요 / 테스트 위해 권한 설정 x
                       .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated()
+//                                .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용하지 않도록 설정
@@ -49,17 +50,19 @@ public class WebSecurityConfig {
 
     // CORS 설정
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    public CorsFilter corsFilter() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
+
+        configuration.addAllowedOrigin("http://localhost:3000"); // 로컬
+        configuration.addAllowedOrigin("https://ready2run.vercel.app"); // 프론트 IPv4 주소
+        configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
+        configuration.addAllowedHeader("*"); // 모든 헤더 허용
+        configuration.setAllowCredentials(true); // 인증 정보 허용
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 
-        return source;
+        return new CorsFilter(source); // CorsFilter 인스턴스를 반환
     }
 
     // 패스워드 인코더로 사용할 빈 등록

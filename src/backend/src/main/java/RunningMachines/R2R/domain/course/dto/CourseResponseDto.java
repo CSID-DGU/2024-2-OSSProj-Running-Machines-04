@@ -14,4 +14,5 @@ public class CourseResponseDto {
     private List<WaypointDto> waypoints;
     private double distance;
     private List<String> tags;
+    private String name;
 }
