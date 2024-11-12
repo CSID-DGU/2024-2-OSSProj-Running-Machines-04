@@ -19,8 +19,10 @@ const KakaoMap = () => {
           setState((prev) => ({
             ...prev,
             center: {
-              lat: position.coords.latitude, // 위도
-              lng: position.coords.longitude, // 경도
+              lat: 37.5665, // 임의의 위치(발표용)
+              lng: 126.978, // 임의의 위치(발표용)
+              // lat: position.coords.latitude, // 위도
+              // lng: position.coords.longitude, // 경도
             },
             isLoading: false,
           }));
