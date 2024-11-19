@@ -27,6 +27,7 @@ public class Post extends BaseEntity {
     private String content;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private Board board;
 
     @ManyToOne(fetch = FetchType.LAZY)

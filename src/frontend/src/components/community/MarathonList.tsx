@@ -1,13 +1,16 @@
 import MarathonCard from "@/components/community/MarathonCard";
+import { boardResponse } from "@/types/board";
 
-const MarathonList = () => {
-  const cards = Array.from({ length: 7 });
+type MarathonListProps = {
+  data: boardResponse[];
+};
 
+const MarathonList = ({ data }: MarathonListProps) => {
   return (
     <div className="flex justify-center items-center py-8">
       <div className="flex flex-wrap max-w-[330px] gap-5 justify-between items-center">
-        {cards.map((_, index) => (
-          <MarathonCard key={index} id={index} />
+        {data.map((board, index) => (
+          <MarathonCard key={index} board={board} />
         ))}
       </div>
     </div>
