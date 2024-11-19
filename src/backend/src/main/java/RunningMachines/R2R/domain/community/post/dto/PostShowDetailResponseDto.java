@@ -33,6 +33,7 @@ public class PostShowDetailResponseDto {
                 .createdAt(post.getCreatedAt())
                 .board(post.getBoard())
                 .comments(post.getComments().stream()
+                        .filter(comment -> comment.getParentComment() == null)
                         .map(CommentResponseDto::from)
                         .collect(Collectors.toList()))
                 .postImages(post.getPostImages()!=null ?
