@@ -41,9 +41,9 @@ const CommunityWriteHeader = ({
         </span>
         <span
           className={`cursor-pointer font-semibold ${
-            board === boardType.RECOMMEND ? "text-[#000]" : "text-[#999]"
+            board === boardType.SHOES ? "text-[#000]" : "text-[#999]"
           }`}
-          onClick={() => setBoard(boardType.RECOMMEND)}
+          onClick={() => setBoard(boardType.SHOES)}
         >
           러닝화 추천
         </span>

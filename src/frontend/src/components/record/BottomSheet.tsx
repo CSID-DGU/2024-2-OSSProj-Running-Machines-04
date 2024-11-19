@@ -50,7 +50,7 @@ const BottomSheet = ({ setOpenSheet, children }: BottomSheetProps) => {
         onClick={(e) => e.stopPropagation()} // 내부 클릭 시 닫히지 않도록 이벤트 버블링 방지
         onTouchStart={handleTouchStart} // 터치 시작 이벤트
         onTouchMove={handleTouchMove} // 터치 이동 이벤트
-        className={`bg-white fixed bottom-0 left-0 w-full rounded-t-3xl flex flex-col py-10 px-8 transform transition-transform duration-300 overflow-auto ${
+        className={`bg-white fixed bottom-0 left-0 w-full rounded-t-3xl flex flex-col py-10 px-3 transform transition-transform duration-300 overflow-auto ${
           isVisible ? "translate-y-0" : "translate-y-full"
         } ${fullScreen ? "h-[90vh]" : "h-[50vh]"}`} // fullScreen 상태에 따라 높이 설정
       >
