@@ -1,5 +1,6 @@
 package RunningMachines.R2R.domain.course.controller;
 
+import RunningMachines.R2R.domain.course.dto.CourseDetailResponseDto;
 import RunningMachines.R2R.domain.course.dto.CourseResponseDto;
 import RunningMachines.R2R.domain.course.service.CourseCommandService;
 import RunningMachines.R2R.domain.course.service.CourseQueryService;
@@ -29,10 +30,16 @@ public class CourseController {
         return ResponseEntity.ok("코스 등록 성공");
     }
 
-    @Operation(summary = "추천 코스 목록 조회")
+    @Operation(summary = "추천 코스 목록 조회 (GPX url 반환)")
     @GetMapping("/recommend")
-    public ResponseEntity<List<CourseResponseDto>> recommendCourse(double lat, double lon) {
+    public ResponseEntity<List<CourseResponseDto>> recommendCourse(@RequestParam double lat, @RequestParam double lon) {
         return ResponseEntity.ok(courseQueryService.getCourses(lat, lon));
+    }
+
+    @Operation(summary = "추천 코스 목록 조회 (GPX 파싱)")
+    @GetMapping("/recommendDetail")
+    public ResponseEntity<List<CourseDetailResponseDto>> recommendCourseDetial(@RequestParam double lat, @RequestParam double lon) {
+        return ResponseEntity.ok(courseQueryService.getCourseDetails(lat, lon));
     }
 }
 

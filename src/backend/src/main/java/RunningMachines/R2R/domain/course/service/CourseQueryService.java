@@ -1,19 +1,23 @@
 package RunningMachines.R2R.domain.course.service;
 
+import RunningMachines.R2R.domain.course.dto.CourseDetailResponseDto;
 import RunningMachines.R2R.domain.course.dto.CourseResponseDto;
 import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
 import RunningMachines.R2R.domain.course.dto.WaypointDto;
 import RunningMachines.R2R.domain.course.entity.Course;
 import RunningMachines.R2R.domain.course.repository.CourseRepository;
+import RunningMachines.R2R.global.exception.CustomException;
+import RunningMachines.R2R.global.exception.ErrorCode;
+import RunningMachines.R2R.global.s3.S3Provider;
 import RunningMachines.R2R.global.util.GpxParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -22,13 +26,39 @@ public class CourseQueryService {
 
     private final GpxParser gpxParser;
     private final CourseRepository courseRepository;
+    private final S3Provider s3Provider;
+
+    public List<CourseResponseDto> getCourses(double lat, double lon) {
+        // S3에서 GPX 파일 목록 가져오기
+        List<String> fileKeys = s3Provider.getCourseFiles();
+        log.info("총 {}개의 GPX 파일을 가져왔습니다.", fileKeys.size());
+
+        // 파일 처리
+        return fileKeys.stream()
+                .map(this::processFile) // 파일을 처리하여 CourseResponseDto로 변환
+                .toList(); // 리스트로 변환
+    }
+
+    // 개별 파일 처리 로직 (예외는 호출자에게 전파)
+    private CourseResponseDto processFile(String fileKey) {
+        // S3에서 파일 URL 및 원본 파일명 가져오기
+        URL url = s3Provider.getFileUrl(fileKey);
+        String courseUrl = url.toString();
+        String fileName = s3Provider.getOriginalFileName(fileKey);
+
+        Course course = courseRepository.findByFileName(fileName);
+
+        // TODO - 모델 연동 -> 거리, 코스명 데이터 받아 오기
+
+        return CourseResponseDto.of(course, courseUrl, fileName, createTags(fileName));
+    }
 
     // 위경도를 기반으로 가져온 코스 정보 추출
-    public List<CourseResponseDto> getCourses(double lat, double lon) {
+    public List<CourseDetailResponseDto> getCourseDetails(double lat, double lon) {
         // 코스 리스트
         List<GpxResponseDto> gpxs = gpxParser.parseGpxs(lat, lon);
         // 반환값을 담을 리스트
-        List<CourseResponseDto> courseResponses = new ArrayList<>();
+        List<CourseDetailResponseDto> courseResponses = new ArrayList<>();
 
         for (GpxResponseDto gpx : gpxs) {
             log.info("{}",gpx);
@@ -47,8 +77,8 @@ public class CourseQueryService {
             // 파일명으로부터 태그 생성
             List<String> tags = createTags(fileName);
 
-            // 각 파일에 대한 CourseResponseDto 생성 및 리스트에 추가
-            courseResponses.add(new CourseResponseDto(fileName, waypoints, distance, tags, name));
+            // 각 파일에 대한 CourseDetailResponseDto 생성 및 리스트에 추가
+            courseResponses.add(new CourseDetailResponseDto(fileName, waypoints, distance, tags, name));
         }
         return courseResponses;
     }
