@@ -29,7 +29,7 @@ public class CommentResponseDto {
                 .replies(comment.getReplies().stream()
                         .map(CommentResponseDto::from)
                         .collect(Collectors.toList()))
-                .likeCount(comment.getHearts().size())
+                .likeCount(comment.getHearts() != null ? comment.getHearts().size() : 0)
                 .build();
     }
 }
