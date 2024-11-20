@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/board/{boardName}/post/{postId}/comments")
+@RequestMapping("/board/{boardName}/{postId}")
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentCommandService commentCommandService;
@@ -26,5 +26,11 @@ public class CommentController {
         requestDto.setPostId(postId);
         Long commentId = commentCommandService.createComment(requestDto);
         return ResponseEntity.ok(commentId);
+    }
+
+    @PostMapping("/{commentId}/like")
+    public ResponseEntity<String> toggleLike(@PathVariable String boardName, @PathVariable Long postId, @PathVariable Long commentId) {
+        String result = commentCommandService.toggleLike(commentId);
+        return ResponseEntity.ok(result);
     }
 }
