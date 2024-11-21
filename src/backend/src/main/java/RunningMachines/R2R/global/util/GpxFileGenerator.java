@@ -38,9 +38,9 @@ public class GpxFileGenerator {
             writer.writeAttribute("lon", Double.toString(waypoint.getLon()));
 
             // 타임스탬프 추가
-            writer.writeStartElement("time");
-            writer.writeCharacters(Instant.parse(waypoint.getTimestamp()).toString());
-            writer.writeEndElement(); // time
+//            writer.writeStartElement("time");
+//            writer.writeCharacters(Instant.parse(waypoint.getTimestamp()).toString());
+//            writer.writeEndElement(); // time
 
             writer.writeEndElement(); // trkpt
         }

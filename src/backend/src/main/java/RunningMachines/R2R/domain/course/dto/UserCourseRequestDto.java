@@ -1,5 +1,6 @@
 package RunningMachines.R2R.domain.course.dto;
 
+import RunningMachines.R2R.domain.course.entity.Course;
 import RunningMachines.R2R.domain.course.entity.UserCourse;
 import RunningMachines.R2R.domain.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,8 @@ public class UserCourseRequestDto {
     private double distance;
     private int duration;
     private double pace;
+//    private Boolean followRecommendCourse;
+    private Long courseId;
 
     @Getter
     @NoArgsConstructor
@@ -23,15 +26,17 @@ public class UserCourseRequestDto {
     public static class Waypoint {
         private double lat;
         private double lon;
-        private String timestamp;
+//        private String timestamp;
     }
 
-    public UserCourse toEntity(User user) {
+    public UserCourse toEntity(User user, Course course) {
         return UserCourse.builder()
                 .user(user)
+                .course(course)
                 .distance(this.distance)
                 .duration(this.duration)
                 .pace(this.pace)
+//                .followRecommendCourse(this.followRecommendCourse)
                 .build();
     }
 }
