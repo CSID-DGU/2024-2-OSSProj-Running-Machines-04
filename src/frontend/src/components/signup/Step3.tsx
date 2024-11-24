@@ -57,15 +57,15 @@ const Step3 = ({ onPreferenceData, setStep }: Step3Props) => {
   };
 
   return (
-    <div>
-      <div className="text-[#444] text-[24px] font-bold">
+    <div className="h-[750px] flex flex-col justify-center items-center gap-10">
+      <div className="text-[#444] text-[24px] text-center px-14 font-bold">
         {preferences[preferenceStep - 1].title}
       </div>
-      <div>
+      <div className="flex flex-col">
         {preferences[preferenceStep - 1].result.map((data) => (
           <button
             key={data.title}
-            className="p-2 m-2 border rounded"
+            className="py-2 px-8 m-2 border rounded text-lg"
             onClick={() =>
               handleNextStep(preferences[preferenceStep - 1].type, data.id)
             }

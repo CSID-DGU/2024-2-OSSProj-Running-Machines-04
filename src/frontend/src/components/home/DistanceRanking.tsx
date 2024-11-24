@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import CrewRankingCard from "@/components/home/CrewRankingCard";
 import { ReactComponent as RightArrowIcon } from "@/assets/icons/RightArrowIcon.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { dummyDistanceCrew } from "@/constants/dummy";
 import { homeRankingResponse } from "@/types/home";
 
@@ -9,6 +9,11 @@ const DistanceRanking = () => {
   const navigate = useNavigate();
   const [distanceData, setDistanceData] =
     useState<homeRankingResponse[]>(dummyDistanceCrew);
+
+  useEffect(() => {
+    // TODO: DistanceCrew API
+    setDistanceData(dummyDistanceCrew);
+  }, []);
 
   return (
     <div className="m-5 mt-8">

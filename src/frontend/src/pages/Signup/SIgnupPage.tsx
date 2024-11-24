@@ -67,7 +67,7 @@ const SignupPage = () => {
         <Step3 onPreferenceData={handlePreferenceChange} setStep={setStep} />
       )}
       {step === 4 && <Step4 />}
-      {step !== 4 && (
+      {step < 3 && (
         <button
           type="submit"
           onClick={() => setStep(step + 1)}

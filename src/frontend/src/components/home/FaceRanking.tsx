@@ -3,12 +3,17 @@ import CrewRankingCard from "@/components/home/CrewRankingCard";
 import { ReactComponent as RightArrowIcon } from "@/assets/icons/RightArrowIcon.svg";
 import { homeFaceRankingResponse } from "@/types/home";
 import { dummyFaceCrew } from "@/constants/dummy";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const FaceRanking = () => {
   const navigate = useNavigate();
   const [faceData, setFaceData] =
     useState<homeFaceRankingResponse[]>(dummyFaceCrew);
+
+  useEffect(() => {
+    // TODO: DistanceCrew API
+    setFaceData(dummyFaceCrew);
+  }, []);
 
   return (
     <div className="m-5 mt-8">
