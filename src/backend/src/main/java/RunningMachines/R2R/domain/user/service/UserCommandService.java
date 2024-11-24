@@ -1,7 +1,9 @@
 package RunningMachines.R2R.domain.user.service;
 
+import RunningMachines.R2R.domain.course.entity.Difficulty;
 import RunningMachines.R2R.domain.user.dto.PreferRequestDto;
 import RunningMachines.R2R.domain.user.dto.PreferResponseDto;
+import RunningMachines.R2R.domain.user.entity.Elevation;
 import RunningMachines.R2R.domain.user.entity.Prefer;
 import RunningMachines.R2R.domain.user.entity.User;
 import RunningMachines.R2R.domain.user.repository.PreferRepository;
@@ -28,5 +30,18 @@ public class UserCommandService {
         Prefer savedPrefer = preferRepository.save(prefer);
 
         return PreferResponseDto.from(savedPrefer);
+    }
+
+    public void updatePreferElevation(Prefer prefer, Difficulty difficulty) {
+        switch (difficulty) {
+            case HIGH:
+                prefer.decreaseElevation();
+                break;
+            case MEDIUM:
+                break;
+            case LOW:
+                prefer.increaseElevation();
+                break;
+        }
     }
 }

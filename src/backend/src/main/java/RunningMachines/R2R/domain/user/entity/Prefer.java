@@ -27,4 +27,19 @@ public class Prefer extends BaseEntity {
     @JoinColumn(name = "user_id", unique = true, nullable = false)
     private User user;
 
+    public void increaseElevation() {
+        switch (elevation) {
+            case LOW -> this.elevation = Elevation.MEDIUM;
+            case MEDIUM -> this.elevation = Elevation.HIGH;
+            case HIGH -> {}
+        }
+    }
+
+    public void decreaseElevation() {
+        switch (elevation) {
+            case LOW -> {}
+            case MEDIUM -> this.elevation = Elevation.LOW;
+            case HIGH -> this.elevation = Elevation.MEDIUM;
+        }
+    }
 }

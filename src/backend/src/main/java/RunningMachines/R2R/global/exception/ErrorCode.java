@@ -29,7 +29,9 @@ public enum ErrorCode {
 
     USER_COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_COURSE4001", "사용자 코스를 찾을 수 없습니다."),
 
-    TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "TAG4001", "태그를 찾을 수 없습니다.");
+    TAG_NOT_FOUND(HttpStatus.NOT_FOUND, "TAG4001", "태그를 찾을 수 없습니다."),
+
+    PREFER_NOT_FOUND(HttpStatus.NOT_FOUND, "PREFER4001", "선호도가 입력되어 있지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
