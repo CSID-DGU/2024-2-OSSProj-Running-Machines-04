@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class PreferResponseDto {
-    private Long id;
+    private Long preferId;
     private String elevation;
     private boolean convenience;
     private boolean nature;
@@ -16,7 +16,7 @@ public class PreferResponseDto {
 
     public static PreferResponseDto from(Prefer prefer) {
         return PreferResponseDto.builder()
-                .id(prefer.getId())
+                .preferId(prefer.getId())
                 .elevation(prefer.getElevation().name())
                 .convenience(prefer.isConvenience())
                 .nature(prefer.isNature())

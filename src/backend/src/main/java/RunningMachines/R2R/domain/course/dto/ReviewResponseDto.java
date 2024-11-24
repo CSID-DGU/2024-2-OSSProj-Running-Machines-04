@@ -14,13 +14,13 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ReviewResponseDto {
-    private Long id;
+    private Long reviewId;
     private Difficulty difficulty;
     private List<Long> tags; // 태그 리스트
 
     public static ReviewResponseDto from(Review review) {
         return ReviewResponseDto.builder()
-                .id(review.getId())
+                .reviewId(review.getId())
                 .difficulty(review.getDifficulty())
                 .tags(review.getReviewTags().stream()
                                 .map(reviewTag -> reviewTag.getTag().getId())
