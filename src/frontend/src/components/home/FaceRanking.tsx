@@ -16,8 +16,8 @@ const FaceRanking = () => {
         이번 주, 가장 높은 페이스를 기록한 크루를 확인해보세요.
       </div>
       <div className="bg-[#F3F3F3] rounded-[20px] gap-2.5">
-        {faceData.map((data) => (
-          <CrewRankingCard type="face" faceData={data} />
+        {faceData.map((data, index) => (
+          <CrewRankingCard key={index} type="face" faceData={data} />
         ))}
       </div>
       <div className="flex items-center justify-end gap-2.5 pt-3">

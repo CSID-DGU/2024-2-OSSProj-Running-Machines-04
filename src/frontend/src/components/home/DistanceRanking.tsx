@@ -16,8 +16,8 @@ const DistanceRanking = () => {
         이번 주, 어떤 크루가 가장 많이 달렸을까요?
       </div>
       <div className="bg-[#F3F3F3] rounded-[20px] gap-2.5">
-        {distanceData.map((data) => (
-          <CrewRankingCard type="distance" distanceData={data} />
+        {distanceData.map((data, index) => (
+          <CrewRankingCard key={index} type="distance" distanceData={data} />
         ))}
       </div>
       <div className="flex items-center justify-end gap-2.5 pt-3">

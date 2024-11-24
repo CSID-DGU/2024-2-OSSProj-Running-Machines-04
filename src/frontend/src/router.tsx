@@ -12,6 +12,8 @@ import GalleryDetailPage from "@/pages/GalleryDetail/GalleryDetailPage";
 import CrewMembersPage from "@/pages/CrewMembers/CrewMembersPage";
 import CrewMemberDetailPage from "@/pages/CrewMemberDetail/CrewMemberDetailPage";
 import OtherCrewPage from "@/pages/OtherCrew/OtherCrewPage";
+import SigninPage from "@/pages/Signin/SigninPage";
+import SignupPage from "@/pages/Signup/SIgnupPage";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +37,9 @@ const router = createBrowserRouter([
       { path: "/other-crew", element: <OtherCrewPage /> },
 
       { path: "/mypage", element: <MyPage /> },
+
+      { path: "/signin", element: <SigninPage /> },
+      { path: "/signup", element: <SignupPage /> },
     ],
   },
 ]);
