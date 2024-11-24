@@ -27,4 +27,8 @@ public class CommentLike extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public CommentLike(Comment comment, User user) {
+        this.comment = comment;
+        this.user = user;
+    }
 }
