@@ -1,5 +1,4 @@
 import { getBoardData, getBoardDetailData } from "@/apis/board";
-import { boardType } from "@/constants/board";
 import { useQuery } from "@tanstack/react-query";
 
 export const useBoardGet = (boardName: string) => {

@@ -25,7 +25,7 @@ const CommunityPage = () => {
 
   return (
     <>
-      {data ? (
+      {boardData ? (
         <div className="mb-24">
           <CommnunityHeader board={board} setBoard={setBoard} />
           <WriteIcon
@@ -33,9 +33,9 @@ const CommunityPage = () => {
             onClick={() => navigate("/community/write")}
           />
           {board === boardType.MARATHON ? (
-            <MarathonList data={data} />
+            <MarathonList data={boardData} />
           ) : (
-            <CommunityList data={data} />
+            <CommunityList data={boardData} />
           )}
         </div>
       ) : (

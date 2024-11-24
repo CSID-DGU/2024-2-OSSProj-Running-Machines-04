@@ -15,6 +15,10 @@ const Header = () => {
       return "마이페이지";
     } else if (pathname.includes("/other-crew")) {
       return "러닝 크루";
+    } else if (pathname.includes("/signin")) {
+      return "로그인";
+    } else if (pathname.includes("/signup")) {
+      return "회원가입";
     } else {
       return "홈";
     }

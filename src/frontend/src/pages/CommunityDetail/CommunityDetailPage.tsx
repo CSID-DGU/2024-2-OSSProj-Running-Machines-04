@@ -26,13 +26,13 @@ const CommunityDetailPage = () => {
 
   return (
     <>
-      {data ? (
+      {boardData ? (
         <>
           <div className="shadow-sm w-full flex justify-start p-4 mb-6">
             <BackIcon onClick={() => navigate("/community")} />
           </div>
           <div className="mb-24 px-8">
-            <CommunityDetailInfo data={data} />
+            <CommunityDetailInfo data={boardData} />
             <div className="py-4 border-b border-[#D9D9D9]">
               <HeartIcon
                 onClick={() => setIsScrapped(!isScrapped)}
