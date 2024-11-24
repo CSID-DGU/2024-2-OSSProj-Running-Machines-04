@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -39,11 +41,13 @@ public class S3Provider {
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
-        metadata.addUserMetadata("original-fileName", originalFilename); // 메타데이터에 원본 파일명 추가
+        metadata.addUserMetadata("originfilename", URLEncoder.encode(originalFilename, StandardCharsets.UTF_8)); // 메타데이터에 원본 파일명 추가
+
         try {
             amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, file.getInputStream(), metadata));
         }catch (IOException e){
             log.error("error at AmazonS3Manager uploadFile : {}", (Object) e.getStackTrace());
+            throw new CustomException(ErrorCode.FILE_UPLOAD_FAILED);
         }
 
         return amazonS3Client.getUrl(bucket, fileName).toString();
