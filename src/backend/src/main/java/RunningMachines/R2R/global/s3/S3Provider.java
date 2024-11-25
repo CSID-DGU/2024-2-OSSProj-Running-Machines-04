@@ -67,12 +67,12 @@ public class S3Provider {
             }
 
             // 페이지가 더 있을 경우 추가 로딩 (파일이 1000개 이상일 경우)
-            while (objectListing.isTruncated()) {
-                objectListing = amazonS3Client.listNextBatchOfObjects(objectListing);
-                for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
-                    gpxs.add(objectSummary.getKey());
-                }
-            }
+//            while (objectListing.isTruncated()) {
+//                objectListing = amazonS3Client.listNextBatchOfObjects(objectListing);
+//                for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+//                    gpxs.add(objectSummary.getKey());
+//                }
+//            }
         } catch (Exception e) {
             log.error("Error fetching file list from S3 bucket: {}", e.getMessage(), e);
         }
