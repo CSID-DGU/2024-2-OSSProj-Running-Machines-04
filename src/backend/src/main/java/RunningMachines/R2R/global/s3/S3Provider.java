@@ -79,8 +79,7 @@ public class S3Provider {
     // 원본 파일명 가져오기
     public String getOriginalFileName(String transformedFileName) {
         try {
-            S3Object s3Object = amazonS3Client.getObject(bucket, transformedFileName);
-            ObjectMetadata metadata = s3Object.getObjectMetadata();
+            ObjectMetadata metadata = amazonS3Client.getObjectMetadata(bucket, transformedFileName);
             return metadata.getUserMetadata().getOrDefault("original-fileName", transformedFileName);
         } catch (Exception e) {
             log.error("Error retrieving original filename: {}", e.getMessage(), e);
