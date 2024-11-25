@@ -1,4 +1,4 @@
-package RunningMachines.R2R.domain.crew.entity;
+package RunningMachines.R2R.domain.crew.common.entity;
 
 import RunningMachines.R2R.domain.user.entity.User;
 import RunningMachines.R2R.global.util.BaseEntity;
