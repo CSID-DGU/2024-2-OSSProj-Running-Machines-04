@@ -11,11 +11,14 @@ import RunningMachines.R2R.domain.user.entity.User;
 import RunningMachines.R2R.domain.user.repository.UserRepository;
 import RunningMachines.R2R.domain.user.service.AuthCommandService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentCommandService {
@@ -62,11 +65,35 @@ public class CommentCommandService {
         }
     }
 
+    @Transactional
+    public void deleteComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다"));
+
+        validateWriter(comment);
+
+        List<Comment> replies = commentRepository.findByParentCommentId(commentId);
+        if (!replies.isEmpty()) {
+            commentRepository.deleteAll(replies);
+        }
+        commentLikeRepository.deleteAll(comment.getHearts());
+        commentRepository.delete(comment);
+
+        log.info("댓글 삭제 완료");
+    }
+
     @Transactional(readOnly = true)
     public long getLikeCount(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
 
         return commentLikeRepository.countByComment(comment);
+    }
+
+    private void validateWriter(Comment comment) {
+        User currentUser = authCommandService.getCurrentUser();
+        if (!comment.getUser().equals(currentUser)) {
+            throw new IllegalArgumentException("작성자만 댓글을 삭제할 수 있습니다");
+        }
     }
 }

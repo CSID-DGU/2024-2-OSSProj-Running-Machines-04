@@ -73,4 +73,10 @@ public class PostController {
         PostShowDetailResponseDto responseDto = postQueryService.getPostWithComments(updatedPostId);
         return ResponseEntity.ok(responseDto);
     }
+
+    @DeleteMapping("/{boardName}/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable String boardName, @PathVariable Long postId) {
+        postCommandService.deletePost(postId);
+        return ResponseEntity.noContent().build();
+    }
 }
