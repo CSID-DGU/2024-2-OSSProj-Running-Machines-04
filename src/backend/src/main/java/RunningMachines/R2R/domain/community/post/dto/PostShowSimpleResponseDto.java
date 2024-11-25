@@ -19,6 +19,7 @@ public class PostShowSimpleResponseDto {
     private String writer;
     private LocalDateTime createdAt;
     private int commentCount;
+    private String contentPreview;
     private List<String> postImages;
 
     public static PostShowSimpleResponseDto fromPost(Post post) {
@@ -27,6 +28,9 @@ public class PostShowSimpleResponseDto {
                 .writer(post.getUser().getNickname())
                 .createdAt(post.getCreatedAt())
                 .commentCount(post.getComments().size())
+                .contentPreview(post.getContent() != null && post.getContent().length() > 30
+                        ? post.getContent().substring(0, 20) + "..."
+                        : post.getContent())
                 .postImages(post.getPostImages()!=null ?
                         post.getPostImages().stream()
                                 .map(PostImage::getImageUrl)
