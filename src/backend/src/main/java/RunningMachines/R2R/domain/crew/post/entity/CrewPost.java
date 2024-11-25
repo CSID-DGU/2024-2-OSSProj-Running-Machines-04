@@ -24,6 +24,8 @@ public class CrewPost extends BaseEntity {
 
     private String title;
 
+    private String content;
+
     @Enumerated(EnumType.STRING)
     private CrewBoard board;
 
