@@ -58,21 +58,18 @@ public class S3Provider {
         List<String> gpxs = new ArrayList<>();
 
         try {
-            // course 디렉토리에 있는 모든 파일 가져오기 (최대 1000개)
-            ObjectListing objectListing = amazonS3Client.listObjects(bucket, "course/null");
+            // course 디렉토리에서 최대 5개의 파일 가져오기
+            ListObjectsV2Request request = new ListObjectsV2Request()
+                    .withBucketName(bucket) // 버킷 이름
+                    .withPrefix("course/null/")  // course 디렉토리의 파일
+                    .withMaxKeys(5);        // 최대 5개만 가져오기
 
-            // 각 객체에 대해 키를 가져와 리스트에 추가
-            for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+            ListObjectsV2Result result = amazonS3Client.listObjectsV2(request);
+
+            // 가져온 객체의 Key를 리스트에 추가
+            for (S3ObjectSummary objectSummary : result.getObjectSummaries()) {
                 gpxs.add(objectSummary.getKey());
             }
-
-            // 페이지가 더 있을 경우 추가 로딩 (파일이 1000개 이상일 경우)
-//            while (objectListing.isTruncated()) {
-//                objectListing = amazonS3Client.listNextBatchOfObjects(objectListing);
-//                for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
-//                    gpxs.add(objectSummary.getKey());
-//                }
-//            }
         } catch (Exception e) {
             log.error("Error fetching file list from S3 bucket: {}", e.getMessage(), e);
         }
