@@ -21,4 +21,11 @@ public class ReviewTag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id")
     private Tag tag;
+
+    public void setReview(Review review) {
+        this.review = review;
+        if (!review.getReviewTags().contains(this)) {
+            review.getReviewTags().add(this);
+        }
+    }
 }
