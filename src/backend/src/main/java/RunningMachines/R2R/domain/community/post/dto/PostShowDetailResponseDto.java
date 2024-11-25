@@ -24,6 +24,7 @@ public class PostShowDetailResponseDto {
     private Board board;
     List<CommentResponseDto> comments;
     private List<String> postImages;
+    private List<Long> postImageIds;
 
     public static PostShowDetailResponseDto fromPost(Post post) {
         return PostShowDetailResponseDto.builder()
@@ -40,6 +41,11 @@ public class PostShowDetailResponseDto {
                         post.getPostImages().stream()
                                 .map(PostImage::getImageUrl)
                                 .collect(Collectors.toList()) : new ArrayList<>())
+                .postImageIds(post.getPostImages() != null
+                        ? post.getPostImages().stream()
+                        .map(PostImage::getId)
+                        .collect(Collectors.toList())
+                        : new ArrayList<>())
                 .build();
     }
 }
