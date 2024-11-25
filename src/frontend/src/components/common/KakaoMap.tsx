@@ -4,6 +4,7 @@ import axios from "axios";
 import { api } from "@/apis";
 import { RouteResponse } from "@/types/routes";
 import { Route } from "@/types/kakaoMap";
+import useCourseStore from "@/store/useCourseStore";
 
 type KakaoMapProps = {
   selectedCourse: RouteResponse;
@@ -11,6 +12,8 @@ type KakaoMapProps = {
 };
 
 const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
+  const { setCourse } = useCourseStore();
+
   // 현재 위치(마커) 상태
   const [current, setCurrent] = useState({
     lat: 37.51265,
@@ -131,19 +134,20 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
 
   const handlePolylineClick = (route: Route) => {
     // 폴리라인 중심좌표 이동
-    const centerLat =
-      route.path.reduce((sum, point) => sum + point.lat, 0) / route.path.length;
-    const centerLng =
-      route.path.reduce((sum, point) => sum + point.lng, 0) / route.path.length;
+    // const centerLat =
+    //   route.path.reduce((sum, point) => sum + point.lat, 0) / route.path.length;
+    // const centerLng =
+    //   route.path.reduce((sum, point) => sum + point.lng, 0) / route.path.length;
 
     setState((prev) => ({
       ...prev,
-      center: { lat: centerLat, lng: centerLng },
+      // 폴리라인 시작좌표 이동
+      center: { lat: route.path[0].lat, lng: route.path[0].lng },
     }));
 
     // 선택한 폴리라인 값 업데이트
     onClickCourse(route.id);
-    // setSelectedCourseId(route.id);
+    setCourse(route.path);
   };
 
   return (

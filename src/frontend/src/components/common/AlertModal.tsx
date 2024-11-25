@@ -1,14 +1,22 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-const AlertModal = () => {
+type AlertModalProps = {
+  courseId: number;
+};
+
+const AlertModal = ({ courseId }: AlertModalProps) => {
   const [count, setCount] = useState(5);
   const [visible, setVisible] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (count > 0) {
       const timer = setTimeout(() => setCount(count - 1), 1000);
       return () => clearTimeout(timer);
     } else {
+      // 코스 미선택시 courseId 0으로 설정
+      navigate(`/record/${courseId}/running`);
       setVisible(false);
     }
   }, [count]);

@@ -1,3 +1,5 @@
+import { LatLng } from "./kakaoMap";
+
 export type RouteResponse = {
   courseId: number;
   courseUrl: string;
@@ -5,4 +7,9 @@ export type RouteResponse = {
   fileName: string;
   name: string;
   tags: string[];
+};
+
+export type RouteStore = {
+  courseId: number;
+  path: LatLng[];
 };

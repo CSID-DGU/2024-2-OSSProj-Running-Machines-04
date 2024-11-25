@@ -10,8 +10,11 @@ import AlertModal from "@/components/common/AlertModal";
 import { dummyCourseData } from "@/constants/dummy";
 import { RouteResponse } from "@/types/routes";
 import { ReactComponent as CourseCTA } from "@/assets/icons/CourseCTA.svg";
+import useCourseStore from "@/store/useCourseStore";
 
 const RecordPage = () => {
+  const { setCourse } = useCourseStore();
+
   const [openSheet, setOpenSheet] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<courseMenu>(
@@ -48,6 +51,7 @@ const RecordPage = () => {
       if (selectedCourse) {
         setSelectedCourse(selectedCourse); // 선택된 ID 업데이트
         setOpenSheet(!openSheet); // Sheet 여부
+        // setCourse({courseId: selectedCourse.courseId, path: selectedCourse.})
       }
     }
   };
@@ -154,7 +158,8 @@ const RecordPage = () => {
               onClick={() => setConfirmModal(true)}
               className="fixed bottom-[20vh] z-50"
             />
-            {confirmModal && <AlertModal />}
+            {/* 러닝 시작 모달 */}
+            {confirmModal && <AlertModal courseId={selectedCourse.courseId} />}
           </div>
         </>
       ) : (
