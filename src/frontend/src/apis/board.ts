@@ -1,4 +1,3 @@
-import { boardType } from "@/constants/board";
 import { api } from ".";
 import { boardResponse } from "@/types/board";
 

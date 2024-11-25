@@ -28,6 +28,8 @@ public class UserCourse extends BaseEntity {
 
     private double pace;  // 페이스 (km당 시간)
 
+//    private Boolean followRecommendCourse; // 추천 코스 따라 간 여부
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

@@ -10,7 +10,7 @@ const Layout = () => {
   const { pathname } = useLocation();
 
   const noHeaderPath = ["/record", "/community/write"];
-  const noNavbarPath = ["/other-crew"];
+  const noNavbarPath = ["/other-crew", "/signin", "/signup"];
 
   return (
     <div className="w-screen min-h-screen bg-white flex justify-center items-center">
