@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 public class PostShowSimpleResponseDto {
+    private Long postId;
     private String title;
     private String writer;
     private LocalDateTime createdAt;
@@ -24,6 +25,7 @@ public class PostShowSimpleResponseDto {
 
     public static PostShowSimpleResponseDto fromPost(Post post) {
         return PostShowSimpleResponseDto.builder()
+                .postId(post.getId())
                 .title(post.getTitle())
                 .writer(post.getUser().getNickname())
                 .createdAt(post.getCreatedAt())
