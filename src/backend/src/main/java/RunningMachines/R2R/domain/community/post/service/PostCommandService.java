@@ -94,6 +94,14 @@ public class PostCommandService {
         return existingPost.getId();
     }
 
+    @Transactional
+    public void deletePost(Long postId) {
+        Post existingPost = findPostById(postId);
+        validateWriter(existingPost);
+        postRepository.delete(existingPost);
+        log.info("게시글 삭제 완료");
+    }
+
     private Post findPostById(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
