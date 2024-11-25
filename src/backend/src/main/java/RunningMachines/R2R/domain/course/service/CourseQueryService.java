@@ -31,7 +31,7 @@ public class CourseQueryService {
     public List<CourseResponseDto> getCourses(double lat, double lon) {
         // S3에서 GPX 파일 목록 가져오기
         List<String> fileKeys = s3Provider.getCourseFiles();
-        log.info("총 {}개의 GPX 파일을 가져왔습니다.", fileKeys.size());
+//        log.info("총 {}개의 GPX 파일을 가져왔습니다.", fileKeys.size());
 
         // 파일 처리
         return fileKeys.stream()
@@ -39,7 +39,6 @@ public class CourseQueryService {
                 .toList(); // 리스트로 변환
     }
 
-    // 개별 파일 처리 로직 (예외는 호출자에게 전파)
     private CourseResponseDto processFile(String fileKey) {
         // S3에서 파일 URL 및 원본 파일명 가져오기
         URL url = s3Provider.getFileUrl(fileKey);
@@ -65,7 +64,6 @@ public class CourseQueryService {
             String fileName = gpx.getFileName();
             List<WaypointDto> waypoints = gpx.getWaypoints();
 
-            // TODO - 모델 서버와 연동하여 실제 거리 및 코스명 받아오기
 //            double distance = courseRepository.findDistanceByFileName(fileName); // 임시 저장된 거리 데이터
 //            log.info("Course URL: {}, Distance: {}", gpx.getCourseUrl(), distance);
 //            log.info("Course URL: {}]", gpx.getCourseUrl());
