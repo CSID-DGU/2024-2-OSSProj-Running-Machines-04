@@ -1,5 +1,7 @@
-package RunningMachines.R2R.domain.crew.entity;
+package RunningMachines.R2R.domain.crew.post.entity;
 
+import RunningMachines.R2R.domain.crew.common.entity.Crew;
+import RunningMachines.R2R.domain.crew.board.entity.CrewBoard;
 import RunningMachines.R2R.domain.user.entity.User;
 import RunningMachines.R2R.global.util.BaseEntity;
 import jakarta.persistence.*;
