@@ -10,13 +10,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/crew/{crewId}")
+@RequestMapping("/crew/{crewId}/notice")
 @RequiredArgsConstructor
 public class NoticePostController {
     private final NoticePostCommandService noticePostCommandService;
     private final AuthCommandService authCommandService;
 
-    @PostMapping("/notice")
+    @PostMapping()
     public ResponseEntity<Long> createNoticePost(@PathVariable Long crewId, @RequestBody NoticePostCreateRequestDto requestDto) {
         User currentUser = authCommandService.getCurrentUser();
         noticePostCommandService.createNoticePost(crewId, currentUser, requestDto);
