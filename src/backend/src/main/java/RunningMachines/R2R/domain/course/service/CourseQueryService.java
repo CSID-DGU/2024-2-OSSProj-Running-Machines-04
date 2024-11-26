@@ -5,9 +5,10 @@ import RunningMachines.R2R.domain.course.dto.CourseResponseDto;
 import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
 import RunningMachines.R2R.domain.course.dto.WaypointDto;
 import RunningMachines.R2R.domain.course.entity.Course;
+import RunningMachines.R2R.domain.course.entity.Review;
+import RunningMachines.R2R.domain.course.entity.ReviewTag;
 import RunningMachines.R2R.domain.course.repository.CourseRepository;
-import RunningMachines.R2R.global.exception.CustomException;
-import RunningMachines.R2R.global.exception.ErrorCode;
+import RunningMachines.R2R.domain.course.repository.ReviewRepository;
 import RunningMachines.R2R.global.s3.S3Provider;
 import RunningMachines.R2R.global.util.GpxParser;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -26,6 +26,7 @@ public class CourseQueryService {
 
     private final GpxParser gpxParser;
     private final CourseRepository courseRepository;
+    private final ReviewRepository reviewRepository;
     private final S3Provider s3Provider;
 
     public List<CourseResponseDto> getCourses(double lat, double lon) {
@@ -49,7 +50,7 @@ public class CourseQueryService {
 
         // TODO - 모델 연동 -> 거리, 코스명 데이터 받아 오기
 
-        return CourseResponseDto.of(course, courseUrl, fileName, createTags(fileName));
+        return CourseResponseDto.of(course, courseUrl, fileName, createTags(course.getId(), fileName));
     }
 
     // 위경도를 기반으로 가져온 코스 정보 추출
@@ -73,7 +74,7 @@ public class CourseQueryService {
             String name = course.getName();   // 엔티티의 name 가져오기
 
             // 파일명으로부터 태그 생성
-            List<String> tags = createTags(fileName);
+            List<String> tags = createTags(course.getId(), fileName);
 
             // 각 파일에 대한 CourseDetailResponseDto 생성 및 리스트에 추가
             courseResponses.add(new CourseDetailResponseDto(fileName, waypoints, distance, tags, name));
@@ -81,9 +82,29 @@ public class CourseQueryService {
         return courseResponses;
     }
 
-    // 파일명 파싱해 코스 태그 생성
-    // TODO - 해당 코스에 대한 리뷰가 있을 경우 상위 3개의 태그 가져와서 코스 태그 생성
-    private List<String> createTags(String fileName) {
+    private List<String> createTags(Long courseId, String fileName) {
+        List<Review> reviews = reviewRepository.findByCourseId(courseId);
+
+        if (!reviews.isEmpty()) {
+            List<String> tags = new ArrayList<>();
+
+            for (Review review : reviews) {
+                for (ReviewTag reviewTag : review.getReviewTags()) {
+                    tags.add(reviewTag.getTag().getName());
+                }
+            }
+
+            // 가장 많이 선택된 3개의 태그 선택
+            return tags.stream()
+                    .collect(Collectors.groupingBy(tag -> tag, Collectors.counting())) // 태그 개수 count
+                    .entrySet().stream()
+                    .sorted(Map.Entry.<String, Long>comparingByValue().reversed()) // 내림차순 정렬
+                    .limit(3) // 상위 3개
+                    .map(Map.Entry::getKey) // key만 추출(태그명)
+                    .toList();
+        }
+
+        // 리뷰 태그가 없으면 파일명 파싱해 코스 태그 생성
         String name = fileName.substring(0, fileName.lastIndexOf('.')); // 확장자 제거
         String[] tags = name.split("_"); // 파일명을 '_'로 구분하여 태그 리스트 생성
         tags = Arrays.copyOfRange(tags, 1, tags.length - 1); // 첫,마지막 번째 태그를 제외한 배열 생성 (파일명 인덱스 및 거리값 제거)
