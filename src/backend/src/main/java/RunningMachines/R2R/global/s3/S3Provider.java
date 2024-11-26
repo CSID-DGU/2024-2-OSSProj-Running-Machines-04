@@ -62,7 +62,7 @@ public class S3Provider {
             ListObjectsV2Request request = new ListObjectsV2Request()
                     .withBucketName(bucket) // 버킷 이름
                     .withPrefix("course/null/")  // course 디렉토리의 파일
-                    .withMaxKeys(5);        // 최대 5개만 가져오기
+                    .withMaxKeys(10);        // 최대 10개만 가져오기
 
             ListObjectsV2Result result = amazonS3Client.listObjectsV2(request);
 
