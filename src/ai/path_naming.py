@@ -137,3 +137,4 @@ if __name__ == "__main__":
 
     new_file_name = f"{result['difficulty']}_{result['facilities']}_{result['track_type']}_{result['distance_km']}Km.gpx"
     print(f"새로운 파일명: {new_file_name}")
+    
