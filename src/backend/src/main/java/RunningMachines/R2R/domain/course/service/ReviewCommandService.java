@@ -6,7 +6,6 @@ import RunningMachines.R2R.domain.course.entity.*;
 import RunningMachines.R2R.domain.course.repository.ReviewRepository;
 import RunningMachines.R2R.domain.course.repository.TagRepository;
 import RunningMachines.R2R.domain.course.repository.UserCourseRepository;
-import RunningMachines.R2R.domain.user.entity.Elevation;
 import RunningMachines.R2R.domain.user.entity.Prefer;
 import RunningMachines.R2R.domain.user.entity.User;
 import RunningMachines.R2R.domain.user.repository.PreferRepository;
