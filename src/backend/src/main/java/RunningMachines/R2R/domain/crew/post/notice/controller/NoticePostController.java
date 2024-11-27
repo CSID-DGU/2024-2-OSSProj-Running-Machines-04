@@ -1,6 +1,7 @@
 package RunningMachines.R2R.domain.crew.post.notice.controller;
 
 import RunningMachines.R2R.domain.crew.post.entity.CrewPost;
+import RunningMachines.R2R.domain.crew.post.notice.dto.CrewMainNoticeResponseDto;
 import RunningMachines.R2R.domain.crew.post.notice.dto.NoticePostCreateRequestDto;
 import RunningMachines.R2R.domain.crew.post.notice.dto.NoticePostResponseDto;
 import RunningMachines.R2R.domain.crew.post.notice.service.NoticePostCommandService;
@@ -33,5 +34,10 @@ public class NoticePostController {
     @GetMapping("/{crewPostId}")
     public ResponseEntity<NoticePostResponseDto> getNoticePostDetail(@PathVariable Long crewId, @PathVariable Long crewPostId) {
         return ResponseEntity.ok(noticePostQueryService.getPostDetail(crewId, crewPostId));
+    }
+
+    @GetMapping
+    public ResponseEntity<CrewMainNoticeResponseDto> getNoticePostsByCrew(@PathVariable Long crewId) {
+        return ResponseEntity.ok(noticePostQueryService.getNoticePostsByCrew(crewId));
     }
 }
