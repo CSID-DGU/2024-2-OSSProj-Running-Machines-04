@@ -14,10 +14,11 @@ public class CrewController {
     private final CrewCommandService crewCommandService;
 
     @PostMapping("/create")
-    public ResponseEntity<Integer> createCrew(@RequestParam String title, @RequestPart MultipartFile certificationImage) {
+    public ResponseEntity<Integer> createCrew(@RequestParam String title, @RequestPart MultipartFile certificationImage,@RequestPart MultipartFile profileImage) {
         CrewCreateCommandDto crewCreateCommandDto = CrewCreateCommandDto.builder()
                 .title(title)
                 .certificationImage(certificationImage)
+                .profileImage(profileImage)
                 .build();
 
         Integer crewPasscode = crewCommandService.createCrew(crewCreateCommandDto);

@@ -30,7 +30,7 @@ public class Crew extends BaseEntity {
     @OneToMany(mappedBy = "crew")
     private List<CrewPost> crewPosts = new ArrayList<>();
 
-    @OneToOne(mappedBy = "crew")
+    @OneToOne(mappedBy = "crew", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private CrewProfileImage images = new CrewProfileImage();
 
     public void setImages(CrewProfileImage profileImage) {
