@@ -172,7 +172,3 @@ if __name__ == "__main__":
         gpx_files, center_coords, radius_threshold, elevation_preference, convenience_preference, track_preference
     )
 
-##########################################################
-
-############## 새로운 경로가 추가 되었을 때  ###############
-
