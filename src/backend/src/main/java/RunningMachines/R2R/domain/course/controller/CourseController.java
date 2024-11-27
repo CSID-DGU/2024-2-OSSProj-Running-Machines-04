@@ -44,6 +44,12 @@ public class CourseController {
         return ResponseEntity.ok(courseQueryService.getCourseDetails(lat, lon));
     }
 
+    @Operation(summary = "즐겨찾기 코스 목록 조회")
+    @GetMapping("/likes")
+    public ResponseEntity<List<CourseResponseDto>> likedCourse(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ResponseEntity.ok(courseQueryService.getLikeCourses(customUserDetails.getUsername()));
+    }
+
     @Operation(summary = "코스 즐겨찾기 버튼 (등록/취소)", description = "즐겨찾기 있다면 취소, 즐겨찾기 없다면 등록")
     @PostMapping("/{courseId}")
     public ResponseEntity<String> saveCurseLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long courseId) {

@@ -5,6 +5,7 @@ import RunningMachines.R2R.domain.course.dto.CourseResponseDto;
 import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
 import RunningMachines.R2R.domain.course.dto.WaypointDto;
 import RunningMachines.R2R.domain.course.entity.Course;
+import RunningMachines.R2R.domain.course.entity.CourseLike;
 import RunningMachines.R2R.domain.course.entity.Review;
 import RunningMachines.R2R.domain.course.entity.ReviewTag;
 import RunningMachines.R2R.domain.course.repository.CourseLikeRepository;
@@ -122,5 +123,24 @@ public class CourseQueryService {
         String[] tags = name.split("_"); // 파일명을 '_'로 구분하여 태그 리스트 생성
         tags = Arrays.copyOfRange(tags, 1, tags.length - 1); // 첫,마지막 번째 태그를 제외한 배열 생성 (파일명 인덱스 및 거리값 제거)
         return List.of(tags);
+    }
+
+    // 즐겨찾기 코스 조회
+    public List<CourseResponseDto> getLikeCourses(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        List<CourseLike> likedCourses = courseLikeRepository.findByUser(user);
+
+        return likedCourses.stream()
+                .map(courseLike -> processLikedCourse(courseLike.getCourse(), user))
+                .toList();
+    }
+
+    private CourseResponseDto processLikedCourse(Course course, User user) {
+        String courseUrl = course.getCourseUrl();
+        String fileName = course.getFileName();
+
+        return CourseResponseDto.of(course, courseUrl, fileName, createTags(course.getId(), fileName), true);
     }
 }
