@@ -34,14 +34,20 @@ public class CourseController {
 
     @Operation(summary = "추천 코스 목록 조회 (GPX url 반환)")
     @GetMapping("/recommend")
-    public ResponseEntity<List<CourseResponseDto>> recommendCourse(@RequestParam double lat, @RequestParam double lon) {
-        return ResponseEntity.ok(courseQueryService.getCourses(lat, lon));
+    public ResponseEntity<List<CourseResponseDto>> recommendCourse(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam double lat, @RequestParam double lon) {
+        return ResponseEntity.ok(courseQueryService.getCourses(customUserDetails.getUsername(), lat, lon));
     }
 
     @Operation(summary = "추천 코스 목록 조회 (GPX 파싱)")
     @GetMapping("/recommendDetail")
     public ResponseEntity<List<CourseDetailResponseDto>> recommendCourseDetial(@RequestParam double lat, @RequestParam double lon) {
         return ResponseEntity.ok(courseQueryService.getCourseDetails(lat, lon));
+    }
+
+    @Operation(summary = "즐겨찾기 코스 목록 조회")
+    @GetMapping("/likes")
+    public ResponseEntity<List<CourseResponseDto>> likedCourse(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ResponseEntity.ok(courseQueryService.getLikeCourses(customUserDetails.getUsername()));
     }
 
     @Operation(summary = "코스 즐겨찾기 버튼 (등록/취소)", description = "즐겨찾기 있다면 취소, 즐겨찾기 없다면 등록")
