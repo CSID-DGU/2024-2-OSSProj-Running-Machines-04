@@ -29,4 +29,12 @@ public class Crew extends BaseEntity {
 
     @OneToMany(mappedBy = "crew")
     private List<CrewPost> crewPosts = new ArrayList<>();
+
+    @OneToOne(mappedBy = "crew")
+    private CrewProfileImage images = new CrewProfileImage();
+
+    public void setImages(CrewProfileImage profileImage) {
+        this.images = profileImage;
+        profileImage.setCrew(this);
+    }
 }
