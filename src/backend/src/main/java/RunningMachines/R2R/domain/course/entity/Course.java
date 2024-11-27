@@ -32,6 +32,9 @@ public class Course extends BaseEntity {
 //    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
 //    private List<Review> reviews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private List<CourseLike> courseLikes = new ArrayList<>();
+
     public void setCourseUrl(String courseUrl) {
         this.courseUrl = courseUrl;
     }
