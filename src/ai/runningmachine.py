@@ -171,5 +171,3 @@ if __name__ == "__main__":
     print_all_and_filtered_files(
         gpx_files, center_coords, radius_threshold, elevation_preference, convenience_preference, track_preference
     )
-##########################################################
-##########################################################
