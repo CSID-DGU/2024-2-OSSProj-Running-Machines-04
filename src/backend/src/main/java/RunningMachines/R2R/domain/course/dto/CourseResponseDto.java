@@ -17,15 +17,17 @@ public class CourseResponseDto {
     private double distance;
     private List<String> tags;
     private String name;
+    private boolean courseLiked;
 
-    public static CourseResponseDto of(Course course, String courseUrl, String fileName, List<String> tags) {
+    public static CourseResponseDto of(Course course, String courseUrl, String fileName, List<String> tags, boolean courseLiked) {
         return CourseResponseDto.builder()
                 .courseId(course.getId())
                 .fileName(fileName)
                 .courseUrl(courseUrl)
                 .distance(course.getDistance())
-                .name(course.getName())
                 .tags(tags)
+                .name(course.getName())
+                .courseLiked(courseLiked)
                 .build();
     }
 }

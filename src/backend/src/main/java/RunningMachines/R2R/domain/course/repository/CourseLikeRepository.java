@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface CourseLikeRepository extends JpaRepository<CourseLike, Long> {
     Optional<CourseLike> findByUserAndCourse(User user, Course course);
+    boolean existsByCourseAndUser(Course course, User user);
 }
