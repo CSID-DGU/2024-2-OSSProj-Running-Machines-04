@@ -323,3 +323,4 @@ def generate_course_names_in_batches(course_data, persona, template_instructions
 
 batch_size = 7
 results = generate_course_names_in_batches(course_data, persona, template_instructions, batch_size)
+
