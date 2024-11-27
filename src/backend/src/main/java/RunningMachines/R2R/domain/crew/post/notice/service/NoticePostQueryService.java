@@ -39,8 +39,12 @@ public class NoticePostQueryService {
                 .map(NoticePostSimpleResponseDto::fromEntity)
                 .collect(Collectors.toList());
 
+        // 크루 프로필 이미지 URL 가져오기
+        String crewProfileImage = crew.getImages() != null ? crew.getImages().getImageUrl() : null;
+
         return CrewMainNoticeResponseDto.of(
                 crew.getTitle(),
+                crewProfileImage,
                 noticePosts.size(),
                 crew.getCrewUsers().size(),
                 noticePostSimpleResponseDtos
