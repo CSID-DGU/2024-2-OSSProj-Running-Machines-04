@@ -1,6 +1,7 @@
 package RunningMachines.R2R.domain.crew.common.controller;
 
 import RunningMachines.R2R.domain.crew.common.dto.CrewCreateCommandDto;
+import RunningMachines.R2R.domain.crew.common.dto.CrewJoinRequestDto;
 import RunningMachines.R2R.domain.crew.common.dto.CrewResponseDto;
 import RunningMachines.R2R.domain.crew.common.service.CrewCommandService;
 import RunningMachines.R2R.domain.crew.common.service.CrewQueryService;
@@ -29,6 +30,12 @@ public class CrewController {
         Integer crewPasscode = crewCommandService.createCrew(crewCreateCommandDto);
 
         return ResponseEntity.ok(crewPasscode);
+    }
+
+    @PostMapping("/{crewId}/join")
+    public ResponseEntity<String> joinCrew(@PathVariable Long crewId, @RequestBody CrewJoinRequestDto crewJoinRequestDto) {
+        crewCommandService.joinCrew(crewId, crewJoinRequestDto.getPasscode());
+        return ResponseEntity.ok("크루에 성공적으로 가입했습니다.");
     }
 
     @GetMapping
