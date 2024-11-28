@@ -64,6 +64,32 @@ public class CrewCommandService {
         return crew.getPasscode();
     }
 
+    @Transactional
+    public void joinCrew(Long crewId, int passcode) {
+        User currentUser = authCommandService.getCurrentUser();
+
+        Crew crew = crewRepository.findById(crewId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 크루를 찾을 수 없습니다."));
+
+        if (crew.getPasscode() != passcode) {
+            throw new IllegalArgumentException("가입 코드가 일치하지 않습니다.");
+        }
+
+        boolean isAlreadyJoined = crew.getCrewUsers().stream()
+                .anyMatch(crewUser -> crewUser.getUser().getId().equals(currentUser.getId()));
+        if(isAlreadyJoined) {
+            throw new IllegalArgumentException("이미 해당 크루에 가입하셨습니다.");
+        }
+
+        CrewUser crewUser = CrewUser.builder()
+                .role(CrewRole.MEMBER)
+                .user(currentUser)
+                .crew(crew)
+                .build();
+
+        crewUserRepository.save(crewUser);
+    }
+
     private int generateRandomPasscode() {
         Random random = new Random();
         return 1000 + random.nextInt(9000);
