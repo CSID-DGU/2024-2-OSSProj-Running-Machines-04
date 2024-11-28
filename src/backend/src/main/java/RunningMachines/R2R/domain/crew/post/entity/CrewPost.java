@@ -40,7 +40,13 @@ public class CrewPost extends BaseEntity {
     @OneToMany(mappedBy = "crewPost")
     private List<CrewPostComment> comments = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "crewPost")
     private List<CrewPostImage> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "crewPost")
+    private List<CrewPostLike> likes = new ArrayList<>();
+
+    public int getLikeCount() {
+        return likes.size();
+    }
 }
