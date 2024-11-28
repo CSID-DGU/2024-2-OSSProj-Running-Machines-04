@@ -33,4 +33,11 @@ public class PostQueryService {
                 .map(PostShowSimpleResponseDto::fromPost)
                 .collect(Collectors.toList());
     }
+
+    public List<PostShowSimpleResponseDto> searchPostsByBoardAndKeyword(Board board, String keyword) {
+        return postRepository.findPostsByBoardAndKeyword(board, keyword)
+                .stream()
+                .map(PostShowSimpleResponseDto::fromPost)
+                .collect(Collectors.toList());
+    }
 }
