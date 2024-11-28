@@ -2,6 +2,7 @@ package RunningMachines.R2R.domain.crew.common.controller;
 
 import RunningMachines.R2R.domain.crew.common.dto.CrewCreateCommandDto;
 import RunningMachines.R2R.domain.crew.common.dto.CrewJoinRequestDto;
+import RunningMachines.R2R.domain.crew.common.dto.CrewMemberResponseDto;
 import RunningMachines.R2R.domain.crew.common.dto.CrewResponseDto;
 import RunningMachines.R2R.domain.crew.common.service.CrewCommandService;
 import RunningMachines.R2R.domain.crew.common.service.CrewQueryService;
@@ -42,5 +43,11 @@ public class CrewController {
     public ResponseEntity<List<CrewResponseDto>> getCrewList() {
         List<CrewResponseDto> crewResponseDtoList = crewQueryService.getAllCrews();
         return ResponseEntity.ok(crewResponseDtoList);
+    }
+
+    @GetMapping("/{crewId}/member")
+    public ResponseEntity<CrewMemberResponseDto> getCrewMember(@PathVariable Long crewId) {
+        CrewMemberResponseDto responseDto = crewQueryService.getCrewMember(crewId);
+        return ResponseEntity.ok(responseDto);
     }
 }
