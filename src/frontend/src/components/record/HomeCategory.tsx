@@ -7,23 +7,28 @@ import { Dispatch, SetStateAction } from "react";
 type HomeCategoryProps = {
   setOpenSheet: Dispatch<SetStateAction<boolean>>;
   setSelectedCategory: Dispatch<SetStateAction<courseMenu>>;
+  onClose: () => void;
 };
 
 const HomeCategory = ({
   setOpenSheet,
   setSelectedCategory,
+  onClose,
 }: HomeCategoryProps) => {
   const handelPersonalClick = () => {
     setOpenSheet(true);
     setSelectedCategory(courseMenu.PERSONAL);
+    onClose();
   };
   const handelPopularClick = () => {
     setOpenSheet(true);
     setSelectedCategory(courseMenu.POPULAR);
+    onClose();
   };
   const handelScrappedClick = () => {
     setOpenSheet(true);
     setSelectedCategory(courseMenu.SCRAPPED);
+    onClose();
   };
 
   return (
