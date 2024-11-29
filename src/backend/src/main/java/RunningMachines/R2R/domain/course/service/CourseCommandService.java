@@ -37,7 +37,9 @@ public class CourseCommandService {
                     .dirName("course")
                     .build());
 
-            Course course = Course.createCourse(gpxUrl);
+            String fileName = file.getOriginalFilename();
+
+            Course course = Course.createCourse(gpxUrl, fileName);
 
             courseRepository.save(course);
         }

@@ -54,9 +54,14 @@ public class Course extends BaseEntity {
         this.courseUrl = courseUrl;
     }
 
-    public static Course createCourse(String courseUrl) {
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public static Course createCourse(String courseUrl, String fileName) {
         Course course = new Course();
         course.setCourseUrl(courseUrl);
+        course.setFileName(fileName);  // 파일명 저장
         return course;
     }
 }
