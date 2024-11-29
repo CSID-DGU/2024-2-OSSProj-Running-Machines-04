@@ -15,4 +15,6 @@ public interface CrewUserRepository extends JpaRepository<CrewUser, Long> {
 
     @Query("SELECT cu FROM CrewUser cu WHERE cu.crew.id = :crewId")
     List<CrewUser> findByCrewId(@Param("crewId") Long crewId);
+
+    boolean existsByCrewAndUser(Crew crew, User user);
 }
