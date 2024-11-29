@@ -125,4 +125,7 @@ if __name__ == "__main__":
 
     # 겹침 시각화
     gpx_processor.plot_overlap(original_path, modified_path, results)
+    
+    # 겹치는 거 개선 필요
+    
 
