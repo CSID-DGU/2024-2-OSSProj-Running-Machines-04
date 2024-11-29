@@ -32,15 +32,12 @@ public class CourseCommandService {
     public void uploadCourseGpx(List<MultipartFile> gpxs) {
 
         for (MultipartFile file : gpxs) {
-            String gpxUrl = s3Provider.uploadFile(file, S3RequestDto.builder()
-                    .userId(null) // 관리자 전용이기 때문에 userId 없음
+            String gpxUrl = s3Provider.uploadGPX(file, S3RequestDto.builder()
+                    .userId(0L) // 관리자 전용이기 때문에 userId 없음
                     .dirName("course")
                     .build());
 
-            String fileName = file.getOriginalFilename(); // 원본 파일명을 fileName에 저장
-
-            // Course 엔티티 생성
-            Course course = Course.createCourse(gpxUrl, fileName);
+            Course course = Course.createCourse(gpxUrl);
 
             courseRepository.save(course);
         }
