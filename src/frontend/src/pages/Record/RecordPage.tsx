@@ -7,14 +7,10 @@ import BottomSheet from "@/components/record/BottomSheet";
 import { courseMenu } from "@/constants/course";
 import { useRecommendCourseGet } from "@/hooks/useCourse";
 import AlertModal from "@/components/common/AlertModal";
-import { dummyCourseData } from "@/constants/dummy";
 import { RouteResponse } from "@/types/routes";
 import { ReactComponent as CourseCTA } from "@/assets/icons/CourseCTA.svg";
-import useCourseStore from "@/store/useCourseStore";
 
 const RecordPage = () => {
-  const { setCourse } = useCourseStore();
-
   const [openSheet, setOpenSheet] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<courseMenu>(
@@ -59,7 +55,8 @@ const RecordPage = () => {
   const { data } = useRecommendCourseGet({ lat: 37.5665, lon: 126.978 }); // 임의 좌표
 
   useEffect(() => {
-    if (data) {
+    // 나만의 추천코스 카테고리
+    if (selectedCategory == courseMenu.PERSONAL && data) {
       setCourseData(data);
       console.log(data);
     }

@@ -19,7 +19,7 @@ const AlertModal = ({ courseId }: AlertModalProps) => {
       navigate(`/record/${courseId}/running`);
       setVisible(false);
     }
-  }, [count]);
+  }, [count, courseId, navigate]);
 
   if (!visible) return null;
 

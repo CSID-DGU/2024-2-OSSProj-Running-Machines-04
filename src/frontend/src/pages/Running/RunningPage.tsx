@@ -4,13 +4,12 @@ import { LatLng } from "@/types/kakaoMap";
 import useCourseStore from "@/store/useCourseStore";
 
 const RunningPage = () => {
-  const { course } = useCourseStore(); // 선택된 코스 URL
+  const { course } = useCourseStore(); // 선택된 코스
   const [current, setCurrent] = useState<LatLng>({
     lat: 37.51265,
     lng: 127.0919,
   }); // 현재 위치
   const [state, setState] = useState<LatLng[]>([]); // 실시간 경로 리스트
-  const [selectedCourse, setSelectedCourse] = useState<LatLng[]>([]); // 선택된 코스 경로
 
   // 실시간 현재 위치 추가
   useEffect(() => {
