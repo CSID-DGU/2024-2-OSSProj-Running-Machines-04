@@ -33,4 +33,13 @@ public class CommentController {
         String result = commentCommandService.toggleLike(commentId);
         return ResponseEntity.ok(result);
     }
+
+    @DeleteMapping("{commentId}")
+    public ResponseEntity<Void> deleteComment(
+            @PathVariable String boardName,
+            @PathVariable Long postId,
+            @PathVariable Long commentId) {
+        commentCommandService.deleteComment(commentId);
+        return ResponseEntity.noContent().build();
+    }
 }

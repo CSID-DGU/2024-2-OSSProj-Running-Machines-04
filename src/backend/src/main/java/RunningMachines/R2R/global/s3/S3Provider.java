@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -39,11 +41,13 @@ public class S3Provider {
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
-        metadata.addUserMetadata("original-fileName", originalFilename); // 메타데이터에 원본 파일명 추가
+        metadata.addUserMetadata("originfilename", URLEncoder.encode(originalFilename, StandardCharsets.UTF_8)); // 메타데이터에 원본 파일명 추가
+
         try {
             amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, file.getInputStream(), metadata));
         }catch (IOException e){
             log.error("error at AmazonS3Manager uploadFile : {}", (Object) e.getStackTrace());
+            throw new CustomException(ErrorCode.FILE_UPLOAD_FAILED);
         }
 
         return amazonS3Client.getUrl(bucket, fileName).toString();
@@ -54,20 +58,17 @@ public class S3Provider {
         List<String> gpxs = new ArrayList<>();
 
         try {
-            // course 디렉토리에 있는 모든 파일 가져오기 (최대 1000개)
-            ObjectListing objectListing = amazonS3Client.listObjects(bucket, "course/null");
+            // course 디렉토리에서 최대 5개의 파일 가져오기
+            ListObjectsV2Request request = new ListObjectsV2Request()
+                    .withBucketName(bucket) // 버킷 이름
+                    .withPrefix("course/null/")  // course 디렉토리의 파일
+                    .withMaxKeys(10);        // 최대 10개만 가져오기
 
-            // 각 객체에 대해 키를 가져와 리스트에 추가
-            for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+            ListObjectsV2Result result = amazonS3Client.listObjectsV2(request);
+
+            // 가져온 객체의 Key를 리스트에 추가
+            for (S3ObjectSummary objectSummary : result.getObjectSummaries()) {
                 gpxs.add(objectSummary.getKey());
-            }
-
-            // 페이지가 더 있을 경우 추가 로딩 (파일이 1000개 이상일 경우)
-            while (objectListing.isTruncated()) {
-                objectListing = amazonS3Client.listNextBatchOfObjects(objectListing);
-                for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
-                    gpxs.add(objectSummary.getKey());
-                }
             }
         } catch (Exception e) {
             log.error("Error fetching file list from S3 bucket: {}", e.getMessage(), e);
@@ -78,8 +79,7 @@ public class S3Provider {
     // 원본 파일명 가져오기
     public String getOriginalFileName(String transformedFileName) {
         try {
-            S3Object s3Object = amazonS3Client.getObject(bucket, transformedFileName);
-            ObjectMetadata metadata = s3Object.getObjectMetadata();
+            ObjectMetadata metadata = amazonS3Client.getObjectMetadata(bucket, transformedFileName);
             return metadata.getUserMetadata().getOrDefault("original-fileName", transformedFileName);
         } catch (Exception e) {
             log.error("Error retrieving original filename: {}", e.getMessage(), e);

@@ -2,9 +2,7 @@ package RunningMachines.R2R.domain.community.post.controller;
 
 import RunningMachines.R2R.domain.community.board.entity.Board;
 import RunningMachines.R2R.domain.community.board.service.BoardService;
-import RunningMachines.R2R.domain.community.post.dto.PostCreateRequestDto;
-import RunningMachines.R2R.domain.community.post.dto.PostShowDetailResponseDto;
-import RunningMachines.R2R.domain.community.post.dto.PostShowSimpleResponseDto;
+import RunningMachines.R2R.domain.community.post.dto.*;
 //import RunningMachines.R2R.domain.community.post.dto.PostUpdateRequestDto;
 import RunningMachines.R2R.domain.community.post.service.PostCommandService;
 import RunningMachines.R2R.domain.community.post.service.PostQueryService;
@@ -53,10 +51,39 @@ public class PostController {
         return ResponseEntity.ok(responseDto);
     }
 
-    /*@PatchMapping("/{boardName}/{postId}")
-    public ResponseEntity<PostShowDetailResponseDto> updatePost(@PathVariable String boardName, @PathVariable Long postId, @RequestBody PostUpdateRequestDto postUpdateRequestDto) {
-        postCommandService.updatePost(postId, postUpdateRequestDto);
+    @PatchMapping("/{boardName}/{postId}")
+    public ResponseEntity<PostShowDetailResponseDto> updatePost(
+            @PathVariable String boardName,
+            @PathVariable Long postId,
+            @RequestPart(value = "postUpdateRequestDto") PostUpdateRequestDto postUpdateRequestDto,
+            @RequestPart(value = "addImages", required = false) List<MultipartFile> addImages) {
 
-    }*/
+        // null 값에 대해 기본값을 설정
+        PostUpdateRequestDto updateRequestWithImages = PostUpdateRequestDto.builder()
+                .title(postUpdateRequestDto.getTitle())
+                .content(postUpdateRequestDto.getContent())
+                .removeImageIds(postUpdateRequestDto.getRemoveImageIds() != null ? postUpdateRequestDto.getRemoveImageIds() : List.of())
+                .addImages(addImages != null ? addImages : List.of())
+                .build();
 
+        Long updatedPostId = postCommandService.updatePost(postId, updateRequestWithImages);
+        PostShowDetailResponseDto responseDto = postQueryService.getPostWithComments(updatedPostId);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @DeleteMapping("/{boardName}/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable String boardName, @PathVariable Long postId) {
+        postCommandService.deletePost(postId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{boardName}/search")
+    public ResponseEntity<List<PostShowSimpleResponseDto>> searchPosts(
+            @PathVariable String boardName,
+            @RequestBody PostSearchRequestDto searchRequestDto) {
+        Board board = boardService.getCurrentBoard(boardName);
+        String keyword = searchRequestDto.getKeyword();
+        List<PostShowSimpleResponseDto> response = postQueryService.searchPostsByBoardAndKeyword(board, keyword);
+        return ResponseEntity.ok(response);
+    }
 }
