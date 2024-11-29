@@ -49,4 +49,12 @@ public class CrewPost extends BaseEntity {
     public int getLikeCount() {
         return likes.size();
     }
+
+    public void anddImage(CrewPostImage image) {
+        this.images.add(image);
+    }
+
+    public void setImages(List<CrewPostImage> images) {
+        this.images = images;
+    }
 }
