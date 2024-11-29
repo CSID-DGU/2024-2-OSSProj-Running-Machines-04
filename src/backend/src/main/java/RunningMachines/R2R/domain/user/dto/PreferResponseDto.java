@@ -1,6 +1,7 @@
 package RunningMachines.R2R.domain.user.dto;
 
 import RunningMachines.R2R.domain.user.entity.Prefer;
+import RunningMachines.R2R.domain.user.entity.Preference;
 import lombok.*;
 
 @Getter
@@ -9,17 +10,17 @@ import lombok.*;
 @Builder
 public class PreferResponseDto {
     private Long preferId;
-    private String elevation;
-    private boolean convenience;
-    private boolean nature;
+    private Preference elevation;
+    private Preference convenience;
+    private Preference track;
     private Long userId;
 
     public static PreferResponseDto from(Prefer prefer) {
         return PreferResponseDto.builder()
                 .preferId(prefer.getId())
-                .elevation(prefer.getElevation().name())
-                .convenience(prefer.isConvenience())
-                .nature(prefer.isNature())
+                .elevation(prefer.getElevation())
+                .convenience(prefer.getConvenience())
+                .track(prefer.getTrack())
                 .userId(prefer.getUser().getId())
                 .build();
     }
