@@ -124,5 +124,9 @@ if __name__ == "__main__":
     print(f"Overlap Ratio: {results['overlap_ratio']:.2f}%")
 
     # 겹침 시각화
-    gpx_processor.plot_overlap(original_path, modified_path, results)
+    gpx_processor.plot_overlap(original_path, modified_path, results)  
+    
+    ###
+    
+    
 
