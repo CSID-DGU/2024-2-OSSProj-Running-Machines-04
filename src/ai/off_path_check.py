@@ -1,4 +1,3 @@
-import random
 import gpxpy
 import folium
 import webbrowser
@@ -7,9 +6,8 @@ from geopy.distance import geodesic
 
 
 class GPXProcessor:
-    def __init__(self, sampling_distance=30, noise=0.0003, max_distance_tolerance=20):
+    def __init__(self, sampling_distance=30, max_distance_tolerance=20):
         self.sampling_distance = sampling_distance  # 샘플링 거리 (m)
-        self.noise = noise  # 노이즈 범위 (위도/경도 단위)
         self.max_distance_tolerance = max_distance_tolerance  # 거리 비교 허용 오차 (m)
 
     def extract_gpx_points(self, file_path):
@@ -38,17 +36,6 @@ class GPXProcessor:
                 resampled_path.append(new_point)
                 last_point = new_point
         return resampled_path
-
-    def simulate_actual_route(self, recommended_path):
-        """추천 경로를 기반으로 실제 GPS 데이터 시뮬레이션"""
-        simulated_path = []
-        for point in recommended_path:
-            # GPS 오차 추가
-            lat, lon = point
-            lat += random.uniform(-self.noise, self.noise)
-            lon += random.uniform(-self.noise, self.noise)
-            simulated_path.append((lat, lon))
-        return simulated_path
 
     def calculate_accuracy(self, recommended_path, actual_path):
         """추천 경로와 실제 경로 간 거리 기반 정확도 계산"""
@@ -83,18 +70,19 @@ class GPXProcessor:
 
 
 if __name__ == "__main__":
-    # 원래 경로를 포함한 GPX 파일 경로
-    original_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/sample7.gpx"
+    # 추천 경로 및 실제 경로 GPX 파일 경로
+    recommended_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/서울_강남구_논현동_279-67.gpx"
+    actual_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/서울_강남구_신사동_575-1.gpx"
 
     # GPX 경로 처리기
-    gpx_processor = GPXProcessor(sampling_distance=30, noise=0.0003, max_distance_tolerance=20)
+    gpx_processor = GPXProcessor(sampling_distance=30, max_distance_tolerance=20)
 
-    # 추천 경로 읽기 및 재샘플링
-    recommended_path = gpx_processor.extract_gpx_points(original_file)
+    # GPX 파일에서 경로 추출
+    recommended_path = gpx_processor.extract_gpx_points(recommended_file)
+    actual_path = gpx_processor.extract_gpx_points(actual_file)
+
+    # 추천 경로 재샘플링
     recommended_path = gpx_processor.resample_path(recommended_path)
-
-    # 실제 경로 시뮬레이션 (추천 경로 기반)
-    actual_path = gpx_processor.simulate_actual_route(recommended_path)
 
     # 정확도 계산
     accuracy = gpx_processor.calculate_accuracy(recommended_path, actual_path)
@@ -105,3 +93,5 @@ if __name__ == "__main__":
 
     # 새 창으로 지도 표시
     gpx_processor.display_map_in_new_window(map_route)
+
+
