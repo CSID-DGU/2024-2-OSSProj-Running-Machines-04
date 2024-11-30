@@ -16,44 +16,41 @@ class GPXProcessor:
             for track in gpx.tracks:
                 for segment in track.segments:
                     for point in segment.points:
-                        points.append((point.latitude, point.longitude, point.elevation))
-        return points
+                        # 고도 값이 None이면 0으로 대체
+                        elevation = point.elevation if point.elevation is not None else 0
+                        points.append((point.latitude, point.longitude, elevation))
+        return np.array(points)
 
-    def calculate_track_length(self, points):
-        return sum(
-            geodesic((points[i][0], points[i][1]), (points[i+1][0], points[i+1][1])).meters
-            for i in range(len(points) - 1)
-        )
+    def calculate_distances(self, points):
+        coords = points[:, :2]
+        distances = np.array([
+            geodesic(coords[i], coords[i + 1]).meters
+            for i in range(len(coords) - 1)
+        ])
+        return distances
 
-    def sample_points_by_distance(self, points, interval=500):
+    def sample_points_by_distance(self, points, distances, interval=500):
         sampled_points = [points[0]]
         accumulated_distance = 0
-        last_point = points[0]
-
-        for point in points[1:]:
-            accumulated_distance += geodesic(
-                (last_point[0], last_point[1]), (point[0], point[1])
-            ).meters
+        for i, dist in enumerate(distances):
+            accumulated_distance += dist
             if accumulated_distance >= interval:
-                sampled_points.append(point)
+                sampled_points.append(points[i + 1])
                 accumulated_distance = 0
-            last_point = point
+        sampled_points.append(points[-1])
+        return np.array(sampled_points)
 
-        return sampled_points
+    def count_nearby_facilities(self, sampled_points, facility_data, radius=500):
+        sampled_coords = sampled_points[:, :2]
+        facility_coords = facility_data[['latitude', 'longitude']].to_numpy()
 
-    def count_facilities_for_gpx(self, sampled_points, radius=500):
-        def count_nearby(facility_data):
-            return sum(
-                any(
-                    geodesic((point[0], point[1]), (facility['latitude'], facility['longitude'])).meters <= radius
-                    for point in sampled_points
-                )
-                for _, facility in facility_data.iterrows()
+        count = sum(
+            np.any(
+                np.array([geodesic(sample, facility).meters for sample in sampled_coords]) <= radius
             )
-
-        toilets = count_nearby(self.toilet_data)
-        convenience_stores = count_nearby(self.conv_data)
-        return toilets, convenience_stores
+            for facility in facility_coords
+        )
+        return count
 
     def classify_facilities(self, toilets, conv_stores):
         total_facilities = toilets + conv_stores
@@ -64,59 +61,57 @@ class GPXProcessor:
         else:
             return "Essential_Facilities"
 
-    def classify_track(self, points):
-        center_proximity_threshold = 0.6  # 중심 근처 포인트 비율
-        nearby_distance_threshold = 90  # 중심 근처 거리 기준 (미터)
-        endpoint_proximity_threshold = 50  # 시작/끝점 거리 기준 (미터)
-        min_track_length = 300  # 최소 트랙 길이 (미터)
+    def classify_track(self, points, distances):
+        min_track_length = 300
+        center_proximity_threshold = 0.6
+        nearby_distance_threshold = 90
+        endpoint_proximity_threshold = 50
 
-        lats = [p[0] for p in points]
-        lons = [p[1] for p in points]
-        center = (np.mean(lats), np.mean(lons))
-
-        center_proximity = sum(
-            geodesic((p[0], p[1]), center).meters < nearby_distance_threshold
-            for p in points
-        ) / len(points)
+        coords = points[:, :2]
+        center = coords.mean(axis=0)
+        center_distances = np.array([geodesic(center, coord).meters for coord in coords])
+        center_proximity = np.mean(center_distances < nearby_distance_threshold)
 
         if center_proximity < center_proximity_threshold:
             return "NonTrack"
 
-        start_point = (points[0][0], points[0][1])
-        end_point = (points[-1][0], points[-1][1])
+        start_point, end_point = coords[0], coords[-1]
         if geodesic(start_point, end_point).meters > endpoint_proximity_threshold:
             return "NonTrack"
 
-        total_length = self.calculate_track_length(points)
+        total_length = distances.sum()
         return "Track" if total_length >= min_track_length else "NonTrack"
 
     def classify_difficulty(self, avg_elevation_change):
-        cluster_thresholds = {
+        thresholds = {
             "beginner_threshold": 0.020962435991564006,
             "advanced_threshold": 0.05274945669390355,
         }
-        if avg_elevation_change <= cluster_thresholds["beginner_threshold"]:
+        if avg_elevation_change <= thresholds["beginner_threshold"]:
             return "Beginner"
-        elif avg_elevation_change <= cluster_thresholds["advanced_threshold"]:
+        elif avg_elevation_change <= thresholds["advanced_threshold"]:
             return "Advanced"
         else:
             return "Expert"
 
     def process_gpx_file(self, file_path):
         points = self.extract_gpx_points(file_path)
-        total_length = self.calculate_track_length(points) / 1000  # 거리(km)
+        distances = self.calculate_distances(points)
 
-        sampled_points = self.sample_points_by_distance(points)
-        toilets, conv_stores = self.count_facilities_for_gpx(sampled_points)
+        total_length_km = distances.sum() / 1000
+        sampled_points = self.sample_points_by_distance(points, distances)
 
-        avg_elevation_change = np.mean([
-            abs(points[i][2] - points[i-1][2]) /
-            geodesic((points[i-1][0], points[i-1][1]), (points[i][0], points[i][1])).meters
-            for i in range(1, len(points)) if points[i][2] is not None and points[i-1][2] is not None
-        ])
+        toilets = self.count_nearby_facilities(sampled_points, self.toilet_data)
+        conv_stores = self.count_nearby_facilities(sampled_points, self.conv_data)
+
+        # 고도 변화 계산 (None 처리 포함)
+        elevation_differences = np.diff(points[:, 2])
+        valid_distances = distances[distances > 0]
+        elevation_ratios = elevation_differences[:len(valid_distances)] / valid_distances
+        avg_elevation_change = np.mean(np.abs(elevation_ratios[np.isfinite(elevation_ratios)]))
 
         facility_label = self.classify_facilities(toilets, conv_stores)
-        track_label = self.classify_track(points)
+        track_label = self.classify_track(points, distances)
         difficulty_label = self.classify_difficulty(avg_elevation_change)
 
         return {
@@ -124,17 +119,17 @@ class GPXProcessor:
             "difficulty": difficulty_label,
             "facilities": facility_label,
             "track_type": track_label,
-            "distance_km": round(total_length, 1)
+            "distance_km": round(total_length_km, 1)
         }
 
 if __name__ == "__main__":
     toilet_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_toilet.csv"
     conv_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_conv.csv"
-    sample_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/sample2.gpx"
+    sample_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/서울_서대문구_대현동_45-51.gpx"
 
     gpx_processor = GPXProcessor(toilet_data_path, conv_data_path)
     result = gpx_processor.process_gpx_file(sample_file)
 
     new_file_name = f"{result['difficulty']}_{result['facilities']}_{result['track_type']}_{result['distance_km']}Km.gpx"
     print(f"새로운 파일명: {new_file_name}")
-    
+###
