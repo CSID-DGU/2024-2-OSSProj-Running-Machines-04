@@ -1,6 +1,4 @@
 #################### Library install ####################
-#################### import Library  ####################
-
 ## *********** 한 번 실행하고 각주 처리를 해야함 ***********
 # import subprocess
 # import sys
@@ -110,24 +108,16 @@ if __name__ == "__main__":
     # CSV 파일 경로
     toilet_csv_path = 'C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/code/final_toilet.csv' ##### 
     conv_csv_path = 'C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/code/final_conv.csv' #####
-    streetlight_csv_path = 'C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/code/final_streetlight.csv' #####
-    trafficlight_csv_path = 'C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/code/final_trafficlight.csv' #####
 
     # CSV 파일 로드
     toilet_data = load_csv(toilet_csv_path)
     conv_data = load_csv(conv_csv_path)
-    streetlight_data = load_csv(streetlight_csv_path)
-    trafficlight_data = load_csv(trafficlight_csv_path)
 
     # 데이터 로드 확인
     if toilet_data is not None:
         print("Toilet data loaded.")
     if conv_data is not None:
         print("Convenience store data loaded.")
-    if streetlight_data is not None:
-        print("Streetlight data loaded.")
-    if trafficlight_data is not None:
-        print("Trafficlight data loaded.")
 
     # GPX 파일 디렉토리 및 로드
     gpx_directory = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/gpx" #####
