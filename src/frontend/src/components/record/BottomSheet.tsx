@@ -8,10 +8,17 @@ import {
 
 type BottomSheetProps = {
   setOpenSheet: Dispatch<SetStateAction<boolean>>;
+  onClose?: () => void;
+  full?: boolean;
   children: ReactElement;
 };
 
-const BottomSheet = ({ setOpenSheet, children }: BottomSheetProps) => {
+const BottomSheet = ({
+  setOpenSheet,
+  onClose,
+  children,
+  full,
+}: BottomSheetProps) => {
   const [isVisible, setIsVisible] = useState(false); // 애니메이션 트리거 상태
   const [fullScreen, setFullScreen] = useState(false); // 바텀 시트를 전체 화면으로 확장할지 여부
   const [startY, setStartY] = useState(0); // 터치 시작 위치
@@ -22,6 +29,9 @@ const BottomSheet = ({ setOpenSheet, children }: BottomSheetProps) => {
 
   const closeSheet = () => {
     setIsVisible(false);
+    if (onClose) {
+      onClose();
+    }
     setTimeout(() => setOpenSheet(false), 300); // 애니메이션 후 바텀 시트를 닫기
   };
 
@@ -52,7 +62,8 @@ const BottomSheet = ({ setOpenSheet, children }: BottomSheetProps) => {
         onTouchMove={handleTouchMove} // 터치 이동 이벤트
         className={`bg-white fixed bottom-0 left-0 w-full rounded-t-3xl flex flex-col py-10 px-3 transform transition-transform duration-300 overflow-auto ${
           isVisible ? "translate-y-0" : "translate-y-full"
-        } ${fullScreen ? "h-[90vh]" : "h-[50vh]"}`} // fullScreen 상태에 따라 높이 설정
+        } ${fullScreen || full ? "h-[90vh]" : "h-[30vh]"}`} // fullScreen 상태에 따라 높이 설정
+        // } ${fullScreen ? "h-[90vh]" : "h-[50vh]"}`} // fullScreen 상태에 따라 높이 설정
       >
         {children}
       </div>

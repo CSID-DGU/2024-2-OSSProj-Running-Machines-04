@@ -45,32 +45,47 @@ const SignupPage = () => {
 
   // 폼 제출 핸들러
   const handleSubmit = () => {
-    if (!valid) {
-      alert("입력값이 유효하지 않습니다. 다시 확인해주세요.");
-      return;
+    if (step == 1) {
+      // 이메일, 비밀번호 입력
+      if (!valid) {
+        alert("입력값이 유효하지 않습니다. 다시 확인해주세요.");
+        return;
+      }
+      console.log("회원가입 데이터:", signupData);
+      setStep(step + 1);
     }
-    console.log("회원가입 데이터:", signupData);
-    // 회원가입 API 호출 로직 추가
+    if (step == 2) {
+      // 회원가입 API 호출 로직 추가
+      console.log(image, signupData);
+      // onSuccess
+      setStep(step + 1);
+    }
+    if (step == 3) {
+      // 선호도 입력 API 호출 로직 추가
+      console.log(preferenceData);
+    }
+    // onSuccess
+    setStep(step + 1);
   };
 
   return (
     <div className="signup-page">
-      {step === 1 && (
+      {step == 1 && (
         <Step1
           signupData={signupData}
           onInputChange={handleInputChange}
           setValid={setValid}
         />
       )}
-      {step === 2 && <Step2 setImage={setImage} setValid={setValid} />}
-      {step === 3 && (
+      {step == 2 && <Step2 setImage={setImage} setValid={setValid} />}
+      {step == 3 && (
         <Step3 onPreferenceData={handlePreferenceChange} setStep={setStep} />
       )}
-      {step === 4 && <Step4 />}
+      {step == 4 && <Step4 />}
       {step < 3 && (
         <button
           type="submit"
-          onClick={() => setStep(step + 1)}
+          onClick={handleSubmit}
           className={`fixed bottom-12 ${
             valid ? "bg-[#9993E5]" : "bg-[#D9D9D9]"
           } text-white text-[24px] left-[50%] translate-x-[-50%] font-semibold rounded w-[300px] py-2`}
