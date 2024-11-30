@@ -130,7 +130,7 @@ class GPXProcessor:
 if __name__ == "__main__":
     toilet_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_toilet.csv"
     conv_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_conv.csv"
-    sample_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/sample2.gpx"
+    sample_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/서울_서대문구_대현동_45-51.gpx"
 
     gpx_processor = GPXProcessor(toilet_data_path, conv_data_path)
     result = gpx_processor.process_gpx_file(sample_file)
