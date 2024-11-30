@@ -143,4 +143,10 @@ public class CourseQueryService {
 
         return CourseResponseDto.of(course, courseUrl, fileName, createTags(course.getId(), fileName), true);
     }
+
+    public List<String> allCourseUrl() {
+        return courseRepository.findAll().stream()
+                .map(Course::getCourseUrl)
+                .collect(Collectors.toList());
+    }
 }

@@ -55,4 +55,9 @@ public class CourseController {
     public ResponseEntity<String> saveCurseLike(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long courseId) {
         return ResponseEntity.ok(courseCommandService.saveCourseLike(customUserDetails.getUsername(), courseId));
     }
+
+    @GetMapping("/getAllCourse")
+    public ResponseEntity<List<String>> allCourseUrl() {
+        return ResponseEntity.ok(courseQueryService.allCourseUrl());
+    }
 }

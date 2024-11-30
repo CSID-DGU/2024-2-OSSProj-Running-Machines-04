@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
@@ -12,4 +13,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 //    double findDistanceByFileName(@Param("fileName") String fileName);
 
     Course findByFileName(String fileName);
+
+    @Query("SELECT c.courseUrl FROM Course c")
+    List<String> findAllCourseUrls();
 }
