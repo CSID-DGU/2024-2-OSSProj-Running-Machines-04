@@ -37,16 +37,38 @@ class GPXProcessor:
                 last_point = new_point
         return resampled_path
 
-    def calculate_accuracy(self, recommended_path, actual_path):
-        """추천 경로와 실제 경로 간 거리 기반 정확도 계산"""
-        matched_points = 0
-        for act_point in actual_path:
-            # 실제 경로의 각 포인트에서 추천 경로의 가장 가까운 포인트까지 거리 계산
-            min_distance = min(geodesic(act_point, rec_point).meters for rec_point in recommended_path)
-            if min_distance <= self.max_distance_tolerance:
-                matched_points += 1
-        accuracy = (matched_points / len(actual_path)) * 100
-        return accuracy
+    def is_path_contained(self, smaller_path, larger_path):
+        """smaller_path가 larger_path에 포함되는지 확인"""
+        for small_point in smaller_path:
+            min_distance = min(geodesic(small_point, large_point).meters for large_point in larger_path)
+            if min_distance > self.max_distance_tolerance:
+                return False
+        return True
+
+    def calculate_deviation_rate(self, recommended_path, actual_path):
+        """추천 경로와 실제 경로 간 이탈률 계산"""
+        total_deviation = 0
+        for rec_point in recommended_path:
+            # 추천 경로의 각 포인트가 실제 경로와 얼마나 멀리 떨어졌는지 확인
+            min_distance = min(geodesic(rec_point, act_point).meters for act_point in actual_path)
+            if min_distance > self.max_distance_tolerance:
+                total_deviation += 1
+        deviation_rate = (total_deviation / len(recommended_path)) * 100
+        return deviation_rate
+
+    def check_path_completion(self, recommended_path, actual_path):
+        """추천 경로를 따라 뛰었는지 여부 확인"""
+        if self.is_path_contained(actual_path, recommended_path):
+            return "추천 경로를 덜 뛰었지만 포함되었습니다."
+        elif self.is_path_contained(recommended_path, actual_path):
+            return "추천 경로를 뛰었으며 추가 구간도 포함되었습니다."
+        else:
+            # 이탈률 계산
+            deviation_rate = self.calculate_deviation_rate(recommended_path, actual_path)
+            if deviation_rate <= 20:
+                return f"추천 경로와 비슷하게 뛰었으나 일부 이탈 (이탈률: {deviation_rate:.2f}%)."
+            else:
+                return f"추천 경로에서 크게 이탈했습니다 (이탈률: {deviation_rate:.2f}%)."
 
     def create_folium_map(self, recommended_path, actual_path):
         """folium을 사용해 경로 시각화"""
@@ -71,8 +93,8 @@ class GPXProcessor:
 
 if __name__ == "__main__":
     # 추천 경로 및 실제 경로 GPX 파일 경로
-    recommended_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/서울_강남구_논현동_279-67.gpx"
-    actual_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/서울_강남구_신사동_575-1.gpx"
+    recommended_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/서울_서대문구_북아현동_251-46.gpx"
+    actual_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/서울_서대문구_대현동_45-51.gpx"
 
     # GPX 경로 처리기
     gpx_processor = GPXProcessor(sampling_distance=30, max_distance_tolerance=20)
@@ -84,14 +106,12 @@ if __name__ == "__main__":
     # 추천 경로 재샘플링
     recommended_path = gpx_processor.resample_path(recommended_path)
 
-    # 정확도 계산
-    accuracy = gpx_processor.calculate_accuracy(recommended_path, actual_path)
-    print(f"Accuracy: {accuracy:.2f}%")
+    # 경로 포함 여부 및 이탈률 확인
+    result = gpx_processor.check_path_completion(recommended_path, actual_path)
+    print(result)
 
     # folium 지도 생성
     map_route = gpx_processor.create_folium_map(recommended_path, actual_path)
 
     # 새 창으로 지도 표시
     gpx_processor.display_map_in_new_window(map_route)
-
-
