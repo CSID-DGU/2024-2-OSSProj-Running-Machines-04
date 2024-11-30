@@ -1,6 +1,8 @@
 import random
 import gpxpy
 import folium
+import webbrowser
+import tempfile
 from geopy.distance import geodesic
 
 
@@ -19,56 +21,53 @@ class GPXProcessor:
                         points.append((point.latitude, point.longitude))
         return points
 
-    def modify_route(self, original_path, lat_range=0.001, lon_range=0.001):
-        """원래 경로를 기반으로 새로운 경로 생성"""
-        modified_path = []
-        for lat, lon in original_path:
-            # 위도와 경도에 무작위 오차 추가
-            lat += random.uniform(-lat_range, lat_range)
-            lon += random.uniform(-lon_range, lon_range)
-            modified_path.append((lat, lon))
-        return modified_path
+    def simulate_actual_route(self, recommended_path, missing_rate=0.1, noise=0.0003):
+        """추천 경로를 기반으로 실제 GPS 데이터 시뮬레이션"""
+        simulated_path = []
 
-    def generate_grid(self, path):
-        """경로를 그리드로 변환"""
-        grid = set()
-        for lat, lon in path:
-            grid_lat = round(lat / self.grid_size) * self.grid_size
-            grid_lon = round(lon / self.grid_size) * self.grid_size
-            grid.add((grid_lat, grid_lon))
-        return grid
+        for point in recommended_path:
+            # 일부 포인트를 누락 (missing_rate 비율로 누락)
+            if random.random() < missing_rate:
+                continue
+
+            lat, lon = point
+            # 이동 방향에 따라 GPS 노이즈 추가
+            lat += random.uniform(-noise, noise)
+            lon += random.uniform(-noise, noise)
+
+            simulated_path.append((lat, lon))
+
+        return simulated_path
 
     def calculate_overlap(self, recommended_path, actual_path):
         """경로 겹침 계산"""
-        rec_grid = self.generate_grid(recommended_path)
-        act_grid = self.generate_grid(actual_path)
+        rec_grid = set(recommended_path)
+        act_grid = set(actual_path)
 
-        overlap = rec_grid.intersection(act_grid)  # 겹치는 그리드 셀
+        overlap = rec_grid.intersection(act_grid)  # 겹치는 포인트
         overlap_ratio = len(overlap) / len(rec_grid) * 100  # 겹침 비율 (%)
 
         return {
             "overlap_ratio": overlap_ratio,
-            "recommended_grid": rec_grid,
-            "actual_grid": act_grid,
-            "overlap_grid": overlap
+            "overlap_points": overlap
         }
 
-    def plot_folium_map(self, recommended_path, actual_path, overlap_result):
+    def create_folium_map(self, recommended_path, actual_path, overlap_result):
         """folium을 사용해 경로 겹침 시각화"""
         # 지도 중심은 추천 경로의 첫 번째 점
         center = recommended_path[0]
         map_route = folium.Map(location=center, zoom_start=15)
 
-        # 추천 경로 추가 (파란색)
+        # 추천 경로 추가 (파란색 선)
         folium.PolyLine(recommended_path, color="blue", weight=5, opacity=0.7, tooltip="Recommended Path").add_to(map_route)
 
-        # 실제 경로 추가 (빨간색)
+        # 실제 경로 추가 (빨간색 선)
         folium.PolyLine(actual_path, color="red", weight=5, opacity=0.7, tooltip="Actual Path").add_to(map_route)
 
-        # 겹치는 그리드 셀 추가 (초록색)
-        for grid_point in overlap_result["overlap_grid"]:
+        # 겹치는 포인트 강조 (초록색 원)
+        for point in overlap_result["overlap_points"]:
             folium.CircleMarker(
-                location=grid_point,
+                location=point,
                 radius=5,
                 color="green",
                 fill=True,
@@ -78,6 +77,13 @@ class GPXProcessor:
 
         return map_route
 
+    def display_map_in_new_window(self, folium_map):
+        """folium 지도를 새 창으로 표시"""
+        # 임시 HTML 파일 생성
+        with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as temp_file:
+            folium_map.save(temp_file.name)  # 지도를 임시 파일로 저장
+            webbrowser.open(f"file://{temp_file.name}")  # 새 창으로 HTML 파일 열기
+
 
 if __name__ == "__main__":
     # 원래 경로를 포함한 GPX 파일 경로
@@ -85,16 +91,17 @@ if __name__ == "__main__":
 
     # GPX 경로 처리기
     gpx_processor = GPXProcessor(grid_size=0.0005)  # 그리드 크기 약 50m
-    original_path = gpx_processor.extract_gpx_points(original_file)
+    recommended_path = gpx_processor.extract_gpx_points(original_file)
 
-    # 새로운 경로 생성
-    modified_path = gpx_processor.modify_route(original_path, lat_range=0.0007, lon_range=0.0007)
+    # 실제 경로 시뮬레이션 (추천 경로 기반)
+    actual_path = gpx_processor.simulate_actual_route(recommended_path, missing_rate=0.05, noise=0.0003)
 
     # 경로 겹침 계산
-    results = gpx_processor.calculate_overlap(original_path, modified_path)
+    results = gpx_processor.calculate_overlap(recommended_path, actual_path)
     print(f"Overlap Ratio: {results['overlap_ratio']:.2f}%")
 
-    # folium 지도 시각화
-    map_route = gpx_processor.plot_folium_map(original_path, modified_path, results)
-    map_route.save("route_comparison.html")
-    print("지도 시각화 결과가 'route_comparison.html'로 저장되었습니다.")
+    # folium 지도 생성
+    map_route = gpx_processor.create_folium_map(recommended_path, actual_path, results)
+
+    # 새 창으로 지도 표시
+    gpx_processor.display_map_in_new_window(map_route)
