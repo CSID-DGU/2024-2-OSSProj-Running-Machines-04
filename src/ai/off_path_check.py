@@ -7,8 +7,10 @@ from geopy.distance import geodesic
 
 
 class GPXProcessor:
-    def __init__(self, grid_size=0.0005):
-        self.grid_size = grid_size  # 그리드 크기 (위도/경도 단위)
+    def __init__(self, sampling_distance=30, noise=0.0003, max_distance_tolerance=20):
+        self.sampling_distance = sampling_distance  # 샘플링 거리 (m)
+        self.noise = noise  # 노이즈 범위 (위도/경도 단위)
+        self.max_distance_tolerance = max_distance_tolerance  # 거리 비교 허용 오차 (m)
 
     def extract_gpx_points(self, file_path):
         """GPX 파일에서 위도와 경도 추출"""
@@ -21,39 +23,46 @@ class GPXProcessor:
                         points.append((point.latitude, point.longitude))
         return points
 
-    def simulate_actual_route(self, recommended_path, missing_rate=0.1, noise=0.0003):
+    def resample_path(self, path):
+        """추천 경로를 일정 간격으로 재샘플링"""
+        resampled_path = [path[0]]  # 첫 포인트는 포함
+        for i in range(1, len(path)):
+            last_point = resampled_path[-1]
+            while geodesic(last_point, path[i]).meters > self.sampling_distance:
+                # 일정 거리 간격으로 포인트 추가
+                lat_diff = path[i][0] - last_point[0]
+                lon_diff = path[i][1] - last_point[1]
+                lat_step = lat_diff * (self.sampling_distance / geodesic(last_point, path[i]).meters)
+                lon_step = lon_diff * (self.sampling_distance / geodesic(last_point, path[i]).meters)
+                new_point = (last_point[0] + lat_step, last_point[1] + lon_step)
+                resampled_path.append(new_point)
+                last_point = new_point
+        return resampled_path
+
+    def simulate_actual_route(self, recommended_path):
         """추천 경로를 기반으로 실제 GPS 데이터 시뮬레이션"""
         simulated_path = []
-
         for point in recommended_path:
-            # 일부 포인트를 누락 (missing_rate 비율로 누락)
-            if random.random() < missing_rate:
-                continue
-
+            # GPS 오차 추가
             lat, lon = point
-            # 이동 방향에 따라 GPS 노이즈 추가
-            lat += random.uniform(-noise, noise)
-            lon += random.uniform(-noise, noise)
-
+            lat += random.uniform(-self.noise, self.noise)
+            lon += random.uniform(-self.noise, self.noise)
             simulated_path.append((lat, lon))
-
         return simulated_path
 
-    def calculate_overlap(self, recommended_path, actual_path):
-        """경로 겹침 계산"""
-        rec_grid = set(recommended_path)
-        act_grid = set(actual_path)
+    def calculate_accuracy(self, recommended_path, actual_path):
+        """추천 경로와 실제 경로 간 거리 기반 정확도 계산"""
+        matched_points = 0
+        for act_point in actual_path:
+            # 실제 경로의 각 포인트에서 추천 경로의 가장 가까운 포인트까지 거리 계산
+            min_distance = min(geodesic(act_point, rec_point).meters for rec_point in recommended_path)
+            if min_distance <= self.max_distance_tolerance:
+                matched_points += 1
+        accuracy = (matched_points / len(actual_path)) * 100
+        return accuracy
 
-        overlap = rec_grid.intersection(act_grid)  # 겹치는 포인트
-        overlap_ratio = len(overlap) / len(rec_grid) * 100  # 겹침 비율 (%)
-
-        return {
-            "overlap_ratio": overlap_ratio,
-            "overlap_points": overlap
-        }
-
-    def create_folium_map(self, recommended_path, actual_path, overlap_result):
-        """folium을 사용해 경로 겹침 시각화"""
+    def create_folium_map(self, recommended_path, actual_path):
+        """folium을 사용해 경로 시각화"""
         # 지도 중심은 추천 경로의 첫 번째 점
         center = recommended_path[0]
         map_route = folium.Map(location=center, zoom_start=15)
@@ -64,22 +73,10 @@ class GPXProcessor:
         # 실제 경로 추가 (빨간색 선)
         folium.PolyLine(actual_path, color="red", weight=5, opacity=0.7, tooltip="Actual Path").add_to(map_route)
 
-        # 겹치는 포인트 강조 (초록색 원)
-        for point in overlap_result["overlap_points"]:
-            folium.CircleMarker(
-                location=point,
-                radius=5,
-                color="green",
-                fill=True,
-                fill_opacity=0.7,
-                tooltip="Overlap Point"
-            ).add_to(map_route)
-
         return map_route
 
     def display_map_in_new_window(self, folium_map):
         """folium 지도를 새 창으로 표시"""
-        # 임시 HTML 파일 생성
         with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as temp_file:
             folium_map.save(temp_file.name)  # 지도를 임시 파일로 저장
             webbrowser.open(f"file://{temp_file.name}")  # 새 창으로 HTML 파일 열기
@@ -90,18 +87,21 @@ if __name__ == "__main__":
     original_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/sample7.gpx"
 
     # GPX 경로 처리기
-    gpx_processor = GPXProcessor(grid_size=0.0005)  # 그리드 크기 약 50m
+    gpx_processor = GPXProcessor(sampling_distance=30, noise=0.0003, max_distance_tolerance=20)
+
+    # 추천 경로 읽기 및 재샘플링
     recommended_path = gpx_processor.extract_gpx_points(original_file)
+    recommended_path = gpx_processor.resample_path(recommended_path)
 
     # 실제 경로 시뮬레이션 (추천 경로 기반)
-    actual_path = gpx_processor.simulate_actual_route(recommended_path, missing_rate=0.05, noise=0.0003)
+    actual_path = gpx_processor.simulate_actual_route(recommended_path)
 
-    # 경로 겹침 계산
-    results = gpx_processor.calculate_overlap(recommended_path, actual_path)
-    print(f"Overlap Ratio: {results['overlap_ratio']:.2f}%")
+    # 정확도 계산
+    accuracy = gpx_processor.calculate_accuracy(recommended_path, actual_path)
+    print(f"Accuracy: {accuracy:.2f}%")
 
     # folium 지도 생성
-    map_route = gpx_processor.create_folium_map(recommended_path, actual_path, results)
+    map_route = gpx_processor.create_folium_map(recommended_path, actual_path)
 
     # 새 창으로 지도 표시
     gpx_processor.display_map_in_new_window(map_route)
