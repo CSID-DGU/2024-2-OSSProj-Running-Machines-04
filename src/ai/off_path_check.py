@@ -6,8 +6,7 @@ from geopy.distance import geodesic
 
 
 class GPXProcessor:
-    def __init__(self, sampling_distance=30, max_distance_tolerance=20):
-        self.sampling_distance = sampling_distance  # 샘플링 거리 (m)
+    def __init__(self, max_distance_tolerance=20):
         self.max_distance_tolerance = max_distance_tolerance  # 거리 비교 허용 오차 (m)
 
     def extract_gpx_points(self, file_path):
@@ -21,21 +20,12 @@ class GPXProcessor:
                         points.append((point.latitude, point.longitude))
         return points
 
-    def resample_path(self, path):
-        """추천 경로를 일정 간격으로 재샘플링"""
-        resampled_path = [path[0]]  # 첫 포인트는 포함
+    def calculate_path_length(self, path):
+        """경로의 총 길이 계산 (m 단위)"""
+        total_length = 0
         for i in range(1, len(path)):
-            last_point = resampled_path[-1]
-            while geodesic(last_point, path[i]).meters > self.sampling_distance:
-                # 일정 거리 간격으로 포인트 추가
-                lat_diff = path[i][0] - last_point[0]
-                lon_diff = path[i][1] - last_point[1]
-                lat_step = lat_diff * (self.sampling_distance / geodesic(last_point, path[i]).meters)
-                lon_step = lon_diff * (self.sampling_distance / geodesic(last_point, path[i]).meters)
-                new_point = (last_point[0] + lat_step, last_point[1] + lon_step)
-                resampled_path.append(new_point)
-                last_point = new_point
-        return resampled_path
+            total_length += geodesic(path[i - 1], path[i]).meters
+        return total_length
 
     def is_path_contained(self, smaller_path, larger_path):
         """smaller_path가 larger_path에 포함되는지 확인"""
@@ -45,35 +35,34 @@ class GPXProcessor:
                 return False
         return True
 
-    def calculate_deviation_rate(self, recommended_path, actual_path):
-        """추천 경로와 실제 경로 간 이탈률 계산"""
-        total_deviation = 0
+    def calculate_overlap_ratio(self, recommended_path, actual_path):
+        """추천 경로와 새 경로 간 포함 비율 계산 (%)"""
+        included_points = 0
         for rec_point in recommended_path:
-            # 추천 경로의 각 포인트가 실제 경로와 얼마나 멀리 떨어졌는지 확인
             min_distance = min(geodesic(rec_point, act_point).meters for act_point in actual_path)
-            if min_distance > self.max_distance_tolerance:
-                total_deviation += 1
-        deviation_rate = (total_deviation / len(recommended_path)) * 100
-        return deviation_rate
+            if min_distance <= self.max_distance_tolerance:
+                included_points += 1
+        overlap_ratio = (included_points / len(recommended_path)) * 100
+        return overlap_ratio
 
     def check_path_completion(self, recommended_path, actual_path):
         """추천 경로를 따라 뛰었는지 여부 확인"""
-        if self.is_path_contained(actual_path, recommended_path):
-            return "추천 경로를 덜 뛰었지만 포함되었습니다."
-        elif self.is_path_contained(recommended_path, actual_path):
-            return "추천 경로를 뛰었으며 추가 구간도 포함되었습니다."
-        else:
-            # 이탈률 계산
-            deviation_rate = self.calculate_deviation_rate(recommended_path, actual_path)
-            if deviation_rate <= 20:
-                return f"추천 경로와 비슷하게 뛰었으나 일부 이탈 (이탈률: {deviation_rate:.2f}%)."
+        recommended_length = self.calculate_path_length(recommended_path)
+        actual_length = self.calculate_path_length(actual_path)
+
+        # 추천 경로가 새 경로에 완전히 포함되는지 확인
+        if self.is_path_contained(recommended_path, actual_path):
+            if actual_length > recommended_length:
+                return f"over: 추천 경로를 뛰었으며 추가 구간도 포함되었습니다. (추천 길이: {recommended_length:.2f}m, 실제 길이: {actual_length:.2f}m)"
             else:
-                return f"추천 경로에서 크게 이탈했습니다 (이탈률: {deviation_rate:.2f}%)."
+                return f"perfect: 추천 경로를 완벽히 따랐습니다. (추천 길이: {recommended_length:.2f}m, 실제 길이: {actual_length:.2f}m)"
+        else:
+            overlap_ratio = self.calculate_overlap_ratio(recommended_path, actual_path)
+            return f"low: 추천 경로를 일부만 따랐습니다. 포함 비율: {overlap_ratio:.2f}%"
 
     def create_folium_map(self, recommended_path, actual_path):
         """folium을 사용해 경로 시각화"""
-        # 지도 중심은 추천 경로의 첫 번째 점
-        center = recommended_path[0]
+        center = recommended_path[0]  # 지도 중심은 추천 경로의 첫 번째 점
         map_route = folium.Map(location=center, zoom_start=15)
 
         # 추천 경로 추가 (파란색 선)
@@ -93,20 +82,17 @@ class GPXProcessor:
 
 if __name__ == "__main__":
     # 추천 경로 및 실제 경로 GPX 파일 경로
-    recommended_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/서울_서대문구_북아현동_251-46.gpx"
-    actual_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/서울_서대문구_대현동_45-51.gpx"
+    recommended_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/서울_성동구_옥수동_250.gpx"
+    actual_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/서울_성동구_옥수동_560.gpx"
 
     # GPX 경로 처리기
-    gpx_processor = GPXProcessor(sampling_distance=30, max_distance_tolerance=20)
+    gpx_processor = GPXProcessor(max_distance_tolerance=20)
 
     # GPX 파일에서 경로 추출
     recommended_path = gpx_processor.extract_gpx_points(recommended_file)
     actual_path = gpx_processor.extract_gpx_points(actual_file)
 
-    # 추천 경로 재샘플링
-    recommended_path = gpx_processor.resample_path(recommended_path)
-
-    # 경로 포함 여부 및 이탈률 확인
+    # 경로 포함 여부 및 상태 확인
     result = gpx_processor.check_path_completion(recommended_path, actual_path)
     print(result)
 
