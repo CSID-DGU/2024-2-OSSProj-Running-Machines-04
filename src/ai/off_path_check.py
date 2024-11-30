@@ -1,40 +1,6 @@
-# 추천 경로를 따라서 뛰었는지 안 뛰었는지 확인하는 방법
-
-'''
-import gpxpy
-
-class GPXProcessor:
-    def __init__(self):
-        pass
-
-    # GPX 파일에서 포인트 추출
-    def extract_gpx_points(self, file_path):
-        points = []
-        with open(file_path, 'r', encoding='utf-8') as gpx_file:
-            gpx = gpxpy.parse(gpx_file)
-            for track in gpx.tracks:
-                for segment in track.segments:
-                    for point in segment.points:
-                        # (위도, 경도, 고도) 튜플로 포인트 추가
-                        points.append((point.latitude, point.longitude, point.elevation))
-        return points
-
-    # GPX 파일 정보 출력
-    def print_gpx_info(self, file_path):
-        points = self.extract_gpx_points(file_path)
-        for i, point in enumerate(points):
-            print(f"Point {i+1}: Latitude = {point[0]}, Longitude = {point[1]}, Elevation = {point[2]}")
-
-if __name__ == "__main__":
-    sample_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/sample3.gpx"
-
-    gpx_processor = GPXProcessor()
-    gpx_processor.print_gpx_info(sample_file)
-'''
-
 import random
 import gpxpy
-import matplotlib.pyplot as plt
+import folium
 from geopy.distance import geodesic
 
 
@@ -87,25 +53,30 @@ class GPXProcessor:
             "overlap_grid": overlap
         }
 
-    def plot_overlap(self, recommended_path, actual_path, overlap_result):
-        """경로 겹침 시각화"""
-        rec_lat, rec_lon = zip(*recommended_path)
-        act_lat, act_lon = zip(*actual_path)
-        overlap_lat, overlap_lon = zip(*overlap_result["overlap_grid"])
+    def plot_folium_map(self, recommended_path, actual_path, overlap_result):
+        """folium을 사용해 경로 겹침 시각화"""
+        # 지도 중심은 추천 경로의 첫 번째 점
+        center = recommended_path[0]
+        map_route = folium.Map(location=center, zoom_start=15)
 
-        plt.figure(figsize=(10, 8))
-        plt.plot(rec_lon, rec_lat, label="Recommended Path", color="blue", linewidth=2)
-        plt.plot(act_lon, act_lat, label="Actual Path", color="red", linestyle="--", linewidth=2)
+        # 추천 경로 추가 (파란색)
+        folium.PolyLine(recommended_path, color="blue", weight=5, opacity=0.7, tooltip="Recommended Path").add_to(map_route)
 
-        # 겹치는 그리드 셀 표시
-        plt.scatter(overlap_lon, overlap_lat, color="green", label="Overlap", s=50, alpha=0.6)
+        # 실제 경로 추가 (빨간색)
+        folium.PolyLine(actual_path, color="red", weight=5, opacity=0.7, tooltip="Actual Path").add_to(map_route)
 
-        plt.xlabel("Longitude")
-        plt.ylabel("Latitude")
-        plt.title("Path Overlap Visualization")
-        plt.legend()
-        plt.grid(True)
-        plt.show()
+        # 겹치는 그리드 셀 추가 (초록색)
+        for grid_point in overlap_result["overlap_grid"]:
+            folium.CircleMarker(
+                location=grid_point,
+                radius=5,
+                color="green",
+                fill=True,
+                fill_opacity=0.7,
+                tooltip="Overlap Point"
+            ).add_to(map_route)
+
+        return map_route
 
 
 if __name__ == "__main__":
@@ -116,16 +87,14 @@ if __name__ == "__main__":
     gpx_processor = GPXProcessor(grid_size=0.0005)  # 그리드 크기 약 50m
     original_path = gpx_processor.extract_gpx_points(original_file)
 
-    # 새로운 경로 생성 (원 경로를 수정)
+    # 새로운 경로 생성
     modified_path = gpx_processor.modify_route(original_path, lat_range=0.0007, lon_range=0.0007)
 
     # 경로 겹침 계산
     results = gpx_processor.calculate_overlap(original_path, modified_path)
     print(f"Overlap Ratio: {results['overlap_ratio']:.2f}%")
 
-    # 겹침 시각화
-    gpx_processor.plot_overlap(original_path, modified_path, results)
-    
-    # 겹치는 거 개선 필요
-    
-
+    # folium 지도 시각화
+    map_route = gpx_processor.plot_folium_map(original_path, modified_path, results)
+    map_route.save("route_comparison.html")
+    print("지도 시각화 결과가 'route_comparison.html'로 저장되었습니다.")
