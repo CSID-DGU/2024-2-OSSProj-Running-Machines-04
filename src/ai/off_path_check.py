@@ -87,8 +87,8 @@ class GPXProcessor:
 
 if __name__ == "__main__":
     # 추천 경로 및 실제 경로 GPX 파일 경로
-    recommended_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/test_off_a2.gpx"
-    actual_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/test_off_a3.gpx"
+    recommended_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering/test_off_a2.gpx"
+    actual_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering/test_off_a3.gpx"
 
     # GPX 경로 처리기
     gpx_processor = GPXProcessor(max_distance_tolerance=20)
@@ -101,11 +101,11 @@ if __name__ == "__main__":
     result = gpx_processor.check_path_completion(recommended_path, actual_path)
     print(result)
 
-    # folium 지도 생성
-    map_route = gpx_processor.create_folium_map(recommended_path, actual_path)
+    # # folium 지도 생성
+    # map_route = gpx_processor.create_folium_map(recommended_path, actual_path)
 
-    # 새 창으로 지도 표시
-    gpx_processor.display_map_in_new_window(map_route)
+    # # 새 창으로 지도 표시
+    # gpx_processor.display_map_in_new_window(map_route)
 
 ##### 추천 코스가 아닌 경로들(추천 코스에서 이탈한 경로들과, 새로운 경로들) #####
 from itertools import combinations
@@ -193,18 +193,19 @@ class PathClusterer:
                 # 기존 클러스터에 추가
                 for cluster in clusters:
                     if path_a in cluster or path_b in cluster:
-                        cluster.update({path_a, path_b})
+                        cluster.add((path_a[0], tuple(path_a[1])))
+                        cluster.add((path_b[0], tuple(path_b[1])))
                         break
                 else:
                     # 새로운 클러스터 생성
-                    clusters.append({path_a, path_b})
+                    clusters.append(set([(path_a[0], tuple(path_a[1])), (path_b[0], tuple(path_b[1]))]))
 
         # 3개 이상의 경로로 구성된 클러스터만 반환
         return [cluster for cluster in clusters if len(cluster) >= 3]
 
 
 if __name__ == "__main__":
-    directory_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test"
+    directory_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering"
     processor = GPXProcessor(max_distance_tolerance=20)
     clusterer = PathClusterer(processor, similarity_threshold=0.5)
 
@@ -225,6 +226,6 @@ if __name__ == "__main__":
             print(f"  - {file}")
 
         # 지도에 클러스터 경로 표시
-        paths = [path for _, path in cluster]
+        paths = [list(path[1]) for path in cluster]
         folium_map = processor.create_folium_map(paths)
         processor.display_map_in_new_window(folium_map)
