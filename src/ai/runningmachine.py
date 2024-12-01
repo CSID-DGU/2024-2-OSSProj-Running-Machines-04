@@ -35,17 +35,14 @@ def load_csv(file_path):
         if os.path.exists(file_path):
             return pd.read_csv(file_path)
         else:
-            print(f"File not found: {file_path}")
             return None
     except Exception as e:
-        print(f"Error loading CSV file {file_path}: {e}")
         return None
 
 # GPX 파일 로드 함수 (병렬 처리)
 def load_gpx_files(directory_path):
     gpx_files = []
     if not os.path.exists(directory_path):
-        print(f"Directory not found: {directory_path}")
         return gpx_files
 
     def process_file(file_name):
@@ -56,7 +53,6 @@ def load_gpx_files(directory_path):
                     gpx_data = gpxpy.parse(gpx_file)
                     return (file_name, gpx_data)
             except Exception as e:
-                print(f"Error in file {file_name}: {e}")
                 return None
         return None
 
@@ -67,7 +63,7 @@ def load_gpx_files(directory_path):
     return gpx_files
 
 # GPX 파일 필터링 함수
-def filter_gpx_within_radius_and_preferences(gpx_files, center_coords, radius, elevation, convenience, track, fallback=False):
+def filter_gpx_within_radius_and_preferences(gpx_files, center_coords, radius, elevation, convenience, track):
     elevation_mapping = {"LOW": "Beginner", "MEDIUM": "Advanced", "HIGH": "Expert"}
     convenience_mapping = {
         "LOW": ["No_Facilities", "Essential_Facilities", "Enhanced_Facilities"],
@@ -84,40 +80,33 @@ def filter_gpx_within_radius_and_preferences(gpx_files, center_coords, radius, e
     convenience_pref = convenience_mapping.get(convenience.upper(), [])
     track_pref = track_mapping.get(track.upper(), [])
 
+    def is_matching(file_name):
+        # 파일 이름 기반 필터링
+        return (
+            (elevation_pref in file_name) and
+            any(c in file_name for c in convenience_pref) and
+            any(t in file_name for t in track_pref)
+        )
+
     matching_files = []
 
-    for file_name, gpx_data in gpx_files:
-        try:
-            if not fallback:
-                # 선호도 필터링
-                if not (
-                    (elevation_pref in file_name) and
-                    any(c in file_name for c in convenience_pref) and
-                    any(t in file_name for t in track_pref)
-                ):
-                    continue
+    def process_gpx(file_name, gpx_data):
+        if not is_matching(file_name):
+            return None
 
-            # 반경 체크
-            for track in gpx_data.tracks:
-                for segment in track.segments:
-                    if segment.points:
-                        first_point_coords = (segment.points[0].latitude, segment.points[0].longitude)
-                        if geodesic(center_coords, first_point_coords).meters > radius:
-                            break
-                    for point in segment.points:
-                        point_coords = (point.latitude, point.longitude)
-                        distance = geodesic(center_coords, point_coords).meters
-                        if distance <= radius:
-                            matching_files.append((file_name, gpx_data, distance))
-                            break
-                    else:
-                        continue
-                    break
-                else:
-                    continue
-                break
-        except Exception as e:
-            print(f"Error processing GPX data in file {file_name}: {e}")
+        for track in gpx_data.tracks:
+            for segment in track.segments:
+                if segment.points:
+                    first_point_coords = (segment.points[0].latitude, segment.points[0].longitude)
+                    distance = geodesic(center_coords, first_point_coords).meters
+                    if distance <= radius:
+                        return (file_name, gpx_data, distance)
+        return None
+
+    # 병렬 처리로 필터링
+    with ThreadPoolExecutor() as executor:
+        results = executor.map(lambda x: process_gpx(*x), gpx_files)
+        matching_files = [result for result in results if result is not None]
 
     return matching_files
 
@@ -125,15 +114,48 @@ def filter_gpx_within_radius_and_preferences(gpx_files, center_coords, radius, e
 def sort_and_limit_by_distance(matching_files, limit=5):
     return sorted(matching_files, key=lambda x: x[2])[:limit]
 
+# 추가 경로 채우기 함수 (Elevation 조건 한정)
+def fill_additional_files(gpx_files, matching_files, center_coords, elevation, radius, limit=5):
+    selected_files = {file[0] for file in matching_files}
+
+    elevation_mapping = {"LOW": "Beginner", "MEDIUM": "Advanced", "HIGH": "Expert"}
+    elevation_pref = elevation_mapping.get(elevation.upper())
+
+    def process_gpx(file_name, gpx_data):
+        if file_name in selected_files or elevation_pref not in file_name:
+            return None
+        for track in gpx_data.tracks:
+            for segment in track.segments:
+                if segment.points:
+                    first_point_coords = (segment.points[0].latitude, segment.points[0].longitude)
+                    distance = geodesic(center_coords, first_point_coords).meters
+                    if distance <= radius:
+                        return (file_name, gpx_data, distance)
+        return None
+
+    # 병렬 처리로 추가 파일 탐색
+    with ThreadPoolExecutor() as executor:
+        results = executor.map(lambda x: process_gpx(*x), gpx_files)
+        additional_files = [result for result in results if result is not None]
+
+    # 가까운 거리 순으로 정렬 후 추가
+    additional_files = sorted(additional_files, key=lambda x: x[2])
+    for file in additional_files:
+        if len(matching_files) >= limit:
+            break
+        matching_files.append(file)
+
+    return matching_files
+
 # 결과 출력 함수
 def print_filtered_files(gpx_files, center_coords, radius, elevation, convenience, track):
     matching_files = filter_gpx_within_radius_and_preferences(
         gpx_files, center_coords, radius, elevation, convenience, track
     )
 
-    if not matching_files: # 만족되는 게 없을 때
-        matching_files = filter_gpx_within_radius_and_preferences(
-            gpx_files, center_coords, radius, elevation, convenience, track, fallback=True
+    if len(matching_files) < 5:
+        matching_files = fill_additional_files(
+            gpx_files, matching_files, center_coords, elevation, radius
         )
 
     closest_files = sort_and_limit_by_distance(matching_files, limit=5)
