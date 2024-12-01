@@ -40,7 +40,8 @@ public class CrewPost extends BaseEntity {
     @OneToMany(mappedBy = "crewPost")
     private List<CrewPostComment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "crewPost")
+    @OneToMany(mappedBy = "crewPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<CrewPostImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "crewPost")
@@ -50,11 +51,8 @@ public class CrewPost extends BaseEntity {
         return likes.size();
     }
 
-    public void anddImage(CrewPostImage image) {
+    public void addImage(CrewPostImage image) {
         this.images.add(image);
-    }
-
-    public void setImages(List<CrewPostImage> images) {
-        this.images = images;
+        image.setCrewPost(this);
     }
 }

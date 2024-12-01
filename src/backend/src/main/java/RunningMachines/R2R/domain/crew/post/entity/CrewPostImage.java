@@ -22,5 +22,8 @@ public class CrewPostImage extends BaseEntity {
     @JoinColumn(name = "crew_post_id")
     private CrewPost crewPost;
 
+    public void setCrewPost(CrewPost crewPost) {
+        this.crewPost = crewPost;
+    }
 }
 
