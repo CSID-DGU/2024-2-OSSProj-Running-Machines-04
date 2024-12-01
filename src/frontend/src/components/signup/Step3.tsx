@@ -1,18 +1,28 @@
+import { elevationType } from "@/constants/preference";
+import { usePreferencePost } from "@/hooks/useAuth";
 import { PreferenceRequest } from "@/types/signup";
 import { Dispatch, SetStateAction, useState } from "react";
 
 type Step3Props = {
-  onPreferenceData: (
-    key: keyof PreferenceRequest,
-    value: string | boolean
-  ) => void;
   setStep: Dispatch<SetStateAction<number>>;
 };
 
-const Step3 = ({ onPreferenceData, setStep }: Step3Props) => {
+const Step3 = ({ setStep }: Step3Props) => {
   const [preferenceStep, setPreferenceStep] = useState(1);
+  const [preferenceData, setPreferenceData] = useState<PreferenceRequest>({
+    elevation: elevationType.MEDIUM,
+    nature: true,
+    convenience: true,
+    track: "track",
+  });
 
-  const preferences = [
+  const { mutate: preferencePost } = usePreferencePost();
+
+  const preferences: {
+    type: keyof PreferenceRequest;
+    title: string;
+    result: { id: string | boolean; title: string }[];
+  }[] = [
     {
       type: "nature",
       title: "어떤 코스를 선호하시나요?",
@@ -49,11 +59,24 @@ const Step3 = ({ onPreferenceData, setStep }: Step3Props) => {
     },
   ];
 
-  const handleNextStep = (type: string, value: string | boolean) => {
-    onPreferenceData(type as keyof PreferenceRequest, value);
+  // 입력값 변경 핸들러
+  const handleChange = (
+    key: keyof PreferenceRequest,
+    value: string | boolean
+  ) => {
+    setPreferenceData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleNextStep = () => {
     if (preferenceStep < preferences.length) {
       setPreferenceStep(preferenceStep + 1);
-    } else setStep(4);
+    } else {
+      preferencePost(preferenceData);
+      setStep(4);
+    }
   };
 
   return (
@@ -65,14 +88,25 @@ const Step3 = ({ onPreferenceData, setStep }: Step3Props) => {
         {preferences[preferenceStep - 1].result.map((data) => (
           <button
             key={data.title}
-            className="py-2 px-8 m-2 border rounded text-lg"
+            className={`py-2 px-8 m-2 border rounded text-lg ${
+              preferenceData[preferences[preferenceStep - 1].type] === data.id
+                ? "bg-[#9993E5] text-white"
+                : "bg-white text-[#444]"
+            }`}
             onClick={() =>
-              handleNextStep(preferences[preferenceStep - 1].type, data.id)
+              handleChange(preferences[preferenceStep - 1].type, data.id)
             }
           >
             {data.title}
           </button>
         ))}
+        <button
+          type="submit"
+          onClick={handleNextStep}
+          className="fixed bottom-12 bg-[#9993E5] text-white text-[24px] left-[50%] translate-x-[-50%] font-semibold rounded w-[300px] py-2"
+        >
+          다음
+        </button>
       </div>
     </div>
   );
