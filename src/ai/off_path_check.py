@@ -4,7 +4,6 @@ import webbrowser
 import tempfile
 from geopy.distance import geodesic
 
-
 class GPXProcessor:
     def __init__(self, max_distance_tolerance=20):
         self.max_distance_tolerance = max_distance_tolerance  # 거리 비교 허용 오차 (m)
@@ -56,13 +55,13 @@ class GPXProcessor:
                     min(geodesic(rec_point, act_point).meters for act_point in actual_path) <= self.max_distance_tolerance
                     for rec_point in recommended_path
                 ):
-                    return f"perfect: 추천 경로를 완벽히 따라 뛰었습니다. 이탈률: {deviation_rate:.2f}%"
+                    return f"Perfect: 추천 경로를 완벽히 따라 뛰었습니다."
                 else:
-                    return f"over: 추천 경로를 뛰었으며 추가 구간도 포함되었습니다. 이탈률: {deviation_rate:.2f}%"
+                    return f"Over: 추천 경로를 따라 뛰었고, 추천 경로보다 더 뛰었습니다."
             else:
-                return f"low: 추천 경로를 일부만 뛰었습니다. 이탈률: {deviation_rate:.2f}%, 추천 경로 대비 짧은 거리."
+                return f"Low: 추천 경로를 일부만 뛰었고, 추천 경로보다 덜 뛰었습니다."
         else:
-            return f"경로를 새 경로로 등록해야 합니다. 이탈률: {deviation_rate:.2f}%"
+            return f"Warning : 경로를 새 경로로 등록해야 합니다. 이탈률: {deviation_rate:.2f}%"
 
     def create_folium_map(self, recommended_path, actual_path):
         """folium을 사용해 경로 시각화"""
@@ -86,8 +85,8 @@ class GPXProcessor:
 
 if __name__ == "__main__":
     # 추천 경로 및 실제 경로 GPX 파일 경로
-    recommended_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/test_off_a1.gpx"
-    actual_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/test_off_a2.gpx"
+    recommended_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/test_off_a4.gpx"
+    actual_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/test_off_a5.gpx"
 
     # GPX 경로 처리기
     gpx_processor = GPXProcessor(max_distance_tolerance=20)
