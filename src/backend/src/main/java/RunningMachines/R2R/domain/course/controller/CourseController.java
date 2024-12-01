@@ -1,6 +1,5 @@
 package RunningMachines.R2R.domain.course.controller;
 
-import RunningMachines.R2R.domain.course.dto.CourseDetailResponseDto;
 import RunningMachines.R2R.domain.course.dto.CourseResponseDto;
 import RunningMachines.R2R.domain.course.service.CourseCommandService;
 import RunningMachines.R2R.domain.course.service.CourseQueryService;
@@ -34,14 +33,8 @@ public class CourseController {
 
     @Operation(summary = "추천 코스 목록 조회 (GPX url 반환)")
     @GetMapping("/recommend")
-    public ResponseEntity<List<CourseResponseDto>> recommendCourse(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam double lat, @RequestParam double lon) {
-        return ResponseEntity.ok(courseQueryService.getCourses(customUserDetails.getUsername(), lat, lon));
-    }
-
-    @Operation(summary = "추천 코스 목록 조회 (GPX 파싱)")
-    @GetMapping("/recommendDetail")
-    public ResponseEntity<List<CourseDetailResponseDto>> recommendCourseDetial(@RequestParam double lat, @RequestParam double lon) {
-        return ResponseEntity.ok(courseQueryService.getCourseDetails(lat, lon));
+    public List<CourseResponseDto> getRecommendCourses(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam Double lat, @RequestParam Double lon) {
+        return courseQueryService.getRecommendedCourses(customUserDetails.getUsername(), lat, lon);
     }
 
     @Operation(summary = "즐겨찾기 코스 목록 조회")
