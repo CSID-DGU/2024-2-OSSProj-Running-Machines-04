@@ -2,6 +2,7 @@ package RunningMachines.R2R.domain.crew.post.gallery.controller;
 
 import RunningMachines.R2R.domain.crew.post.gallery.dto.GalleryPostCreateRequestDto;
 import RunningMachines.R2R.domain.crew.post.gallery.dto.GalleryPostDetailResponseDto;
+import RunningMachines.R2R.domain.crew.post.gallery.dto.GalleryPreviewResponseDto;
 import RunningMachines.R2R.domain.crew.post.gallery.service.GalleryPostCommandService;
 import RunningMachines.R2R.domain.crew.post.gallery.service.GalleryPostQueryService;
 import RunningMachines.R2R.domain.crew.post.repository.CrewPostRepository;
@@ -28,6 +29,12 @@ public class GalleryPostController {
     @GetMapping("/{postId}")
     public ResponseEntity<GalleryPostDetailResponseDto> getGalleryPost(@PathVariable Long crewId, @PathVariable Long postId) {
         GalleryPostDetailResponseDto responseDto = galleryPostQueryService.getGalleryPostDetail(crewId, postId);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<GalleryPreviewResponseDto> getGalleryPreview(@PathVariable Long crewId) {
+        GalleryPreviewResponseDto responseDto = galleryPostQueryService.getGalleryPreview(crewId);
         return ResponseEntity.ok(responseDto);
     }
 }
