@@ -4,6 +4,7 @@ import RunningMachines.R2R.domain.crew.post.gallery.dto.GalleryPostCreateRequest
 import RunningMachines.R2R.domain.crew.post.gallery.dto.GalleryPostDetailResponseDto;
 import RunningMachines.R2R.domain.crew.post.gallery.dto.GalleryPreviewResponseDto;
 import RunningMachines.R2R.domain.crew.post.gallery.service.GalleryPostCommandService;
+import RunningMachines.R2R.domain.crew.post.gallery.service.GalleryPostLikeService;
 import RunningMachines.R2R.domain.crew.post.gallery.service.GalleryPostQueryService;
 import RunningMachines.R2R.domain.crew.post.repository.CrewPostRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
 public class GalleryPostController {
     private final GalleryPostCommandService galleryPostCommandService;
     private final GalleryPostQueryService galleryPostQueryService;
+    private final GalleryPostLikeService galleryPostLikeService;
 
     @PostMapping
     public ResponseEntity<Long> createGalleryPost(@PathVariable Long crewId, @RequestPart("content") GalleryPostCreateRequestDto contentDto, @RequestPart("images") List<MultipartFile> images) {
@@ -36,5 +38,11 @@ public class GalleryPostController {
     public ResponseEntity<GalleryPreviewResponseDto> getGalleryPreview(@PathVariable Long crewId) {
         GalleryPreviewResponseDto responseDto = galleryPostQueryService.getGalleryPreview(crewId);
         return ResponseEntity.ok(responseDto);
+    }
+
+    @PostMapping("/{crewPostId}/like")
+    public ResponseEntity<Void> likeGalleryPost(@PathVariable Long crewId, @PathVariable Long crewPostId) {
+        galleryPostLikeService.likeGalleryPost(crewId, crewPostId);
+        return ResponseEntity.ok().build();
     }
 }
