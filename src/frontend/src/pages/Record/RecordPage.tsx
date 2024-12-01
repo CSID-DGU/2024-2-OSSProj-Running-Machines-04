@@ -23,6 +23,11 @@ const RecordPage = () => {
     fileName: "",
     name: "",
     tags: [],
+    description: "",
+    toiletCounts: 0,
+    storeCounts: 0,
+    trafficLightCounts: 0,
+    courseLiked: false,
   });
   const [courseData, setCourseData] = useState<RouteResponse[]>();
 
@@ -34,6 +39,11 @@ const RecordPage = () => {
       fileName: "",
       name: "",
       tags: [],
+      description: "",
+      toiletCounts: 0,
+      storeCounts: 0,
+      trafficLightCounts: 0,
+      courseLiked: false,
     });
   };
 
@@ -47,7 +57,6 @@ const RecordPage = () => {
       if (selectedCourse) {
         setSelectedCourse(selectedCourse); // 선택된 ID 업데이트
         setOpenSheet(!openSheet); // Sheet 여부
-        // setCourse({courseId: selectedCourse.courseId, path: selectedCourse.})
       }
     }
   };
@@ -70,6 +79,7 @@ const RecordPage = () => {
             <BottomSheet
               setOpenSheet={setOpenSheet}
               onClose={resetSelectedCourse}
+              full={true}
             >
               <>
                 <div className="mb-6 text-[18px] text-[#444]">
@@ -79,9 +89,12 @@ const RecordPage = () => {
                   {/* 선택된 코스가 있다면 해당 코스만 띄움 */}
                   {selectedCourse.courseId !== 0 ? (
                     <div className="flex items-center justify-between gap-2">
-                      <div className="p-4 min-w-[50%] h-full bg-courseGradient rounded-[10px] overflow-hidden flex justify-center items-center">
+                      <div className="p-4 w-[70%] h-full bg-courseGradient rounded-[10px] overflow-hidden flex flex-col justify-center items-center">
                         <div className="text-[#444] font-semibold">
                           {selectedCourse.name}
+                        </div>
+                        <div className="text-[#444] text-sm">
+                          "{selectedCourse.description}"
                         </div>
                       </div>
 
@@ -113,9 +126,12 @@ const RecordPage = () => {
                         onClick={() => handleClickCourse(course.courseId)}
                         className="flex items-center justify-between gap-2"
                       >
-                        <div className="p-4 min-w-[50%] h-full bg-courseGradient rounded-[10px] overflow-hidden flex justify-center items-center">
+                        <div className="p-4 w-[70%] h-full bg-courseGradient rounded-[10px] overflow-hidden flex flex-col justify-center items-center">
                           <div className="text-[#444] font-semibold">
                             {course.name}
+                          </div>
+                          <div className="text-[#444] text-sm">
+                            "{course.description}"
                           </div>
                         </div>
 

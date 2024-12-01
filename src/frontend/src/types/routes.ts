@@ -6,7 +6,12 @@ export type RouteResponse = {
   distance: number;
   fileName: string;
   name: string;
+  description: string;
   tags: string[];
+  toiletCounts: number;
+  storeCounts: number;
+  trafficLightCounts: number;
+  courseLiked: boolean;
 };
 
 export type RouteStore = {
