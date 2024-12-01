@@ -1,7 +1,6 @@
 package RunningMachines.R2R.domain.user.service;
 
 import RunningMachines.R2R.domain.user.dto.UserLoginRequestDto;
-import RunningMachines.R2R.domain.user.dto.UserResponseDto;
 import RunningMachines.R2R.domain.user.dto.UserSignupRequestDto;
 import RunningMachines.R2R.domain.user.entity.User;
 import RunningMachines.R2R.domain.user.repository.UserRepository;
@@ -40,7 +39,7 @@ public class AuthCommandService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
-    public UserResponseDto signup(UserSignupRequestDto signupRequestDto, MultipartFile image) {
+    public TokenDto signup(UserSignupRequestDto signupRequestDto, MultipartFile image) {
         if (userRepository.existsByEmail(signupRequestDto.getEmail())) {
             throw new CustomException(ErrorCode.USER_ALREADY_EXIST);
         }
@@ -57,7 +56,10 @@ public class AuthCommandService {
         }
 
         user.setProfileImageUrl(imageUrl);
-        return UserResponseDto.of(userRepository.save(user));
+
+        userRepository.save(user);
+
+        return createToken(signupRequestDto.getEmail(), signupRequestDto.getPassword());
     }
 
     public TokenDto login(UserLoginRequestDto userLoginRequestDto) {
@@ -71,9 +73,14 @@ public class AuthCommandService {
             throw new CustomException(ErrorCode.USER_INVALID_PASSWORD);
         }
 
+        return createToken(userLoginRequestDto.getEmail(), userLoginRequestDto.getPassword());
+    }
+
+    private TokenDto createToken(String email, String password) {
+
         // 로그인 정보를 기반으로 AuthenticationToken 생성
         // AuthenticationToken 객체는 로그인에서 입력 받은 정보를 가지고 있으며, 스프링 시큐리티 인증에 사용
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userLoginRequestDto.getEmail(), userLoginRequestDto.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
 
         // authenticate로 실제 인증 과정 시작
         // authenticationManagerBuilder를 통해 생성된 AuthenticationManager가 CustomUserDetailsService의 loadUserByUsername 메서드 호출해 사용자 정보 검증
@@ -83,10 +90,11 @@ public class AuthCommandService {
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
         // RefreshToken 저장
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         user.updateRefreshToken(tokenDto.getRefreshToken());
         userRepository.save(user);
 
-        // 토큰 발급
         return tokenDto;
     }
 
