@@ -23,11 +23,7 @@ class GPXProcessor:
 
     def calculate_distances(self, points):
         coords = points[:, :2]
-        distances = np.array([
-            geodesic(coords[i], coords[i + 1]).meters
-            for i in range(len(coords) - 1)
-        ])
-        return distances
+        return np.array([geodesic(coords[i], coords[i + 1]).meters for i in range(len(coords) - 1)])
 
     def sample_points_by_distance(self, points, distances, interval=500):
         sampled_points = [points[0]]
@@ -44,12 +40,13 @@ class GPXProcessor:
         sampled_coords = sampled_points[:, :2]
         facility_coords = facility_data[['latitude', 'longitude']].to_numpy()
 
-        count = sum(
-            np.any(
-                np.array([geodesic(sample, facility).meters for sample in sampled_coords]) <= radius
-            )
-            for facility in facility_coords
-        )
+        # 전체 샘플 포인트와 시설 사이의 거리를 한 번에 계산하여 효율성 향상
+        distances_to_facilities = np.array([
+            [geodesic(sample, facility).meters for sample in sampled_coords] for facility in facility_coords
+        ])
+        
+        # 각 시설에 대해 반경 내에 있는 샘플 포인트가 있는지 확인
+        count = np.sum(np.any(distances_to_facilities <= radius, axis=1))
         return count
 
     def classify_facilities(self, toilets, conv_stores):
@@ -69,7 +66,7 @@ class GPXProcessor:
 
         coords = points[:, :2]
         center = coords.mean(axis=0)
-        center_distances = np.array([geodesic(center, coord).meters for coord in coords])
+        center_distances = np.linalg.norm(coords - center, axis=1)
         center_proximity = np.mean(center_distances < nearby_distance_threshold)
 
         if center_proximity < center_proximity_threshold:
@@ -125,11 +122,10 @@ class GPXProcessor:
 if __name__ == "__main__":
     toilet_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_toilet.csv"
     conv_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_conv.csv"
-    sample_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/서울_서대문구_대현동_45-51.gpx"
+    sample_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering/test_off_c2.gpx"
 
     gpx_processor = GPXProcessor(toilet_data_path, conv_data_path)
     result = gpx_processor.process_gpx_file(sample_file)
 
     new_file_name = f"{result['difficulty']}_{result['facilities']}_{result['track_type']}_{result['distance_km']}Km.gpx"
     print(f"새로운 파일명: {new_file_name}")
-###
