@@ -1,4 +1,4 @@
-import { elevationType } from "@/constants/preference";
+import { preferenceType } from "@/constants/preference";
 import { usePreferencePost } from "@/hooks/useAuth";
 import { PreferenceRequest } from "@/types/signup";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -10,10 +10,9 @@ type Step3Props = {
 const Step3 = ({ setStep }: Step3Props) => {
   const [preferenceStep, setPreferenceStep] = useState(1);
   const [preferenceData, setPreferenceData] = useState<PreferenceRequest>({
-    elevation: elevationType.MEDIUM,
-    nature: true,
-    convenience: true,
-    track: "track",
+    elevation: preferenceType.LOW,
+    convenience: preferenceType.LOW,
+    track: preferenceType.LOW,
   });
 
   const { mutate: preferencePost } = usePreferencePost();
@@ -24,37 +23,30 @@ const Step3 = ({ setStep }: Step3Props) => {
     result: { id: string | boolean; title: string }[];
   }[] = [
     {
-      type: "nature",
-      title: "어떤 코스를 선호하시나요?",
-      result: [
-        { id: true, title: "자연과 함께 하고 싶어요" },
-        { id: false, title: "도시 속에서 뛰는 게 좋아요" },
-      ],
-    },
-    {
       type: "elevation",
       title: "경사가 있는 길을 선호하시나요?",
       result: [
-        { id: "LOW", title: "평평한 길이 좋아요" },
-        { id: "MEDIUM", title: "적당히 경사있는 길이 좋아요" },
-        { id: "HIGH", title: "경사있는 길이 좋아요" },
+        { id: preferenceType.LOW, title: "평평한 길이 좋아요" },
+        { id: preferenceType.MEDIUM, title: "적당히 경사있는 길이 좋아요" },
+        { id: preferenceType.HIGH, title: "경사있는 길이 좋아요" },
       ],
     },
     {
       type: "convenience",
       title: "편의시설(화장실, 편의점)이 있는 코스를 선호하시나요?",
       result: [
-        { id: true, title: "네" },
-        { id: false, title: "아니오" },
+        { id: preferenceType.LOW, title: "네, 좋아요" },
+        { id: preferenceType.MEDIUM, title: "상관 없어요" },
+        { id: preferenceType.HIGH, title: "선호하지 않아요" },
       ],
     },
     {
       type: "track",
       title: "트랙 코스를 선호하시나요?",
       result: [
-        { id: "track", title: "네, 좋아요" },
-        { id: "any", title: "상관 없어요" },
-        { id: "notrack", title: "선호하지 않아요" },
+        { id: preferenceType.LOW, title: "네, 좋아요" },
+        { id: preferenceType.MEDIUM, title: "상관 없어요" },
+        { id: preferenceType.HIGH, title: "선호하지 않아요" },
       ],
     },
   ];

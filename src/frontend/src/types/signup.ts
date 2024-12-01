@@ -13,7 +13,6 @@ export type SignupResponse = {
 
 export type PreferenceRequest = {
   elevation: string;
-  convenience: true;
-  nature: true;
+  convenience: string;
   track: string;
 };
