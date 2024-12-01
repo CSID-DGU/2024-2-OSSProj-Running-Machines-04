@@ -86,7 +86,7 @@ class GPXProcessor:
 if __name__ == "__main__":
     # 추천 경로 및 실제 경로 GPX 파일 경로
     recommended_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/test_off_a2.gpx"
-    actual_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/test_off_a16.gpx"
+    actual_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/test_off_a3.gpx"
 
     # GPX 경로 처리기
     gpx_processor = GPXProcessor(max_distance_tolerance=15)
