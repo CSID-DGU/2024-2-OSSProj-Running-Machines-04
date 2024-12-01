@@ -31,12 +31,21 @@ from concurrent.futures import ThreadPoolExecutor
 
 # CSV 파일 로드 함수
 def load_csv(file_path):
-    return pd.read_csv(file_path) if os.path.exists(file_path) else None
+    try:
+        if os.path.exists(file_path):
+            return pd.read_csv(file_path)
+        else:
+            print(f"File not found: {file_path}")
+            return None
+    except Exception as e:
+        print(f"Error loading CSV file {file_path}: {e}")
+        return None
 
 # GPX 파일 로드 함수 (병렬 처리)
 def load_gpx_files(directory_path):
     gpx_files = []
     if not os.path.exists(directory_path):
+        print(f"Directory not found: {directory_path}")
         return gpx_files
 
     def process_file(file_name):
@@ -51,7 +60,6 @@ def load_gpx_files(directory_path):
                 return None
         return None
 
-    # 병렬로 GPX 파일 처리
     with ThreadPoolExecutor() as executor:
         results = executor.map(process_file, os.listdir(directory_path))
         gpx_files = [result for result in results if result is not None]
@@ -59,7 +67,7 @@ def load_gpx_files(directory_path):
     return gpx_files
 
 # GPX 파일 필터링 함수
-def filter_gpx_within_radius_and_preferences(gpx_files, center_coords, radius, elevation, convenience, track):
+def filter_gpx_within_radius_and_preferences(gpx_files, center_coords, radius, elevation, convenience, track, fallback=False):
     elevation_mapping = {"LOW": "Beginner", "MEDIUM": "Advanced", "HIGH": "Expert"}
     convenience_mapping = {
         "LOW": ["No_Facilities", "Essential_Facilities", "Enhanced_Facilities"],
@@ -78,36 +86,38 @@ def filter_gpx_within_radius_and_preferences(gpx_files, center_coords, radius, e
 
     matching_files = []
 
-    # GPX 파일 필터링
     for file_name, gpx_data in gpx_files:
-        # 파일 이름 선호도 필터링
-        if not (
-            (elevation_pref in file_name) and
-            any(c in file_name for c in convenience_pref) and
-            any(t in file_name for t in track_pref)
-        ):
-            continue
+        try:
+            if not fallback:
+                # 선호도 필터링
+                if not (
+                    (elevation_pref in file_name) and
+                    any(c in file_name for c in convenience_pref) and
+                    any(t in file_name for t in track_pref)
+                ):
+                    continue
 
-        # 첫 번째 점만으로 반경 체크
-        for track in gpx_data.tracks:
-            for segment in track.segments:
-                if segment.points:
-                    first_point_coords = (segment.points[0].latitude, segment.points[0].longitude)
-                    if geodesic(center_coords, first_point_coords).meters > radius:
-                        break
-                # 트랙 포인트 중 하나라도 반경 내에 있으면 추가
-                for point in segment.points:
-                    point_coords = (point.latitude, point.longitude)
-                    distance = geodesic(center_coords, point_coords).meters
-                    if distance <= radius:
-                        matching_files.append((file_name, gpx_data, distance))
-                        break
+            # 반경 체크
+            for track in gpx_data.tracks:
+                for segment in track.segments:
+                    if segment.points:
+                        first_point_coords = (segment.points[0].latitude, segment.points[0].longitude)
+                        if geodesic(center_coords, first_point_coords).meters > radius:
+                            break
+                    for point in segment.points:
+                        point_coords = (point.latitude, point.longitude)
+                        distance = geodesic(center_coords, point_coords).meters
+                        if distance <= radius:
+                            matching_files.append((file_name, gpx_data, distance))
+                            break
+                    else:
+                        continue
+                    break
                 else:
                     continue
                 break
-            else:
-                continue
-            break
+        except Exception as e:
+            print(f"Error processing GPX data in file {file_name}: {e}")
 
     return matching_files
 
@@ -120,11 +130,17 @@ def print_filtered_files(gpx_files, center_coords, radius, elevation, convenienc
     matching_files = filter_gpx_within_radius_and_preferences(
         gpx_files, center_coords, radius, elevation, convenience, track
     )
+
+    if not matching_files: # 만족되는 게 없을 때
+        matching_files = filter_gpx_within_radius_and_preferences(
+            gpx_files, center_coords, radius, elevation, convenience, track, fallback=True
+        )
+
     closest_files = sort_and_limit_by_distance(matching_files, limit=5)
 
     if closest_files:
         for file_name, _, distance in closest_files:
-            print(f"{file_name} ({distance:.2f} meters)")
+            print(f"{file_name}")
     else:
         print(f"No files found within {radius / 1000:.2f} km.")
 
