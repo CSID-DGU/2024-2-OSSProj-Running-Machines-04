@@ -57,4 +57,10 @@ public class GalleryPostController {
         Long commentId = crewPostCommentService.createComment(crewId, postId, requestDto);
         return ResponseEntity.ok(commentId);
     }
+
+    @GetMapping("/{crewPostId}/comments")
+    public ResponseEntity<List<CrewPostCommentResponseDto>> getComments(@PathVariable Long crewId, @PathVariable Long crewPostId) {
+        List<CrewPostCommentResponseDto> comments = crewPostCommentService.getComments(crewPostId);
+        return ResponseEntity.ok(comments);
+    }
 }
