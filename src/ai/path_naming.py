@@ -1,9 +1,11 @@
 import os
-import gpxpy
 import pandas as pd
 import numpy as np
 from geopy.distance import geodesic
 from sklearn.neighbors import KDTree
+import lxml.etree
+import ast
+import json
 
 class GPXProcessor:
     def __init__(self, toilet_data_path, conv_data_path, trafficlight_data_path):
@@ -19,12 +21,21 @@ class GPXProcessor:
 
     def extract_gpx_points(self, file_path):
         points = []
-        with open(file_path, 'r', encoding='utf-8') as gpx_file:
-            gpx = gpxpy.parse(gpx_file)
-            for track in gpx.tracks:
-                for segment in track.segments:
-                    for point in segment.points:
-                        points.append((point.latitude, point.longitude, point.elevation if point.elevation else 0))
+        with open(file_path, 'rb') as gpx_file:
+            # lxml을 이용하여 GPX 파일 파싱
+            tree = lxml.etree.parse(gpx_file)
+            root = tree.getroot()
+            
+            # GPX 파일에서 트랙 정보를 추출 (gpx 태그는 네임스페이스가 있을 수 있음)
+            for trk in root.findall('.//{http://www.topografix.com/GPX/1/1}trk'):
+                for trkseg in trk.findall('{http://www.topografix.com/GPX/1/1}trkseg'):
+                    for trkpt in trkseg.findall('{http://www.topografix.com/GPX/1/1}trkpt'):
+                        lat = float(trkpt.get('lat'))
+                        lon = float(trkpt.get('lon'))
+                        ele = trkpt.find('{http://www.topografix.com/GPX/1/1}ele').text
+                        ele = float(ele) if ele else 0
+                        points.append((lat, lon, ele))
+
         return np.array(points)
 
     def calculate_distances(self, points):
@@ -46,6 +57,10 @@ class GPXProcessor:
     def classify_facilities(self, toilets, conv_stores, trafficlights):
         total_facilities = toilets + conv_stores + trafficlights
 =======
+<<<<<<< HEAD
+    def classify_facilities(self, toilets, conv_stores, trafficlights):
+        total_facilities = toilets + conv_stores + trafficlights
+=======
     def count_nearby_facilities(self, sampled_points, facility_data, radius=500):
         sampled_coords = sampled_points[:, :2]
         facility_coords = facility_data[['latitude', 'longitude']].to_numpy()
@@ -61,6 +76,7 @@ class GPXProcessor:
     def classify_facilities(self, toilets, conv_stores):
         total_facilities = toilets + conv_stores
 >>>>>>> c0f5ef907e1cd005e43fe386271377e33c4e6fb1
+>>>>>>> 290b91406037600c96fd6913cf5c8f9ba4c4937f
         if total_facilities == 0:
             return "No_Facilities"
         elif total_facilities >= 23:
@@ -174,10 +190,42 @@ class GPXProcessor:
             "Convenience": convenience_value,
             "trafficlight_counts": trafficlight_count,
         }
+        
+def transform_coordinates_to_json(row, column_name):
+    try:
+        # 좌표가 이미 리스트 형태로 되어있으면 바로 사용
+        coords_list = row[column_name]  # 예: [(37.5139956, 126.8828703), (37.5172147, 126.8837416), ...]
+        
+        # 좌표 리스트를 lat, lon 형식으로 변환하여 JSON으로 변환
+        json_coords = [{"lat": coord[0], "lon": coord[1]} for coord in coords_list]
+        
+        return json.dumps(json_coords)  # JSON 형식으로 변환하여 반환
+    except Exception as e:
+        print(f"좌표 변환 오류 발생: {row[column_name]}")
+        return None
 
 if __name__ == "__main__":
     toilet_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_toilet.csv"
     conv_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_conv.csv"
+<<<<<<< HEAD
+    trafficlight_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_trafficlight.csv"
+    sample_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/gpx/20_Beginner_Enhanced_Facilities_Track_0.3Km.gpx"
+
+    processor = GPXProcessor(toilet_data_path, conv_data_path, trafficlight_data_path)
+    processed_data = processor.process_gpx_file(sample_file)
+
+    # 한 줄씩 출력
+    print(f"name: {processed_data['name']}")
+    print(f"toilet_counts: {processed_data['toilet_counts']}")
+    print(f"toilet_location: {transform_coordinates_to_json(processed_data, 'toilet_location')}")
+    print(f"store_counts: {processed_data['store_counts']}")
+    print(f"store_location: {transform_coordinates_to_json(processed_data, 'store_location')}")
+    print(f"distance_km: {processed_data['distance_km']}")
+    print(f"Track: {processed_data['Track']}")
+    print(f"Elevation: {processed_data['Elevation']}")
+    print(f"Convenience: {processed_data['Convenience']}")
+    print(f"trafficlight_counts: {processed_data['trafficlight_counts']}")
+=======
 <<<<<<< HEAD
     trafficlight_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_trafficlight.csv"
     sample_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/gpx/20_Beginner_Enhanced_Facilities_Track_0.3Km.gpx"
@@ -221,3 +269,4 @@ if __name__ == "__main__":
     print(f"새로운 파일명: {new_file_name}")
 ###
 >>>>>>> c0f5ef907e1cd005e43fe386271377e33c4e6fb1
+>>>>>>> 290b91406037600c96fd6913cf5c8f9ba4c4937f
