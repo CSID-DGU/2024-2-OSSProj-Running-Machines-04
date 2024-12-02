@@ -1,9 +1,8 @@
-from sklearn.cluster import DBSCAN
-import numpy as np
 import os
+import numpy as np
 import xml.etree.ElementTree as ET
 from geopy.distance import geodesic
-from sklearn.metrics.pairwise import cosine_similarity
+from fastdtw import fastdtw
 
 class GPXProcessor:
     def __init__(self, max_distance_tolerance=20):
@@ -61,14 +60,10 @@ class GPXProcessorWithDTW(GPXProcessor):
         """경로를 벡터로 변환 (위도와 경도를 하나의 벡터로 결합)"""
         return np.array([point for point in path])
 
-    def calculate_vector_similarity(self, path1, path2):
-        """코사인 유사도로 경로 유사도 계산"""
-        path1_vec = self.vectorize_path(path1)
-        path2_vec = self.vectorize_path(path2)
-
-        # 경로의 벡터들 간의 코사인 유사도 계산
-        similarity = cosine_similarity(path1_vec, path2_vec)
-        return similarity.mean()  # 평균 유사도를 반환
+    def calculate_dtw_similarity(self, path1, path2):
+        """DTW 기반 경로 유사도 계산"""
+        distance, _ = fastdtw(path1, path2)  # fastdtw를 사용해 DTW 거리 계산
+        return 1 / (1 + distance)  # DTW 거리를 기반으로 유사도를 계산 (거리 작을수록 유사도 높음)
 
     def check_path_completion(self, recommended_path, actual_path):
         """추천 경로를 따라 뛰었는지 여부 확인"""
@@ -91,57 +86,90 @@ class GPXProcessorWithDTW(GPXProcessor):
         else:
             return f"Warning: 경로를 새 경로로 등록해야 합니다. 이탈률: {deviation_rate:.2f}%"
 
-
 class PathClusterer:
-    def __init__(self, processor, max_distance_tolerance=20, eps=0.05, min_samples=5):
+    def __init__(self, processor, max_distance_tolerance=20):
         self.processor = processor
         self.max_distance_tolerance = max_distance_tolerance
-        self.eps = eps  # DBSCAN의 eps (거리 기준)
-        self.min_samples = min_samples  # DBSCAN의 min_samples (군집 최소 점수)
 
     def extract_features(self, path):
         """경로에서 위도, 경도를 사용하여 특성 추출"""
         return np.array([point for point in path])  # 경로의 위도, 경도를 벡터로 반환
 
     def calculate_distance_matrix(self, paths):
-        """경로들 간의 이탈률을 기준으로 거리 행렬 생성"""
+        """경로들 간의 유사도를 기준으로 거리 행렬 생성"""
         n = len(paths)
-        distance_matrix = np.zeros((n, n))
+        similarity_matrix = np.zeros((n, n))
 
         for i in range(n):
             for j in range(i + 1, n):
-                # 경로 간 이탈률 계산
                 try:
-                    deviation_rate = self.processor.calculate_deviation_rate(paths[i][1], paths[j][1])
-                    distance_matrix[i][j] = deviation_rate
-                    distance_matrix[j][i] = deviation_rate
+                    # 경로 간 유사도 계산
+                    similarity = self.processor.calculate_dtw_similarity(paths[i][1], paths[j][1])
+                    similarity_matrix[i][j] = similarity
+                    similarity_matrix[j][i] = similarity
                 except StopIteration:
                     # 결과가 없을 때는 경로 간 계산을 건너뛰거나 적절히 처리
-                    print(f"경로 {i}와 경로 {j} 간 이탈률 계산 중 오류 발생.")
-                    distance_matrix[i][j] = np.inf  # 이탈률을 무한대로 설정하여 계산을 건너뜀
-                    distance_matrix[j][i] = np.inf
+                    print(f"경로 {i}와 경로 {j} 간 유사도 계산 중 오류 발생.")
+                    similarity_matrix[i][j] = 0  # 유사도를 0으로 설정하여 계산을 건너뜀
+                    similarity_matrix[j][i] = 0
 
-        return distance_matrix
+        return similarity_matrix
 
     def cluster_paths(self, paths):
-        """DBSCAN을 사용하여 경로 군집화"""
-        # 경로들의 거리 행렬 계산
-        distance_matrix = self.calculate_distance_matrix(paths)
-        
-        # DBSCAN 모델
-        clustering = DBSCAN(eps=self.eps, min_samples=self.min_samples, metric="precomputed")
-        clustering.fit(distance_matrix)
+        """유사도를 기준으로 경로들을 비교하여 유사한 경로들을 그룹화"""
+        # 경로들의 유사도 행렬 계산
+        similarity_matrix = self.calculate_distance_matrix(paths)
 
-        # 군집화된 경로들 출력
-        clustered_paths = {}
-        for cluster_id in set(clustering.labels_):
-            clustered_paths[cluster_id] = []
+        # 경로들을 클러스터링 하기 위한 데이터 구조
+        visited = set()  # 방문한 경로를 추적
+        clusters = []  # 최종 클러스터링 결과
 
         for i, file in enumerate(paths):
-            cluster_id = clustering.labels_[i]
-            clustered_paths[cluster_id].append(file[0])
+            if i in visited:
+                continue  # 이미 클러스터에 포함된 경로는 건너뜀
 
-        return clustered_paths
+            cluster = [file[0]]  # 첫 번째 경로를 클러스터에 포함
+            visited.add(i)
+
+            for j in range(i + 1, len(paths)):
+                if j not in visited:
+                    # 유사도가 90% 이상인 경우 같은 클러스터로 묶기
+                    if similarity_matrix[i][j] >= 0.85 :
+                        cluster.append(paths[j][0])
+                        visited.add(j)
+
+            if len(cluster) >= 3:  # 클러스터에 경로가 3개 이상이면 클러스터로 저장
+                clusters.append(cluster)
+
+        return clusters
+
+def extract_representative_from_clusters(self, clusters, paths):
+    """각 클러스터에서 유사도가 가장 높은 경로를 대표 경로로 추출"""
+    representative_paths = []
+    non_representative_paths = []
+
+    # 각 클러스터에서 유사도가 가장 높은 경로를 대표 경로로 선정
+    for cluster in clusters:
+        # 클러스터 내 모든 경로들 간의 유사도를 계산하여 가장 유사한 경로를 찾음
+        max_similarity = -1
+        representative_path = None
+
+        for i, path_a in enumerate(cluster):
+            for j, path_b in enumerate(cluster):
+                if i != j:
+                    similarity = self.processor.calculate_dtw_similarity(paths[path_a][1], paths[path_b][1])
+                    if similarity > max_similarity:
+                        max_similarity = similarity
+                        representative_path = path_a
+
+        representative_paths.append(representative_path)  # 가장 유사한 경로를 대표 경로로 선정
+        # 나머지 경로들은 비대표 경로로 분류
+        for path in cluster:
+            if path != representative_path:
+                non_representative_paths.append(path)
+
+    return representative_paths, non_representative_paths
+
 
 
 if __name__ == "__main__":
@@ -149,24 +177,42 @@ if __name__ == "__main__":
     directory_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering"
     gpx_processor = GPXProcessorWithDTW(max_distance_tolerance=20)
 
+    # GPX 파일 로드
     gpx_files = [
         (file, gpx_processor.extract_gpx_points(os.path.join(directory_path, file)))
         for file in os.listdir(directory_path) if file.endswith(".gpx")
     ]
-
-    # 추천 경로와 새 경로의 비교
-    recommended_path = gpx_processor.extract_gpx_points("C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering/test_off_a2.gpx")
+    
+    # 추천 경로와 실제 경로의 비교
+    recommended_path = gpx_processor.extract_gpx_points("C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering/test_off_a1.gpx")
     actual_path = gpx_processor.extract_gpx_points("C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering/test_off_a2.gpx")
 
     # 실제 경로와 추천 경로 비교
     result = gpx_processor.check_path_completion(recommended_path, actual_path)
-    print(f"경로 비교 결과: {result}")
+    print(f"{result}")
 
-    # 경로 군집화
+    # 경로 유사도 비교 및 군집화
     path_clusterer = PathClusterer(gpx_processor)
-    clustered_paths = path_clusterer.cluster_paths(gpx_files)
+    clusters = path_clusterer.cluster_paths(gpx_files)
 
-    # 묶인 경로 출력
-    print("군집화된 경로들:")
-    for cluster_id, paths in clustered_paths.items():
-        print(f"군집 {cluster_id}: {paths}")
+    # 각 클러스터에서 대표 경로를 추출하고, 비대표 경로와 분리
+    representative_paths, non_representative_paths = path_clusterer.extract_representative_from_clusters(clusters, gpx_files)
+
+    # 결과 출력
+    for i, cluster in enumerate(clusters):
+        print(f"\ncluster {i} 경로:")
+        for path in cluster:
+            print(f"- {path}")
+
+        # 해당 클러스터의 대표 경로 출력
+        print(f"\ncluster {i} 대표경로:")
+        if cluster:
+            print(f"- {cluster[0]}")  # 첫 번째 경로가 대표 경로
+
+        # 해당 클러스터의 비대표 경로 출력
+        print(f"\ncluster {i} 비대표경로:")
+        non_rep_paths = [path for path in cluster if path != cluster[0]]  # 대표 경로를 제외한 나머지
+        for non_rep_path in non_rep_paths:
+            print(f"- {non_rep_path}")
+
+    
