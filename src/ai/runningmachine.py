@@ -1,59 +1,36 @@
-#################### Library install ####################
-## *********** 한 번 실행하고 각주 처리를 해야함 ***********
-# import subprocess
-# import sys
-
-# def install_package(package_name):
-#     try:
-#         subprocess.check_call([sys.executable, "-m", "pip", "install", package_name, "--user"])
-#         print(f"'{package_name}' install success")
-#     except subprocess.CalledProcessError as e:
-#         print(f"'{package_name}' error happened: {e}")
-
-# # install list 
-# packages = ["folium", "gpxpy", "geopy"]
-
-# for package in packages:
-#     install_package(package)
-
-# # install check
-# print("all packages installed")
-##########################################################
-
-## gpx 파일들, 가로등, 신호등, 편의점, 화장실 데이터 load ###
-## *********** 한 번 실행하고 각주 처리를 해야함 ***********
-
 import os
-import gpxpy
+from lxml import etree
 import pandas as pd
-from geopy.distance import geodesic
-from concurrent.futures import ThreadPoolExecutor
+from math import radians, sin, cos, sqrt, atan2
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# CSV 파일 로드 함수
-def load_csv(file_path):
-    try:
-        if os.path.exists(file_path):
-            return pd.read_csv(file_path)
-        else:
-            return None
-    except Exception as e:
-        return None
+# 거리 계산 함수 (Haversine Formula)
+def haversine_distance(coord1, coord2):
+    R = 6371e3  # 지구 반지름 (미터)
+    lat1, lon1 = radians(coord1[0]), radians(coord1[1])
+    lat2, lon2 = radians(coord2[0]), radians(coord2[1])
 
-# GPX 파일 로드 함수 (병렬 처리)
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    return R * c
+
+# GPX 파일 로드 함수 (lxml 사용)
 def load_gpx_files(directory_path):
     gpx_files = []
     if not os.path.exists(directory_path):
         return gpx_files
 
     def process_file(file_name):
+        file_path = os.path.join(directory_path, file_name)
         if file_name.endswith(".gpx"):
-            file_path = os.path.join(directory_path, file_name)
             try:
-                with open(file_path, 'r', encoding='utf-8') as gpx_file:
-                    gpx_data = gpxpy.parse(gpx_file)
-                    return (file_name, gpx_data)
+                with open(file_path, 'rb') as gpx_file:
+                    tree = etree.parse(gpx_file)
+                    return (file_name, tree)
             except Exception as e:
-                return None
+                print(f"Error parsing GPX file {file_name}: {e}")
         return None
 
     with ThreadPoolExecutor() as executor:
@@ -80,104 +57,89 @@ def filter_gpx_within_radius_and_preferences(gpx_files, center_coords, radius, e
     convenience_pref = convenience_mapping.get(convenience.upper(), [])
     track_pref = track_mapping.get(track.upper(), [])
 
-    def is_matching(file_name):
-        # 파일 이름 기반 필터링
-        return (
-            (elevation_pref in file_name) and
+    def is_within_radius_and_preferences(file_name, tree):
+        namespace = {"ns": "http://www.topografix.com/GPX/1/1"}
+        first_point = tree.xpath("//ns:trkpt[1]", namespaces=namespace)
+        if not first_point:
+            return None
+
+        lat = float(first_point[0].get("lat"))
+        lon = float(first_point[0].get("lon"))
+        distance = haversine_distance(center_coords, (lat, lon))
+        if distance > radius:
+            return None
+
+        if (
+            elevation_pref in file_name and
             any(c in file_name for c in convenience_pref) and
             any(t in file_name for t in track_pref)
-        )
+        ):
+            return (file_name, tree, distance)
+
+        return None
 
     matching_files = []
 
-    def process_gpx(file_name, gpx_data):
-        if not is_matching(file_name):
-            return None
-
-        for track in gpx_data.tracks:
-            for segment in track.segments:
-                if segment.points:
-                    first_point_coords = (segment.points[0].latitude, segment.points[0].longitude)
-                    distance = geodesic(center_coords, first_point_coords).meters
-                    if distance <= radius:
-                        return (file_name, gpx_data, distance)
-        return None
-
-    # 병렬 처리로 필터링
     with ThreadPoolExecutor() as executor:
-        results = executor.map(lambda x: process_gpx(*x), gpx_files)
-        matching_files = [result for result in results if result is not None]
+        futures = [
+            executor.submit(is_within_radius_and_preferences, file_name, tree)
+            for file_name, tree in gpx_files
+        ]
+        for future in as_completed(futures):
+            result = future.result()
+            if result:
+                matching_files.append(result)
 
     return matching_files
 
-# 가까운 파일 정렬 및 제한
+# 가까운 파일 정렬 및 상위 5개 제한
 def sort_and_limit_by_distance(matching_files, limit=5):
     return sorted(matching_files, key=lambda x: x[2])[:limit]
 
-# 추가 경로 채우기 함수 (Elevation 조건 한정)
-def fill_additional_files(gpx_files, matching_files, center_coords, elevation, radius, limit=5):
-    selected_files = {file[0] for file in matching_files}
+# 부족한 결과를 가장 가까운 파일로 채우기
+def fill_closest_files(gpx_files, center_coords, limit=5):
+    def calculate_distance(file_data):
+        file_name, tree = file_data[:2]
+        namespace = {"ns": "http://www.topografix.com/GPX/1/1"}
+        first_point = tree.xpath("//ns:trkpt[1]", namespaces=namespace)
+        if not first_point:
+            return float("inf")
+        lat = float(first_point[0].get("lat"))
+        lon = float(first_point[0].get("lon"))
+        return haversine_distance(center_coords, (lat, lon))
 
-    elevation_mapping = {"LOW": "Beginner", "MEDIUM": "Advanced", "HIGH": "Expert"}
-    elevation_pref = elevation_mapping.get(elevation.upper())
-
-    def process_gpx(file_name, gpx_data):
-        if file_name in selected_files or elevation_pref not in file_name:
-            return None
-        for track in gpx_data.tracks:
-            for segment in track.segments:
-                if segment.points:
-                    first_point_coords = (segment.points[0].latitude, segment.points[0].longitude)
-                    distance = geodesic(center_coords, first_point_coords).meters
-                    if distance <= radius:
-                        return (file_name, gpx_data, distance)
-        return None
-
-    # 병렬 처리로 추가 파일 탐색
-    with ThreadPoolExecutor() as executor:
-        results = executor.map(lambda x: process_gpx(*x), gpx_files)
-        additional_files = [result for result in results if result is not None]
-
-    # 가까운 거리 순으로 정렬 후 추가
-    additional_files = sorted(additional_files, key=lambda x: x[2])
-    for file in additional_files:
-        if len(matching_files) >= limit:
-            break
-        matching_files.append(file)
-
-    return matching_files
+    # 모든 파일에 대해 거리 계산
+    closest_files = [
+        (file_name, tree, calculate_distance((file_name, tree)))
+        for file_name, tree in gpx_files
+    ]
+    # 거리 기준으로 정렬
+    return sorted(closest_files, key=lambda x: x[2])[:limit]
 
 # 결과 출력 함수
 def print_filtered_files(gpx_files, center_coords, radius, elevation, convenience, track):
+    # 조건에 맞는 파일 필터링
     matching_files = filter_gpx_within_radius_and_preferences(
         gpx_files, center_coords, radius, elevation, convenience, track
     )
 
     if len(matching_files) < 5:
-        matching_files = fill_additional_files(
-            gpx_files, matching_files, center_coords, elevation, radius
-        )
-
-    closest_files = sort_and_limit_by_distance(matching_files, limit=5)
-
-    # 반환할 결과 리스트 생성
-    result = []
-
-    if closest_files:
-        for file_name, _, distance in closest_files:
-            # print(f"{file_name}")
-            result.append({"file_name": file_name})
+        closest_files = fill_closest_files(gpx_files, center_coords, limit=5)
     else:
-        # print(f"No files found within {radius / 1000:.2f} km.")
-        result = {"message": f"No files found within {radius / 1000:.2f} km."}
-    return result
+        closest_files = sort_and_limit_by_distance(matching_files, limit=5)
 
+    # 출력
+    if closest_files:
+        for i, (file_name, _, distance) in enumerate(closest_files, start=1):
+            print(f"{i}. {file_name}")
 
 # 메인 실행
 if __name__ == "__main__":
+    # GPX 파일 로드
     gpx_directory = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/gpx"
     gpx_files = load_gpx_files(gpx_directory)
 
+    # 필터링 설정
     center_coords = (37.511989, 127.091)
     radius_threshold = 2500
 
@@ -185,4 +147,7 @@ if __name__ == "__main__":
     convenience_preference = input("Convenience preference (LOW, MEDIUM, HIGH): ").strip()
     track_preference = input("Track preference (LOW, MEDIUM, HIGH): ").strip()
 
-    print_filtered_files(gpx_files, center_coords, radius_threshold, elevation_preference, convenience_preference, track_preference)
+    # 결과 출력
+    print_filtered_files(
+        gpx_files, center_coords, radius_threshold, elevation_preference, convenience_preference, track_preference
+    )
