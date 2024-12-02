@@ -1,3 +1,22 @@
+# import subprocess
+# import sys
+# def install_package(package):
+#     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+# # 필요한 패키지 목록
+# packages = [
+#     'lxml',
+#     'gpxpy',
+#     'geopy',
+#     'pandas',
+#     'scikit-learn',
+#     'numpy'
+# ]
+# # 설치 함수 실행
+# for package in packages:
+#     install_package(package)
+# print("필요한 패키지가 설치되었습니다!")
+
+
 import os
 from lxml import etree
 import pandas as pd
