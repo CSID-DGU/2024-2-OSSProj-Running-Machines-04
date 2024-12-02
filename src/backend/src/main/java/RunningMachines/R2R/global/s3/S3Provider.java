@@ -31,6 +31,21 @@ public class S3Provider {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    // S3에 GPX 업로드 (원본파일명 그대로)
+    public String uploadGPX(MultipartFile file, S3RequestDto s3RequestDto) {
+
+        String originalFilename = file.getOriginalFilename(); // 원본 파일명
+        String fileName = s3RequestDto.getDirName() + "/" + s3RequestDto.getUserId() + "/" + originalFilename;
+
+        try {
+            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, file.getInputStream(), new ObjectMetadata()));
+        } catch (IOException e) {
+            log.error("error at AmazonS3Manager uploadFile : {}", (Object) e.getStackTrace());
+            throw new CustomException(ErrorCode.FILE_UPLOAD_FAILED);
+        }
+        return amazonS3Client.getUrl(bucket, fileName).toString(); // 업로드 후 URL 반환
+    }
+
     // S3에 파일 업로드
     public String uploadFile(MultipartFile file, S3RequestDto s3RequestDto){
 
