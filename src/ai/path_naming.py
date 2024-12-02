@@ -3,8 +3,9 @@ import pandas as pd
 import numpy as np
 from geopy.distance import geodesic
 from sklearn.neighbors import KDTree
-import lxml.etree  # lxml 임포트
-
+import lxml.etree 
+import ast
+import json
 class GPXProcessor:
     def __init__(self, toilet_data_path, conv_data_path, trafficlight_data_path):
         # 데이터 로드
@@ -179,22 +180,16 @@ if __name__ == "__main__":
     result_df = pd.DataFrame([result])
 
     # 좌표 데이터를 변환하는 함수 정의
-    def transform_location(coord_list):
-    
-        formatted_coords = []
-        for coord in coord_list:
-            try:
-                lat, lon = coord
-                formatted_coords.append({"lat": lat, "lon": lon})
-            except ValueError:
-                print("좌표 변환 오류 발생:", coord)
-                continue
-            return formatted_coords
-
-    # 처리된 데이터프레임에서 변환된 데이터를 적용
-    result_df["toilet_location"] = result_df["toilet_location"].apply(transform_location)
-    result_df["store_location"] = result_df["store_location"].apply(transform_location)
+    def transform_coordinates_to_json(coords_str):
+        try:
+            coords = ast.literal_eval(coords_str)  # 문자열을 리스트로 변환
+            transformed = [{"lat": lat, "lon": lon} for lat, lon in coords]  # JSON 형식으로 변환
+            return json.dumps(transformed, ensure_ascii=False)  # JSON 형식으로 반환
+        except (ValueError, SyntaxError) as e:
+            print(f"좌표 변환 오류 발생: {coords_str} -> {e}")
+            return None  # 오류 발생 시 None 반환
+    result_df["toilet_location"] = result_df["toilet_location"].apply(transform_coordinates_to_json)
+    result_df["store_location"] = result_df["store_location"].apply(transform_coordinates_to_json)
 
     # 데이터프레임 출력
     print(result_df.to_string())
-
