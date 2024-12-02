@@ -8,6 +8,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfig {
     @Bean
     public WebClient webClient(WebClient.Builder builder) {
-        return builder.baseUrl("http://localhost:8000").build(); // TODO - 파이썬 모델 배포 후 url 수정
+        return builder.baseUrl("http://52.79.104.183:8000").build();
     }
 }

@@ -160,11 +160,18 @@ def print_filtered_files(gpx_files, center_coords, radius, elevation, convenienc
 
     closest_files = sort_and_limit_by_distance(matching_files, limit=5)
 
+    # 반환할 결과 리스트 생성
+    result = []
+
     if closest_files:
         for file_name, _, distance in closest_files:
-            print(f"{file_name}")
+            # print(f"{file_name}")
+            result.append({"file_name": file_name})
     else:
-        print(f"No files found within {radius / 1000:.2f} km.")
+        # print(f"No files found within {radius / 1000:.2f} km.")
+        result = {"message": f"No files found within {radius / 1000:.2f} km."}
+    return result
+
 
 # 메인 실행
 if __name__ == "__main__":

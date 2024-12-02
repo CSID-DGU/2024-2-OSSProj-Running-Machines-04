@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,4 +51,21 @@ public class CrewPostCommentService {
         return savedComment.getId();
     }
 
+    @Transactional(readOnly = true)
+    public List<CrewPostCommentResponseDto> getComments(Long crewPostId) {
+        CrewPost crewPost = crewPostRepository.findById(crewPostId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        List<CrewPostComment> comments = crewPostCommentRepository.findByCrewPost(crewPost);
+
+        return comments.stream()
+                .map(comment -> CrewPostCommentResponseDto.builder()
+                        .commentId(comment.getId())
+                        .content(comment.getContent())
+                        .authorName(comment.getUser().getNickname())
+                        .authorProfile(comment.getUser().getProfileImageUrl())
+                        .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
