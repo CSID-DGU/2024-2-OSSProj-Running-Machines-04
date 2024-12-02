@@ -3,9 +3,10 @@ import pandas as pd
 import numpy as np
 from geopy.distance import geodesic
 from sklearn.neighbors import KDTree
-import lxml.etree 
+import lxml.etree
 import ast
 import json
+
 class GPXProcessor:
     def __init__(self, toilet_data_path, conv_data_path, trafficlight_data_path):
         # 데이터 로드
@@ -167,6 +168,19 @@ class GPXProcessor:
             "Convenience": convenience_value,
             "trafficlight_counts": trafficlight_count,
         }
+        
+def transform_coordinates_to_json(row, column_name):
+    try:
+        # 좌표가 이미 리스트 형태로 되어있으면 바로 사용
+        coords_list = row[column_name]  # 예: [(37.5139956, 126.8828703), (37.5172147, 126.8837416), ...]
+        
+        # 좌표 리스트를 lat, lon 형식으로 변환하여 JSON으로 변환
+        json_coords = [{"lat": coord[0], "lon": coord[1]} for coord in coords_list]
+        
+        return json.dumps(json_coords)  # JSON 형식으로 변환하여 반환
+    except Exception as e:
+        print(f"좌표 변환 오류 발생: {row[column_name]}")
+        return None
 
 if __name__ == "__main__":
     toilet_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_toilet.csv"
@@ -174,22 +188,18 @@ if __name__ == "__main__":
     trafficlight_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_trafficlight.csv"
     sample_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/gpx/20_Beginner_Enhanced_Facilities_Track_0.3Km.gpx"
 
-    gpx_processor = GPXProcessor(toilet_data_path, conv_data_path, trafficlight_data_path)
-    result = gpx_processor.process_gpx_file(sample_file)
-    
-    result_df = pd.DataFrame([result])
+    processor = GPXProcessor(toilet_data_path, conv_data_path, trafficlight_data_path)
+    processed_data = processor.process_gpx_file(sample_file)
 
-    # 좌표 데이터를 변환하는 함수 정의
-    def transform_coordinates_to_json(coords_str):
-        try:
-            coords = ast.literal_eval(coords_str)  # 문자열을 리스트로 변환
-            transformed = [{"lat": lat, "lon": lon} for lat, lon in coords]  # JSON 형식으로 변환
-            return json.dumps(transformed, ensure_ascii=False)  # JSON 형식으로 반환
-        except (ValueError, SyntaxError) as e:
-            print(f"좌표 변환 오류 발생: {coords_str} -> {e}")
-            return None  # 오류 발생 시 None 반환
-    result_df["toilet_location"] = result_df["toilet_location"].apply(transform_coordinates_to_json)
-    result_df["store_location"] = result_df["store_location"].apply(transform_coordinates_to_json)
+    # 한 줄씩 출력
+    print(f"name: {processed_data['name']}")
+    print(f"toilet_counts: {processed_data['toilet_counts']}")
+    print(f"toilet_location: {transform_coordinates_to_json(processed_data, 'toilet_location')}")
+    print(f"store_counts: {processed_data['store_counts']}")
+    print(f"store_location: {transform_coordinates_to_json(processed_data, 'store_location')}")
+    print(f"distance_km: {processed_data['distance_km']}")
+    print(f"Track: {processed_data['Track']}")
+    print(f"Elevation: {processed_data['Elevation']}")
+    print(f"Convenience: {processed_data['Convenience']}")
+    print(f"trafficlight_counts: {processed_data['trafficlight_counts']}")
 
-    # 데이터프레임 출력
-    print(result_df.to_string())
