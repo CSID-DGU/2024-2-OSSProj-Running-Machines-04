@@ -78,7 +78,7 @@ import requests
 import os
 
 # 이제 src 폴더가 Python 경로에 포함되어 'runningmachine' 모듈을 불러올 수 있습니다.
-from runningmachine import print_filtered_files, load_csv
+from runningmachine import print_filtered_files
 
 app = FastAPI()
 
