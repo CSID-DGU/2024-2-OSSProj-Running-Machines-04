@@ -31,6 +31,7 @@ public class Course extends BaseEntity {
 
     private Long toiletCounts; // 화장실 개수
 
+    // TODO - 위경도 리스트 json으로 DB에 넣을 수 있는지 확인 후 데이터 추가
     @Lob
     @Column(columnDefinition = "json")
     private String toiletLocation; // 화장실 위경도
@@ -42,7 +43,6 @@ public class Course extends BaseEntity {
     private String storeLocation; // 편의점 위경도
 
     private Long trafficLightCounts; // 신호등 개수
-
 
 //    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
 //    private List<Review> reviews = new ArrayList<>();

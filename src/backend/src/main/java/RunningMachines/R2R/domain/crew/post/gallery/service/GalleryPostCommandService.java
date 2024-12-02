@@ -60,19 +60,19 @@ public class GalleryPostCommandService {
                 .board(CrewBoard.GALLERY)
                 .build();
 
-        List<CrewPostImage> crewPostImages = new ArrayList<>();
         for (MultipartFile image : images) {
             String imageUrl = s3Provider.uploadFile(image, S3RequestDto.builder()
                     .userId(currentUser.getId())
                     .dirName("gallery")
                     .build());
-            crewPostImages.add(CrewPostImage.builder()
+
+            CrewPostImage crewPostImage = CrewPostImage.builder()
                     .imageUrl(imageUrl)
-                    .crewPost(galleryPost)
-                    .build());
+                    .build();
+
+            galleryPost.addImage(crewPostImage);
         }
 
-        galleryPost.setImages(crewPostImages);
         crewPostRepository.save(galleryPost);
         return galleryPost.getId();
     }

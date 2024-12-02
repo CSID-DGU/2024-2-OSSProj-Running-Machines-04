@@ -1,11 +1,7 @@
 package RunningMachines.R2R.domain.course.service;
 
-import RunningMachines.R2R.domain.course.dto.CourseDetailResponseDto;
 import RunningMachines.R2R.domain.course.dto.CourseResponseDto;
-import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
-import RunningMachines.R2R.domain.course.dto.WaypointDto;
 import RunningMachines.R2R.domain.course.entity.Course;
-import RunningMachines.R2R.domain.course.entity.CourseLike;
 import RunningMachines.R2R.domain.course.entity.Review;
 import RunningMachines.R2R.domain.course.entity.ReviewTag;
 import RunningMachines.R2R.domain.course.repository.CourseLikeRepository;
@@ -15,13 +11,14 @@ import RunningMachines.R2R.domain.user.entity.User;
 import RunningMachines.R2R.domain.user.repository.UserRepository;
 import RunningMachines.R2R.global.exception.CustomException;
 import RunningMachines.R2R.global.exception.ErrorCode;
-import RunningMachines.R2R.global.s3.S3Provider;
-import RunningMachines.R2R.global.util.GpxParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,74 +27,67 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CourseQueryService {
 
-    private final GpxParser gpxParser;
     private final CourseRepository courseRepository;
     private final CourseLikeRepository courseLikeRepository;
     private final ReviewRepository reviewRepository;
-    private final S3Provider s3Provider;
     private final UserRepository userRepository;
+    private final WebClient webClient;
 
-    public List<CourseResponseDto> getCourses(String email, double lat, double lon) {
+    // 위경도 기반 추천 코스 조회
+    public List<CourseResponseDto> getRecommendedCourses(String email, double lat, double lon) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        // S3에서 GPX 파일 목록 가져오기
-        List<String> fileKeys = s3Provider.getCourseFiles();
-//        log.info("총 {}개의 GPX 파일을 가져왔습니다.", fileKeys.size());
+        Map<String, Object> requestBody = Map.of(
+                "latitude", lat,
+                "longitude", lon,
+                "elevation_preference", String.valueOf(user.getPrefer().getElevation()),
+                "convenience_preference", String.valueOf(user.getPrefer().getConvenience()),
+                "track_preference", String.valueOf(user.getPrefer().getTrack())
+        );
 
-        // 파일 처리
-        return fileKeys.stream()
-                .map(fileKey -> processFile(fileKey, user)) // 파일을 처리하여 CourseResponseDto로 변환
-                .toList(); // 리스트로 변환
-    }
+        String endpoint = "/recommendCourse";
 
-    private CourseResponseDto processFile(String fileKey, User user) {
-        // S3에서 파일 URL 및 원본 파일명 가져오기
-        URL url = s3Provider.getFileUrl(fileKey);
-        String courseUrl = url.toString();
-        String fileName = s3Provider.getOriginalFileName(fileKey);
+        List<Map<String, String>> fileNameList = new ArrayList<>();
+        try {
+            // API 호출
+            fileNameList = webClient.post()
+                    .uri(endpoint)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) // Content-Type 명시
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(List.class) // 응답 처리
+                    .block(); // 동기적으로 처리
 
-        Course course = courseRepository.findByFileName(fileName);
-
-        // TODO - 모델 연동 -> 거리, 코스명 데이터 받아 오기
-
-        // 즐겨찾기 여부
-        boolean coursedLike = courseLikeRepository.existsByCourseAndUser(course, user);
-
-        return CourseResponseDto.of(course, courseUrl, fileName, createTags(course.getId(), fileName), coursedLike);
-    }
-
-    // 위경도를 기반으로 가져온 코스 정보 추출
-    public List<CourseDetailResponseDto> getCourseDetails(double lat, double lon) {
-        // 코스 리스트
-        List<GpxResponseDto> gpxs = gpxParser.parseGpxs(lat, lon);
-        // 반환값을 담을 리스트
-        List<CourseDetailResponseDto> courseResponses = new ArrayList<>();
-
-        for (GpxResponseDto gpx : gpxs) {
-            log.info("{}",gpx);
-            String fileName = gpx.getFileName();
-            List<WaypointDto> waypoints = gpx.getWaypoints();
-
-//            double distance = courseRepository.findDistanceByFileName(fileName); // 임시 저장된 거리 데이터
-//            log.info("Course URL: {}, Distance: {}", gpx.getCourseUrl(), distance);
-//            log.info("Course URL: {}]", gpx.getCourseUrl());
-
-            Course course = courseRepository.findByFileName(fileName);
-            double distance = course.getDistance(); // 엔티티의 distance 가져오기
-            String name = course.getName();   // 엔티티의 name 가져오기
-
-            // 파일명으로부터 태그 생성
-            List<String> tags = createTags(course.getId(), fileName);
-
-            // 각 파일에 대한 CourseDetailResponseDto 생성 및 리스트에 추가
-            courseResponses.add(new CourseDetailResponseDto(fileName, waypoints, distance, tags, name));
+        } catch (WebClientResponseException e) {
+            // 서버 응답에 대한 에러 처리
+//            System.err.println("Error during API call: " + e.getResponseBodyAsString());
+            throw new RuntimeException("Failed to call API: " + e.getStatusCode(), e);
+        } catch (Exception e) {
+            // 기타 에러 처리
+//            System.err.println("Unexpected error: " + e.getMessage());
+            throw new RuntimeException("Unexpected error during API call", e);
         }
-        return courseResponses;
+
+        List<CourseResponseDto> courses = new ArrayList<>(); // 결과 담는 리스트
+        if (fileNameList != null) {
+            for (Map<String, String> file : fileNameList) {
+                String fileName = file.get("file_name");
+
+                Course course = courseRepository.findByFileName(fileName);
+
+                boolean coursedLike = courseLikeRepository.existsByCourseAndUser(course, user);
+
+                CourseResponseDto courseResponseDto = CourseResponseDto.of(course, createTags(course, fileName), coursedLike);
+
+                courses.add(courseResponseDto);
+            }
+        }
+        return courses;
     }
 
-    private List<String> createTags(Long courseId, String fileName) {
-        List<Review> reviews = reviewRepository.findByCourseId(courseId);
+    public List<String> createTags(Course course, String fileName) {
+        List<Review> reviews = reviewRepository.findByCourseId(course.getId());
 
         if (!reviews.isEmpty()) {
             List<String> tags = new ArrayList<>();
@@ -130,18 +120,9 @@ public class CourseQueryService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        List<CourseLike> likedCourses = courseLikeRepository.findByUser(user);
-
-        return likedCourses.stream()
-                .map(courseLike -> processLikedCourse(courseLike.getCourse(), user))
+        return courseLikeRepository.findByUser(user).stream()
+                .map(courseLike -> CourseResponseDto.of(courseLike.getCourse(), createTags(courseLike.getCourse(), courseLike.getCourse().getFileName()), true))
                 .toList();
-    }
-
-    private CourseResponseDto processLikedCourse(Course course, User user) {
-        String courseUrl = course.getCourseUrl();
-        String fileName = course.getFileName();
-
-        return CourseResponseDto.of(course, courseUrl, fileName, createTags(course.getId(), fileName), true);
     }
 
     public List<String> allCourseUrl() {
