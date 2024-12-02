@@ -20,7 +20,7 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
     lng: 127.0919,
   });
 
-  // 경로 정보 상태
+  // 추천 경로 정보 상태
   const [state, setState] = useState({
     center: { lat: 37.51265, lng: 127.0919 }, // 기본 위치 (잠실)
     // center: { lat: 37.5665, lng: 126.978 }, // 기본 위치 (서울 시청)
@@ -37,8 +37,8 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
           (position) => {
             // 현재 위치 설정
             setCurrent({
-              lat: 37.51265,
-              lng: 127.0919,
+              lat: 37.5665,
+              lng: 126.978,
               // lat: position.coords.latitude,
               // lng: position.coords.longitude,
             });
@@ -46,13 +46,13 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
             setState((prev) => ({
               ...prev,
               center: {
-                lat: 37.51265,
-                lng: 127.0919,
+                lat: 37.5665,
+                lng: 126.978,
                 // lat: position.coords.latitude,
                 // lng: position.coords.longitude,
               },
             }));
-            fetchGpxData(position.coords.latitude, position.coords.longitude);
+            fetchGpxData(current.lat, current.lng);
           },
           (err) => {
             setState((prev) => ({
@@ -120,6 +120,7 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
           isLoading: false,
         }));
       } catch (err) {
+        console.log("실패");
         // 실패시
         setState((prev) => ({
           ...prev,
@@ -130,15 +131,10 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
     };
 
     getCurrentLocation();
+    console.log(state);
   }, [state.isLoading]);
 
   const handlePolylineClick = (route: Route) => {
-    // 폴리라인 중심좌표 이동
-    // const centerLat =
-    //   route.path.reduce((sum, point) => sum + point.lat, 0) / route.path.length;
-    // const centerLng =
-    //   route.path.reduce((sum, point) => sum + point.lng, 0) / route.path.length;
-
     setState((prev) => ({
       ...prev,
       // 폴리라인 시작좌표 이동
@@ -147,7 +143,12 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
 
     // 선택한 폴리라인 값 업데이트
     onClickCourse(route.id);
+    console.log("선택한 코스: ", route);
+    console.log("selected state: ", selectedCourse);
+    console.log("state: ", state);
+
     setCourse(route.path);
+    // setSel
   };
 
   return (

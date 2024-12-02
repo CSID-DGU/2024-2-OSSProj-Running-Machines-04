@@ -53,6 +53,11 @@ const RecordPage = () => {
       const selectedCourse = courseData.find(
         (course) => course.courseId === id
       );
+      console.log("id", id);
+
+      console.log("courseData", courseData);
+
+      console.log("handleClick", selectedCourse);
 
       if (selectedCourse) {
         setSelectedCourse(selectedCourse); // 선택된 ID 업데이트
@@ -61,7 +66,11 @@ const RecordPage = () => {
     }
   };
 
-  const { data } = useRecommendCourseGet({ lat: 37.5665, lon: 126.978 }); // 임의 좌표
+  const { data } = useRecommendCourseGet({
+    lat: 37.5665,
+    lon: 126.978,
+  }); // 임의 좌표
+  // const { data } = useRecommendCourseGet({ lat: 37.5665, lon: 126.978 }); // 임의 좌표
 
   useEffect(() => {
     // 나만의 추천코스 카테고리
