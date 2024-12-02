@@ -143,33 +143,18 @@ class PathClusterer:
 
         return clusters
 
-def extract_representative_from_clusters(self, clusters, paths):
-    """각 클러스터에서 유사도가 가장 높은 경로를 대표 경로로 추출"""
-    representative_paths = []
-    non_representative_paths = []
+    def extract_representative_from_clusters(self, clusters, paths):
+        """각 클러스터에서 대표 경로 하나를 추출"""
+        representative_paths = []
+        non_representative_paths = []
 
-    # 각 클러스터에서 유사도가 가장 높은 경로를 대표 경로로 선정
-    for cluster in clusters:
-        # 클러스터 내 모든 경로들 간의 유사도를 계산하여 가장 유사한 경로를 찾음
-        max_similarity = -1
-        representative_path = None
+        # 각 클러스터에서 첫 번째 경로를 대표 경로로 선정
+        for cluster in clusters:
+            representative_paths.append(cluster[0])  # 대표 경로는 각 클러스터의 첫 번째 파일
+            for path in cluster[1:]:
+                non_representative_paths.append(path)  # 나머지 경로는 비대표 경로로 분류
 
-        for i, path_a in enumerate(cluster):
-            for j, path_b in enumerate(cluster):
-                if i != j:
-                    similarity = self.processor.calculate_dtw_similarity(paths[path_a][1], paths[path_b][1])
-                    if similarity > max_similarity:
-                        max_similarity = similarity
-                        representative_path = path_a
-
-        representative_paths.append(representative_path)  # 가장 유사한 경로를 대표 경로로 선정
-        # 나머지 경로들은 비대표 경로로 분류
-        for path in cluster:
-            if path != representative_path:
-                non_representative_paths.append(path)
-
-    return representative_paths, non_representative_paths
-
+        return representative_paths, non_representative_paths
 
 
 if __name__ == "__main__":
