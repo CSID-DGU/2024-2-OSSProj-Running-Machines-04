@@ -53,30 +53,8 @@ class GPXProcessor:
         sampled_points.append(points[-1])
         return np.array(sampled_points)
 
-<<<<<<< HEAD
     def classify_facilities(self, toilets, conv_stores, trafficlights):
         total_facilities = toilets + conv_stores + trafficlights
-=======
-<<<<<<< HEAD
-    def classify_facilities(self, toilets, conv_stores, trafficlights):
-        total_facilities = toilets + conv_stores + trafficlights
-=======
-    def count_nearby_facilities(self, sampled_points, facility_data, radius=500):
-        sampled_coords = sampled_points[:, :2]
-        facility_coords = facility_data[['latitude', 'longitude']].to_numpy()
-
-        count = sum(
-            np.any(
-                np.array([geodesic(sample, facility).meters for sample in sampled_coords]) <= radius
-            )
-            for facility in facility_coords
-        )
-        return count
-
-    def classify_facilities(self, toilets, conv_stores):
-        total_facilities = toilets + conv_stores
->>>>>>> c0f5ef907e1cd005e43fe386271377e33c4e6fb1
->>>>>>> 290b91406037600c96fd6913cf5c8f9ba4c4937f
         if total_facilities == 0:
             return "No_Facilities"
         elif total_facilities >= 23:
@@ -207,7 +185,6 @@ def transform_coordinates_to_json(row, column_name):
 if __name__ == "__main__":
     toilet_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_toilet.csv"
     conv_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_conv.csv"
-<<<<<<< HEAD
     trafficlight_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_trafficlight.csv"
     sample_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/gpx/20_Beginner_Enhanced_Facilities_Track_0.3Km.gpx"
 
@@ -225,48 +202,4 @@ if __name__ == "__main__":
     print(f"Elevation: {processed_data['Elevation']}")
     print(f"Convenience: {processed_data['Convenience']}")
     print(f"trafficlight_counts: {processed_data['trafficlight_counts']}")
-=======
-<<<<<<< HEAD
-    trafficlight_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/final_trafficlight.csv"
-    sample_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/gpx/20_Beginner_Enhanced_Facilities_Track_0.3Km.gpx"
-    # test_clustering/test_off_a10.gpx
-=======
-    sample_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/서울_서대문구_대현동_45-51.gpx"
->>>>>>> c0f5ef907e1cd005e43fe386271377e33c4e6fb1
 
-    gpx_processor = GPXProcessor(toilet_data_path, conv_data_path, trafficlight_data_path)
-    result = gpx_processor.process_gpx_file(sample_file)
-    
-    result_df = pd.DataFrame([result])
-
-<<<<<<< HEAD
-    # 좌표 데이터를 변환하는 함수 정의
-    def transform_location(coord_list):
-        """
-        리스트 형태의 좌표 데이터를 [{"lat": value, "lon": value}, ...] 
-        """
-        formatted_coords = []
-        for coord in coord_list:
-            try:
-                lat, lon = coord
-                formatted_coords.append({"lat": lat, "lon": lon})
-            except ValueError:
-                print("좌표 변환 오류 발생:", coord)
-                continue
-        return formatted_coords
-
-    # 좌표 데이터 변환
-    if "toilet_location" in result_df.columns:
-        result_df["toilet_location"] = result_df["toilet_location"].apply(transform_location)
-
-    if "store_location" in result_df.columns:
-        result_df["store_location"] = result_df["store_location"].apply(transform_location)
-
-    # 결과 출력
-    print(result_df.to_string())
-=======
-    new_file_name = f"{result['difficulty']}_{result['facilities']}_{result['track_type']}_{result['distance_km']}Km.gpx"
-    print(f"새로운 파일명: {new_file_name}")
-###
->>>>>>> c0f5ef907e1cd005e43fe386271377e33c4e6fb1
->>>>>>> 290b91406037600c96fd6913cf5c8f9ba4c4937f
