@@ -175,12 +175,6 @@ def print_filtered_files(gpx_files, center_coords, radius, elevation, convenienc
 
 # 메인 실행
 if __name__ == "__main__":
-    toilet_csv_path = 'C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/code/final_toilet.csv'
-    conv_csv_path = 'C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/code/final_conv.csv'
-
-    toilet_data = load_csv(toilet_csv_path)
-    conv_data = load_csv(conv_csv_path)
-
     gpx_directory = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/gpx"
     gpx_files = load_gpx_files(gpx_directory)
 
