@@ -70,7 +70,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import requests
 import os
-from runningmachine import print_filtered_files, load_csv
+from runningmachine import print_filtered_files
 
 app = FastAPI()
 
