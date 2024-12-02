@@ -1,11 +1,9 @@
+from sklearn.cluster import DBSCAN
+import numpy as np
 import os
 import xml.etree.ElementTree as ET
 from geopy.distance import geodesic
-import numpy as np
-import faiss  # faiss 임포트 # pip install faiss-cpu
 from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.cluster import AgglomerativeClustering
-from geopy.distance import geodesic
 
 class GPXProcessor:
     def __init__(self, max_distance_tolerance=20):
@@ -31,7 +29,7 @@ class GPXProcessor:
         return points
 
     def calculate_path_length(self, path):
-        """경로의 총 거리 계산"""
+        """경로의 총 거리 계산 (경로에 따라 지리적 거리 측정)"""
         total_distance = 0
         for i in range(1, len(path)):
             total_distance += geodesic(path[i - 1], path[i]).meters
@@ -93,39 +91,45 @@ class GPXProcessorWithDTW(GPXProcessor):
         else:
             return f"Warning: 경로를 새 경로로 등록해야 합니다. 이탈률: {deviation_rate:.2f}%"
 
+
 class PathClusterer:
-    def __init__(self, processor, max_distance_tolerance=20):
+    def __init__(self, processor, max_distance_tolerance=20, eps=0.05, min_samples=5):
         self.processor = processor
         self.max_distance_tolerance = max_distance_tolerance
+        self.eps = eps  # DBSCAN의 eps (거리 기준)
+        self.min_samples = min_samples  # DBSCAN의 min_samples (군집 최소 점수)
 
     def extract_features(self, path):
         """경로에서 위도, 경도를 사용하여 특성 추출"""
         return np.array([point for point in path])  # 경로의 위도, 경도를 벡터로 반환
 
-    def calculate_distance_matrix(self, path_vectors):
-        """경로들 간의 거리를 계산하는 함수 (유클리드 거리 또는 지리적 거리)"""
-        n = len(path_vectors)
+    def calculate_distance_matrix(self, paths):
+        """경로들 간의 이탈률을 기준으로 거리 행렬 생성"""
+        n = len(paths)
         distance_matrix = np.zeros((n, n))
+
         for i in range(n):
             for j in range(i + 1, n):
-                # 두 경로 간의 평균적인 거리 계산 (각 경로의 첫 번째 점을 기준으로)
-                distance_matrix[i][j] = geodesic(path_vectors[i][0], path_vectors[j][0]).meters
-                distance_matrix[j][i] = distance_matrix[i][j]
+                # 경로 간 이탈률 계산
+                try:
+                    deviation_rate = self.processor.calculate_deviation_rate(paths[i][1], paths[j][1])
+                    distance_matrix[i][j] = deviation_rate
+                    distance_matrix[j][i] = deviation_rate
+                except StopIteration:
+                    # 결과가 없을 때는 경로 간 계산을 건너뛰거나 적절히 처리
+                    print(f"경로 {i}와 경로 {j} 간 이탈률 계산 중 오류 발생.")
+                    distance_matrix[i][j] = np.inf  # 이탈률을 무한대로 설정하여 계산을 건너뜀
+                    distance_matrix[j][i] = np.inf
+
         return distance_matrix
 
-    def cluster_paths(self, paths, threshold=0.8):
-        """계층적 군집화 (Hierarchical Clustering)"""
-        path_vectors = []
-
-        # 경로 벡터화
-        for file, path in paths:
-            path_vectors.append(self.extract_features(path))
-
-        # 경로들 간의 거리 행렬 계산 (위도, 경도 간의 거리)
-        distance_matrix = self.calculate_distance_matrix(path_vectors)
-
-        # 계층적 군집화 모델 (유사도에 근사한 거리 행렬 사용)
-        clustering = AgglomerativeClustering(n_clusters=None, affinity='precomputed', linkage='complete', distance_threshold=threshold)
+    def cluster_paths(self, paths):
+        """DBSCAN을 사용하여 경로 군집화"""
+        # 경로들의 거리 행렬 계산
+        distance_matrix = self.calculate_distance_matrix(paths)
+        
+        # DBSCAN 모델
+        clustering = DBSCAN(eps=self.eps, min_samples=self.min_samples, metric="precomputed")
         clustering.fit(distance_matrix)
 
         # 군집화된 경로들 출력
@@ -139,6 +143,7 @@ class PathClusterer:
 
         return clustered_paths
 
+
 if __name__ == "__main__":
     # GPX 데이터 로드 및 경로 비교
     directory_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering"
@@ -151,18 +156,17 @@ if __name__ == "__main__":
 
     # 추천 경로와 새 경로의 비교
     recommended_path = gpx_processor.extract_gpx_points("C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering/test_off_a2.gpx")
-    actual_path = gpx_processor.extract_gpx_points("C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering/test_off_a1.gpx")
+    actual_path = gpx_processor.extract_gpx_points("C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering/test_off_a2.gpx")
 
-    path_completion_processor = GPXProcessorWithDTW(max_distance_tolerance=20)
-    print(path_completion_processor.check_path_completion(recommended_path, actual_path))
+    # 실제 경로와 추천 경로 비교
+    result = gpx_processor.check_path_completion(recommended_path, actual_path)
+    print(f"경로 비교 결과: {result}")
 
-    # faiss를 사용한 경로 클러스터링
-    path_clusterer = PathClusterer(gpx_processor, max_distance_tolerance=20)
+    # 경로 군집화
+    path_clusterer = PathClusterer(gpx_processor)
     clustered_paths = path_clusterer.cluster_paths(gpx_files)
 
-    print("=== faiss를 사용한 경로 클러스터링 ===")
-    if clustered_paths:
-        for cluster_id, cluster in clustered_paths.items():
-            print(f"Cluster {cluster_id + 1}: {', '.join(cluster)}")
-    else:
-        print("유사한 경로가 클러스터링되지 않았습니다.")
+    # 묶인 경로 출력
+    print("군집화된 경로들:")
+    for cluster_id, paths in clustered_paths.items():
+        print(f"군집 {cluster_id}: {paths}")
