@@ -66,22 +66,21 @@
 
 #     return result
 
+import sys
+import os
+
+# src 디렉터리 경로를 추가
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import requests
 import os
-from runningmachine import print_filtered_files
+
+# 이제 src 폴더가 Python 경로에 포함되어 'runningmachine' 모듈을 불러올 수 있습니다.
+from runningmachine import print_filtered_files, load_csv
 
 app = FastAPI()
-
-# CSV 데이터 로드
-def load_csv_data():
-    try:
-        return toilet_data, conv_data
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"CSV 데이터 로드 실패: {str(e)}")
-
-toilet_data, conv_data = load_csv_data()
 
 # GPX 파일 로드 함수 (lxml 기반)
 def fetch_gpx_files(base_url):
@@ -139,13 +138,11 @@ def recommend_course(preferences: UserInfo):
             gpx_files, center_coords, radius_threshold,
             elevation_preference, convenience_preference, track_preference
         )
-
         if not result:
             raise HTTPException(status_code=404, detail="조건에 맞는 경로를 찾을 수 없습니다.")
-
         return {"recommended_courses": result}
-
     except HTTPException as e:
         raise e  # FastAPI 에러로 전달
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"서버 오류: {str(e)}")
+
