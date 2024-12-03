@@ -4,15 +4,16 @@ import axios from "axios";
 import { api } from "@/apis";
 import { RouteResponse } from "@/types/routes";
 import { Route } from "@/types/kakaoMap";
-import useCourseStore from "@/store/useCourseStore";
+import useRunningCourseStore from "@/store/useRunningCourseStore";
+import useSelectedCourseStore from "@/store/useSelectedCourseStore";
 
 type KakaoMapProps = {
-  selectedCourse: RouteResponse;
   onClickCourse: (id: number) => void;
 };
 
-const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
-  const { setCourse } = useCourseStore();
+const KakaoMap = ({ onClickCourse }: KakaoMapProps) => {
+  const { setRunningCourse } = useRunningCourseStore();
+  const { selectedCourse } = useSelectedCourseStore();
 
   // 현재 위치(마커) 상태
   const [current, setCurrent] = useState({
@@ -147,7 +148,7 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
     console.log("selected state: ", selectedCourse);
     console.log("state: ", state);
 
-    setCourse(route.path);
+    setRunningCourse(route.path);
     // setSel
   };
 
@@ -161,7 +162,7 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
         width: "100%",
         height: "100vh",
       }}
-      level={selectedCourse.courseId !== 0 ? 4 : 7}
+      level={selectedCourse && selectedCourse.courseId !== 0 ? 4 : 7}
     >
       {state.routes.map((route) => (
         <>
@@ -170,7 +171,9 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
             path={route.path}
             strokeWeight={6}
             strokeColor={
-              route.id === selectedCourse.courseId ? "#E21919" : "#15258E"
+              selectedCourse && route.id == selectedCourse.courseId
+                ? "#E21919"
+                : "#15258E"
             } // 선택된 폴리라인 강조
             strokeOpacity={0.7}
             strokeStyle="solid"
