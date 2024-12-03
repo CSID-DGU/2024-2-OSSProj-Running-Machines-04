@@ -130,17 +130,17 @@ const CourseSection = ({
                     key={index}
                     className="flex items-center justify-between gap-2"
                   >
-                    <div className="p-4 w-[70%] h-full bg-courseGradient rounded-[10px] overflow-hidden flex flex-col justify-center items-center">
+                    <div className="p-4 w-[50%] h-full bg-courseGradient rounded-[10px] overflow-hidden flex flex-col justify-center items-center">
                       <div className="text-[#444] font-semibold">
                         {couseData.name}
                       </div>
-                      <div className="text-[#444] text-sm">
+                      <div className="text-[#444] text-sm text-center">
                         "{couseData.description}"
                       </div>
                     </div>
 
-                    <div className="flex flex-col gap-4">
-                      <div className="flex justify-end items-center gap-3">
+                    <div className="w-[50%] flex flex-col gap-4">
+                      <div className="flex justify-end items-center gap-3 text-3xl font-bold">
                         {couseData.distance}km
                         <CourseCTA
                           onClick={() => handleCourseClick(couseData.courseId)}
@@ -148,7 +148,7 @@ const CourseSection = ({
                       </div>
                       <div className="flex flex-wrap justify-end gap-2">
                         {couseData.tags.map((tag) => (
-                          <div className="bg-[#B1FF8C] p-1 rounded text-[14px] font-extralight">
+                          <div className="bg-[#B1FF8C] px-2 rounded text-[14px] font-extralight">
                             #{tag}
                           </div>
                         ))}

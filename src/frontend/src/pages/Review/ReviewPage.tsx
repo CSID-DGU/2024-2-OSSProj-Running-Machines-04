@@ -44,12 +44,6 @@ const ReviewPage = () => {
   };
 
   const handleComplete = () => {
-    alert(`완료! 
-    난이도: ${difficulty}
-    선택된 키워드: ${selectedKeywords
-      .map((index) => keywords[index])
-      .join(", ")}
-    `);
     console.log(difficulty, selectedKeywords);
     mutate();
   };

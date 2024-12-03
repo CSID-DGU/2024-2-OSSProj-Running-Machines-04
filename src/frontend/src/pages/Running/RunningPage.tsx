@@ -8,7 +8,8 @@ import { ReactComponent as EndIcon } from "@/assets/icons/EndIcon.svg";
 import { ReactComponent as StopIcon } from "@/assets/icons/StopIcon.svg";
 import { ReactComponent as RestartIcon } from "@/assets/icons/RestartIcon.svg";
 import { useRunningRecordPost } from "@/hooks/useRunning";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { runningRequest } from "@/types/running";
 
 const calculateDistance = (path: LatLng[]) => {
   if (path.length < 2) return 0;
@@ -43,12 +44,10 @@ const formatTime = (seconds: number) => {
   return `${minutes}분 ${remainingSeconds}초`;
 };
 
-// 페이스를 숫자형태로 포맷
-const formatPace = (pace: string): number => {
-  const [minutes, seconds] = pace
-    .split("'")
-    .map((part) => parseInt(part.replace('"', "").trim()));
-  return minutes + seconds / 60;
+const formatPace = (paceString: string): number => {
+  const [minutes, seconds] = paceString.split(/['"]/);
+
+  return parseFloat(`${minutes}.${seconds}`);
 };
 
 // gpx 파일로 변환
@@ -74,10 +73,8 @@ const convertToGPX = (path: LatLng[]): File => {
 
   const gpxXML = `${gpxHeader}${gpxData}${gpxFooter}`;
 
-  // Convert the GPX XML string to a Blob
   const blob = new Blob([gpxXML], { type: "application/gpx+xml" });
 
-  // Create a File object from the Blob
   const gpxFile = new File([blob], "track.gpx", {
     type: "application/gpx+xml",
   });
@@ -86,8 +83,6 @@ const convertToGPX = (path: LatLng[]): File => {
 };
 
 const RunningPage = () => {
-  const navigate = useNavigate();
-
   const { runningCourse } = useRunningCourseStore(); // 선택된 코스
   const [state, setState] = useState<LatLng[]>([]); // 실시간 경로 리스트
   const stateRef = useRef<LatLng[]>([]); // 최신 state를 참조하기 위한 ref
@@ -98,14 +93,19 @@ const RunningPage = () => {
 
   const { id } = useParams();
 
+  const formattedData: runningRequest = {
+    distance: distance,
+    duration: duration,
+    pace: formatPace(pace), // 포맷팅된 pace 값
+  };
+
+  // 코스를 선택하고 뛰었다면 courseId 추가
+  if (Number(id) !== 0) {
+    formattedData.courseId = Number(id);
+  }
+
   const { mutate } = useRunningRecordPost(
-    {
-      distance: distance,
-      duration: duration,
-      pace: 1, // 포맷팅된 pace 값
-      // pace: formatPace(pace), // 포맷팅된 pace 값
-      courseId: Number(id),
-    },
+    formattedData,
     convertToGPX(state),
     Number(id)
   );
@@ -115,12 +115,14 @@ const RunningPage = () => {
   };
   const handleDone = () => {
     setIsPaused(true);
-    alert(`
+    console.log(
+      `
       러닝 기록
       거리: ${distance.toFixed(2)} km
       시간: ${formatTime(duration)}
       평균 페이스: ${pace} 분/km
-    `);
+    `
+    );
 
     mutate();
   };
