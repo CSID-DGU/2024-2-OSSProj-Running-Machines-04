@@ -1,3 +1,4 @@
+import { useSignin } from "@/hooks/useAuth";
 import { SigninValidation } from "@/utils/validation";
 import { useEffect, useState } from "react";
 
@@ -5,6 +6,8 @@ const SigninPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [valid, setValid] = useState(false);
+
+  const { mutate } = useSignin();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -16,8 +19,7 @@ const SigninPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // 폼 제출 로직 추가
-    alert(`이메일: ${email}\n비밀번호: ${password}`);
+    mutate({ email, password });
   };
 
   useEffect(() => {

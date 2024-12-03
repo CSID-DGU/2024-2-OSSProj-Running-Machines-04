@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # from fastapi import FastAPI
 # from pydantic import BaseModel
 # import requests
@@ -72,10 +73,14 @@ import os
 # src 디렉터리 경로를 추가
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 
+=======
+>>>>>>> 079cf380a7544c94ab661ccdbe29eb4cb0701dce
 from fastapi import FastAPI, HTTPException
+from lxml import etree
 from pydantic import BaseModel
 import requests
 import os
+<<<<<<< HEAD
 
 # 이제 src 폴더가 Python 경로에 포함되어 'runningmachine' 모듈을 불러올 수 있습니다.
 from runningmachine import print_filtered_files
@@ -83,6 +88,14 @@ from runningmachine import print_filtered_files
 app = FastAPI()
 
 # GPX 파일 로드 함수 (lxml 기반)
+=======
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from runningmachine import filter_gpx_within_radius_and_preferences, load_gpx_files, print_filtered_files
+
+app = FastAPI()
+
+# GPX 파일 로드 함수
+>>>>>>> 079cf380a7544c94ab661ccdbe29eb4cb0701dce
 def fetch_gpx_files(base_url):
     try:
         response = requests.get(base_url)  # 스프링 부트 API에서 GPX URL 리스트 가져오기
@@ -90,21 +103,28 @@ def fetch_gpx_files(base_url):
         gpx_urls = response.json()
 
         gpx_files = []
-        for url in gpx_urls:
-            try:
-                file_name = os.path.basename(url)
-                gpx_response = requests.get(url)
-                gpx_response.raise_for_status()
-                gpx_data = gpx_response.content  # GPX 데이터 가져오기 (raw XML)
-                gpx_files.append((file_name, gpx_data))
-            except Exception as e:
-                print(f"GPX 파일 처리 중 오류: {url}, 오류: {e}")
+
+        def download_and_parse(url):
+            file_name = os.path.basename(url)
+            gpx_response = requests.get(url)
+            gpx_response.raise_for_status()
+            gpx_data = gpx_response.content  # GPX 데이터 가져오기
+            root = etree.fromstring(gpx_data)  # XML 파싱
+            return file_name, root
+
+        # 병렬 다운로드 및 파싱
+        with ThreadPoolExecutor() as executor:
+            futures = {executor.submit(download_and_parse, url): url for url in gpx_urls}
+            for future in as_completed(futures):
+                try:
+                    gpx_files.append(future.result())
+                except Exception as e:
+                    print(f"GPX 파일 처리 중 오류: {futures[future]}, 오류: {e}")
+
         return gpx_files
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"GPX 파일 가져오기 실패: {str(e)}")
-
-# GPX API URL
-get_gpx_url = "http://52.78.82.12:8080/course/getAllCourse"
 
 # 요청 모델 정의
 class UserInfo(BaseModel):
@@ -119,7 +139,7 @@ class UserInfo(BaseModel):
 def recommend_course(preferences: UserInfo):
     try:
         # GPX 파일 로드
-        gpx_files = fetch_gpx_files(get_gpx_url)
+        gpx_files = fetch_gpx_files("http://52.78.82.12:8080/course/getAllCourse")
 
         if not gpx_files:
             raise HTTPException(status_code=404, detail="GPX 파일을 찾을 수 없습니다.")
@@ -140,7 +160,13 @@ def recommend_course(preferences: UserInfo):
         )
         if not result:
             raise HTTPException(status_code=404, detail="조건에 맞는 경로를 찾을 수 없습니다.")
+<<<<<<< HEAD
         return {"recommended_courses": result}
+=======
+
+        return result
+
+>>>>>>> 079cf380a7544c94ab661ccdbe29eb4cb0701dce
     except HTTPException as e:
         raise e  # FastAPI 에러로 전달
     except Exception as e:

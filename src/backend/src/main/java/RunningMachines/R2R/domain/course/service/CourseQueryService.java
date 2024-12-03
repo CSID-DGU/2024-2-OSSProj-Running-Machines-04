@@ -13,6 +13,7 @@ import RunningMachines.R2R.global.exception.CustomException;
 import RunningMachines.R2R.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -129,5 +130,25 @@ public class CourseQueryService {
         return courseRepository.findAll().stream()
                 .map(Course::getCourseUrl)
                 .collect(Collectors.toList());
+    }
+
+    // 인기 코스 조회 (10개 제한)
+    public List<CourseResponseDto> getPopularCourses(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        List<Course> courses = courseRepository.findTop10ByUserCourseCount(PageRequest.of(0, 10));
+
+        List<CourseResponseDto> courseResponseDtos = new ArrayList<>();
+
+        for (Course course : courses) {
+            List<String> tags = createTags(course, course.getFileName());
+            boolean coursedLike = courseLikeRepository.existsByCourseAndUser(course, user);
+
+            CourseResponseDto courseResponseDto = CourseResponseDto.of(course, tags, coursedLike);
+            courseResponseDtos.add(courseResponseDto);
+        }
+
+        return courseResponseDtos;
     }
 }

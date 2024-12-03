@@ -19,7 +19,6 @@
 
 import os
 from lxml import etree
-import pandas as pd
 from math import radians, sin, cos, sqrt, atan2
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -147,10 +146,17 @@ def print_filtered_files(gpx_files, center_coords, radius, elevation, convenienc
     else:
         closest_files = sort_and_limit_by_distance(matching_files, limit=5)
 
+    # 반환할 결과 리스트 생성
+    result = []
+
     # 출력
     if closest_files:
         for i, (file_name, _, distance) in enumerate(closest_files, start=1):
-            print(f"{i}. {file_name}")
+            # print(f"{i}. {file_name}")
+            result.append({"file_name": file_name})
+    else:
+        result = {"message": f"No files found within {radius / 1000:.2f} km."}
+    return result
 
 # 메인 실행
 if __name__ == "__main__":

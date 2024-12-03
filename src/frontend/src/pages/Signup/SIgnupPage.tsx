@@ -2,8 +2,8 @@ import Step1 from "@/components/signup/Step1";
 import Step2 from "@/components/signup/Step2";
 import Step3 from "@/components/signup/Step3";
 import Step4 from "@/components/signup/Step4";
-import { elevationType } from "@/constants/preference";
-import { PreferenceRequest, SignupRequest } from "@/types/signup";
+import { useSignup } from "@/hooks/useAuth";
+import { SignupRequest } from "@/types/signup";
 import { useState } from "react";
 
 const SignupPage = () => {
@@ -17,27 +17,11 @@ const SignupPage = () => {
   });
   const [image, setImage] = useState<File | null>(null); // 프로필 사진
 
-  const [preferenceData, setPreferenceData] = useState<PreferenceRequest>({
-    elevation: elevationType.MEDIUM,
-    nature: true,
-    convenience: true,
-    track: "track",
-  });
+  const { mutate: signup } = useSignup();
 
   // 입력값 변경 핸들러
   const handleInputChange = (key: keyof SignupRequest, value: string) => {
     setSignupData((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
-
-  // 입력값 변경 핸들러
-  const handlePreferenceChange = (
-    key: keyof PreferenceRequest,
-    value: string | boolean
-  ) => {
-    setPreferenceData((prev) => ({
       ...prev,
       [key]: value,
     }));
@@ -54,16 +38,14 @@ const SignupPage = () => {
       console.log("회원가입 데이터:", signupData);
       setStep(step + 1);
     }
-    if (step == 2) {
-      // 회원가입 API 호출 로직 추가
+    if (step === 2) {
       console.log(image, signupData);
-      // onSuccess
+      if (image) {
+        signup({ data: signupData, image });
+      } else signup({ data: signupData });
       setStep(step + 1);
     }
-    if (step == 3) {
-      // 선호도 입력 API 호출 로직 추가
-      console.log(preferenceData);
-    }
+
     // onSuccess
     setStep(step + 1);
   };
@@ -78,9 +60,7 @@ const SignupPage = () => {
         />
       )}
       {step == 2 && <Step2 setImage={setImage} setValid={setValid} />}
-      {step == 3 && (
-        <Step3 onPreferenceData={handlePreferenceChange} setStep={setStep} />
-      )}
+      {step == 3 && <Step3 setStep={setStep} />}
       {step == 4 && <Step4 />}
       {step < 3 && (
         <button

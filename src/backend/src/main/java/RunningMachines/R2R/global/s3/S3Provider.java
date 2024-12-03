@@ -1,7 +1,5 @@
 package RunningMachines.R2R.global.s3;
 
-import RunningMachines.R2R.domain.course.dto.UserCourseRequestDto;
-import RunningMachines.R2R.global.util.GpxFileGenerator;
 import RunningMachines.R2R.global.exception.CustomException;
 import RunningMachines.R2R.global.exception.ErrorCode;
 import com.amazonaws.services.s3.AmazonS3;
@@ -124,19 +122,19 @@ public class S3Provider {
     }
 
     // 사용자의 러닝 기록을 GPX로 변환 후 S3에 저장
-    public String saveWaypointsAsGpx(List<UserCourseRequestDto.Waypoint> waypoints, Long userId) {
-        try {
-            // 웨이포인트 리스트로 GPX 파일 생성
-            InputStream gpxFileStream = GpxFileGenerator.createGpxFile(waypoints);
-
-            // S3에 GPX 파일 업로드
-            String gpxFileUrl = uploadGpxUserCourseFile(gpxFileStream, userId);
-            log.info("GPX 파일 업로드 성공: {}", gpxFileUrl);
-
-            return gpxFileUrl;
-        } catch (Exception e) {
-            log.error("GPX 파일 생성 및 업로드 실패", e);
-            throw new CustomException(ErrorCode.GPX_UPLOAD_FAILED);
-        }
-    }
+//    public String saveWaypointsAsGpx(List<UserCourseRequestDto.Waypoint> waypoints, Long userId) {
+//        try {
+//            // 웨이포인트 리스트로 GPX 파일 생성
+//            InputStream gpxFileStream = GpxFileGenerator.createGpxFile(waypoints);
+//
+//            // S3에 GPX 파일 업로드
+//            String gpxFileUrl = uploadGpxUserCourseFile(gpxFileStream, userId);
+//            log.info("GPX 파일 업로드 성공: {}", gpxFileUrl);
+//
+//            return gpxFileUrl;
+//        } catch (Exception e) {
+//            log.error("GPX 파일 생성 및 업로드 실패", e);
+//            throw new CustomException(ErrorCode.GPX_UPLOAD_FAILED);
+//        }
+//    }
 }
