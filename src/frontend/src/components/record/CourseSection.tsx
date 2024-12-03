@@ -42,7 +42,7 @@ const CourseSection = ({
 
   const handleCourseClick = (id: number) => {
     // 해당 id와 일치하는 아이템 찾기
-    const route = parsedCourse.find((route) => route.id === id);
+    const route = parsedCourse.find((route) => route.id == id);
 
     // 아이템이 존재하고 path가 유효하다면 코스의 시작점으로 카카오맵 센터 설정
     if (route && route.path.length > 0) {

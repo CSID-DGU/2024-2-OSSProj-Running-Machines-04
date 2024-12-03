@@ -38,7 +38,7 @@ const SignupPage = () => {
       console.log("회원가입 데이터:", signupData);
       setStep(step + 1);
     }
-    if (step === 2) {
+    if (step == 2) {
       console.log(image, signupData);
       if (image) {
         signup({ data: signupData, image });

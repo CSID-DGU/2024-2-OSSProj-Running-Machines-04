@@ -66,7 +66,7 @@ const KakaoMap = ({ onClickCourse, openSheet }: KakaoMapProps) => {
       }
     };
 
-    // 서버에서 GPX 데이터를 가져오는 함수
+    // 서버 데이터의 GPX 데이터를 파싱하는 함수
     const fetchGpxData = async () => {
       try {
         const gpxFiles = course; // 서버로부터 받은 GPX 파일 목록
@@ -124,7 +124,7 @@ const KakaoMap = ({ onClickCourse, openSheet }: KakaoMapProps) => {
 
     getCurrentLocation();
     console.log("마지막 state", kakaomapState);
-  }, [kakaomapState.isLoading, course]);
+  }, [kakaomapState, course]);
 
   const handlePolylineClick = (route: Route) => {
     setKakaomapState({
