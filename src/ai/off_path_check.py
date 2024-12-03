@@ -148,8 +148,8 @@ class PathClusterer:
 
             for j in range(i + 1, len(paths)):
                 if j not in visited:
-                    # 유사도가 90% 이상인 경우 같은 클러스터로 묶기
-                    if similarity_matrix[i][j] >= 0.85 :
+                    # 유사도가 90 이상인 경우 같은 클러스터로 묶기
+                    if similarity_matrix[i][j] >= 0.90 :
                         cluster.append(paths[j][0])
                         visited.add(j)
 
@@ -166,7 +166,7 @@ class PathClusterer:
         # 각 클러스터에서 첫 번째 경로를
         # 대표 경로로 선정
         for cluster in clusters:
-            representative_paths.append(cluster[0])  # 대표 경로는 각 클러스터의 첫 번째 파일
+            representative_paths.append(cluster[2])  # 대표 경로는 각 클러스터의 첫 번째 파일
             for path in cluster[1:]:
                 non_representative_paths.append(path)  # 나머지 경로는 비대표 경로로 분류
 
@@ -174,8 +174,7 @@ class PathClusterer:
 
 def transform_coordinates_to_json(row, column_name):
     try:
-        # 좌표가 이미 리스트 형태로 되어있으면 바로 사용
-        coords_list = row[column_name]  # 예: [(37.5139956, 126.8828703), (37.5172147, 126.8837416), ...]
+        coords_list = row[column_name] 
         
         # 좌표 리스트를 lat, lon 형식으로 변환하여 JSON으로 변환
         json_coords = [{"lat": coord[0], "lon": coord[1]} for coord in coords_list]
@@ -375,65 +374,87 @@ if __name__ == "__main__":
 
     #################### input ####################
     follow_status = True
-    recommended_path_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering/test_off_a1.gpx"
-    actual_path_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering/test_off_a2.gpx"
-
-    # 추천 경로 및 실제 경로 GPX 파일 로드
-    recommended_path = []
-    if follow_status:
-        recommended_path = gpx_processor.extract_gpx_points(recommended_path_file)
-    actual_path = gpx_processor.extract_gpx_points(actual_path_file)
+    recommended_path_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/clustering_testing_gpx/test1.gpx" 
+    actual_path_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/clustering_testing_gpx/test2.gpx"
 
     # 결과 저장용 변수 초기화
-    gpx_files = []
     representative_paths = []
     non_representative_paths = []
+    gpx_files = set()  # 중복 방지를 위해 set 사용
 
-    # 추천 경로와 비교
-    print("\n추천 경로와 비교를 진행합니다.")
-    result = gpx_processor.check_path_completion(recommended_path, actual_path)
+    if follow_status:
+        # 추천 경로 및 실제 경로 GPX 파일 로드
+        recommended_path = gpx_processor.extract_gpx_points(recommended_path_file) if recommended_path_file else []
+        actual_path = gpx_processor.extract_gpx_points(actual_path_file)
 
-    # 상태 메시지 출력
-    print(f"추천 경로 비교 결과: {result['status']}")
-    print(f"이탈률: {result['deviation_rate']:.2f}%")
-    print(f"추천 경로 길이: {result['recommended_length_km']:.2f} km")
-    print(f"실제 경로 길이: {result['actual_length_km']:.2f} km")
-    print(f"DTW 유사도: {result['dtw_similarity']:.2f}")
+        # 추천 경로와 비교
+        print("\n추천 경로와 비교를 진행합니다.")
+        result = gpx_processor.check_path_completion(recommended_path, actual_path)
 
-    # 경로 등록 및 클러스터링
-    if result["deviation_rate"] > 20:
-        print("\n경로 이탈률이 높아 새 경로로 등록하고 클러스터링을 진행합니다.")
+        # 상태 메시지 출력
+        print(f"추천 경로 비교 결과: {result['status']}")
+        print(f"이탈률: {result['deviation_rate']:.2f}%")
+        print(f"추천 경로 길이: {result['recommended_length_km']:.2f} km")
+        print(f"실제 경로 길이: {result['actual_length_km']:.2f} km")
+        print(f"DTW 유사도: {result['dtw_similarity']:.2f}")
+
+        # 경로 이동 및 등록
+        if result["deviation_rate"] > 20:
+            print("\n경로 이탈률이 높아 새 경로로 등록합니다.")
+            new_file_path = os.path.join(directory_path, os.path.basename(actual_path_file))
+            if os.path.exists(actual_path_file):
+                try:
+                    os.rename(actual_path_file, new_file_path)
+                    print(f"경로가 새로 저장되었습니다: {new_file_path}")
+                    gpx_files.add(new_file_path)  # 중복 방지
+                except Exception as e:
+                    print(f"파일 이동 중 오류 발생: {e}")
+            else:
+                print(f"실제 경로 파일이 존재하지 않습니다: {actual_path_file}")
+        else:
+            print("\n추천 경로를 따랐으므로 클러스터링을 생략합니다.")
+            exit()
+
+    else:
+        # 추천 경로 비교 없이 클러스터링 대상 준비
+        print("\n추천 경로를 따르지 않았습니다. 클러스터링을 진행합니다.")
+        actual_path = gpx_processor.extract_gpx_points(actual_path_file)
         new_file_path = os.path.join(directory_path, os.path.basename(actual_path_file))
         if os.path.exists(actual_path_file):
             try:
                 os.rename(actual_path_file, new_file_path)
                 print(f"경로가 새로 저장되었습니다: {new_file_path}")
-                gpx_files.append((new_file_path, gpx_processor.extract_gpx_points(new_file_path)))
+                gpx_files.add(new_file_path)  # 중복 방지
             except Exception as e:
                 print(f"파일 이동 중 오류 발생: {e}")
         else:
             print(f"실제 경로 파일이 존재하지 않습니다: {actual_path_file}")
-    else:
-        print("\n추천 경로를 따랐습니다. 클러스터링은 진행하지 않습니다.")
-        gpx_files.append((actual_path_file, gpx_processor.extract_gpx_points(actual_path_file)))
+
+    # 디렉토리 내 모든 GPX 파일 추가
+    for file_name in os.listdir(directory_path):
+        if file_name.endswith(".gpx"):
+            file_path = os.path.join(directory_path, file_name)
+            gpx_files.add(file_path)  # 중복 방지
 
     # 클러스터링 진행
-    if gpx_files:
-        print("\n클러스터링을 진행합니다.")
-        path_clusterer = PathClusterer(gpx_processor)
-        clusters = path_clusterer.cluster_paths(gpx_files)
+    print("\n클러스터링을 진행합니다.")
+    gpx_files = list(gpx_files)  # set을 list로 변환
+    gpx_files = [(file, gpx_processor.extract_gpx_points(file)) for file in gpx_files]
 
-        # 클러스터 결과 확인
-        if clusters:
-            representative_paths, non_representative_paths = path_clusterer.extract_representative_from_clusters(clusters, gpx_files)
-            for i, cluster in enumerate(clusters):
-                print(f"\nCluster {i} 경로:")
-                for path in cluster:
-                    print(f"- {path}")
-        else:
-            print("클러스터링 결과가 없습니다.")
+    # 경로 유사도 비교 및 군집화
+    path_clusterer = PathClusterer(gpx_processor)
+    clusters = path_clusterer.cluster_paths(gpx_files)
+
+    # 클러스터 결과 확인
+    if clusters:
+        representative_paths, non_representative_paths = path_clusterer.extract_representative_from_clusters(clusters, gpx_files)
+        for i, cluster in enumerate(clusters):
+            print(f"\nCluster {i} 경로 ({len(cluster)}개):")
+            for path in cluster:
+                print(f"- {os.path.basename(path)}")  # 파일명만 출력
     else:
-        print("클러스터링 대상 파일이 없습니다.")
+        print("클러스터링 결과가 없습니다.")
+
 
     ############################# 경로 이름 짓기 #############################
     toilet_data_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/code/final_toilet.csv"
