@@ -40,7 +40,19 @@ public class CrewPost extends BaseEntity {
     @OneToMany(mappedBy = "crewPost")
     private List<CrewPostComment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "crewPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<CrewPostImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "crewPost")
-    private List<CrewPostImage> images = new ArrayList<>();
+    private List<CrewPostLike> likes = new ArrayList<>();
+
+    public int getLikeCount() {
+        return likes.size();
+    }
+
+    public void addImage(CrewPostImage image) {
+        this.images.add(image);
+        image.setCrewPost(this);
+    }
 }

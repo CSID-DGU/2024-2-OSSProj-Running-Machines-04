@@ -1,46 +1,15 @@
-# 추천 경로를 따라서 뛰었는지 안 뛰었는지 확인하는 방법
-
-'''
+import os
 import gpxpy
-
-class GPXProcessor:
-    def __init__(self):
-        pass
-
-    # GPX 파일에서 포인트 추출
-    def extract_gpx_points(self, file_path):
-        points = []
-        with open(file_path, 'r', encoding='utf-8') as gpx_file:
-            gpx = gpxpy.parse(gpx_file)
-            for track in gpx.tracks:
-                for segment in track.segments:
-                    for point in segment.points:
-                        # (위도, 경도, 고도) 튜플로 포인트 추가
-                        points.append((point.latitude, point.longitude, point.elevation))
-        return points
-
-    # GPX 파일 정보 출력
-    def print_gpx_info(self, file_path):
-        points = self.extract_gpx_points(file_path)
-        for i, point in enumerate(points):
-            print(f"Point {i+1}: Latitude = {point[0]}, Longitude = {point[1]}, Elevation = {point[2]}")
-
-if __name__ == "__main__":
-    sample_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/sample3.gpx"
-
-    gpx_processor = GPXProcessor()
-    gpx_processor.print_gpx_info(sample_file)
-'''
-
-import random
-import gpxpy
-import matplotlib.pyplot as plt
 from geopy.distance import geodesic
+from scipy.spatial import KDTree
+import numpy as np
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
 
 
 class GPXProcessor:
-    def __init__(self, grid_size=0.0005):
-        self.grid_size = grid_size  # 그리드 크기 (위도/경도 단위)
+    def __init__(self, max_distance_tolerance=20):
+        self.max_distance_tolerance = max_distance_tolerance  # 거리 비교 허용 오차 (m)
 
     def extract_gpx_points(self, file_path):
         """GPX 파일에서 위도와 경도 추출"""
@@ -53,76 +22,191 @@ class GPXProcessor:
                         points.append((point.latitude, point.longitude))
         return points
 
-    def modify_route(self, original_path, lat_range=0.001, lon_range=0.001):
-        """원래 경로를 기반으로 새로운 경로 생성"""
-        modified_path = []
-        for lat, lon in original_path:
-            # 위도와 경도에 무작위 오차 추가
-            lat += random.uniform(-lat_range, lat_range)
-            lon += random.uniform(-lon_range, lon_range)
-            modified_path.append((lat, lon))
-        return modified_path
+    def calculate_path_length(self, path):
+        """경로의 총 거리 계산"""
+        total_distance = 0
+        for i in range(1, len(path)):
+            total_distance += geodesic(path[i - 1], path[i]).meters
+        return total_distance
 
-    def generate_grid(self, path):
-        """경로를 그리드로 변환"""
-        grid = set()
-        for lat, lon in path:
-            grid_lat = round(lat / self.grid_size) * self.grid_size
-            grid_lon = round(lon / self.grid_size) * self.grid_size
-            grid.add((grid_lat, grid_lon))
-        return grid
+    def calculate_deviation_rate(self, recommended_path, actual_path):
+        """추천 경로와 새 경로 간 이탈률 계산"""
+        total_points = len(recommended_path)
+        if total_points == 0:
+            return 100.0  # 추천 경로가 비어 있으면 완전히 이탈했다고 간주
 
-    def calculate_overlap(self, recommended_path, actual_path):
-        """경로 겹침 계산"""
-        rec_grid = self.generate_grid(recommended_path)
-        act_grid = self.generate_grid(actual_path)
+        out_of_tolerance_count = 0
 
-        overlap = rec_grid.intersection(act_grid)  # 겹치는 그리드 셀
-        overlap_ratio = len(overlap) / len(rec_grid) * 100  # 겹침 비율 (%)
+        for rec_point in recommended_path:
+            # 추천 경로의 각 포인트에서 실제 경로와의 최소 거리 계산
+            min_distance = min(geodesic(rec_point, act_point).meters for act_point in actual_path)
+            if min_distance > self.max_distance_tolerance:
+                out_of_tolerance_count += 1
 
-        return {
-            "overlap_ratio": overlap_ratio,
-            "recommended_grid": rec_grid,
-            "actual_grid": act_grid,
-            "overlap_grid": overlap
-        }
+        deviation_rate = (out_of_tolerance_count / total_points) * 100
+        return deviation_rate
 
-    def plot_overlap(self, recommended_path, actual_path, overlap_result):
-        """경로 겹침 시각화"""
-        rec_lat, rec_lon = zip(*recommended_path)
-        act_lat, act_lon = zip(*actual_path)
-        overlap_lat, overlap_lon = zip(*overlap_result["overlap_grid"])
 
-        plt.figure(figsize=(10, 8))
-        plt.plot(rec_lon, rec_lat, label="Recommended Path", color="blue", linewidth=2)
-        plt.plot(act_lon, act_lat, label="Actual Path", color="red", linestyle="--", linewidth=2)
+################################## 추천 경로 새 경로 비교 ##################################
+class GPXProcessorWithPathCompletion(GPXProcessor):
+    def __init__(self, max_distance_tolerance=20):
+        super().__init__(max_distance_tolerance)
 
-        # 겹치는 그리드 셀 표시
-        plt.scatter(overlap_lon, overlap_lat, color="green", label="Overlap", s=50, alpha=0.6)
+    def check_path_completion(self, recommended_path, actual_path):
+        """추천 경로를 따라 뛰었는지 여부 확인"""
+        deviation_rate = self.calculate_deviation_rate(recommended_path, actual_path)
+        recommended_length = self.calculate_path_length(recommended_path)
+        actual_length = self.calculate_path_length(actual_path)
 
-        plt.xlabel("Longitude")
-        plt.ylabel("Latitude")
-        plt.title("Path Overlap Visualization")
-        plt.legend()
-        plt.grid(True)
-        plt.show()
+        if deviation_rate <= 20:
+            if actual_length >= recommended_length:
+                if all(
+                    min(geodesic(rec_point, act_point).meters for act_point in actual_path)
+                    <= self.max_distance_tolerance
+                    for rec_point in recommended_path
+                ):
+                    return f"Perfect: 추천 경로를 완벽히 따라 뛰었습니다."
+                else:
+                    return f"Over: 추천 경로를 따라 뛰었고, 추천 경로보다 더 뛰었습니다."
+            else:
+                return f"Low: 추천 경로를 일부만 뛰었고, 추천 경로보다 덜 뛰었습니다."
+        else:
+            return f"Warning: 경로를 새 경로로 등록해야 합니다. 이탈률: {deviation_rate:.2f}%"
+
+
+################################## 새 경로들 끼리의 클러스터링 ##################################
+class PathClusterer:
+    def __init__(self, processor, overlap_threshold=20):
+        self.processor = processor
+        self.overlap_threshold = overlap_threshold  # 최소 겹치는 포인트 수
+
+    def find_clusters(self, paths):
+        """
+        기존 방식: 경로들 간의 겹침을 계산하여 유사한 경로를 묶음.
+        """
+        clusters = []
+        checked = set()  # 이미 체크한 경로는 다시 확인하지 않도록
+
+        # 모든 경로를 KDTree를 활용해 효율적으로 비교
+        all_points = []
+        path_indices = []
+        for idx, (_, path) in enumerate(paths):
+            all_points.extend(path)
+            path_indices.extend([idx] * len(path))
+
+        tree = KDTree(np.array(all_points))  # KDTree 생성
+
+        # 경로별로 겹치는 포인트를 비교
+        for i, (file1, path1) in enumerate(paths):
+            if file1 in checked:
+                continue
+
+            current_cluster = [file1]
+            checked.add(file1)
+
+            for j, (file2, path2) in enumerate(paths):
+                if file2 in checked or file1 == file2:
+                    continue
+
+                overlap_count = self.count_overlaps(path1, path2, tree)
+
+                if overlap_count >= self.overlap_threshold:
+                    current_cluster.append(file2)
+                    checked.add(file2)
+
+            if len(current_cluster) >= 3:
+                clusters.append(current_cluster)
+
+        return clusters
+
+    def count_overlaps(self, path1, path2, tree):
+        """두 경로가 겹치는 점의 수를 KDTree로 계산."""
+        overlap_count = 0
+        for point in path1:
+            distances, indices = tree.query(point, k=1)
+            nearest_point = tree.data[indices]
+            if geodesic(point, nearest_point).meters <= self.processor.max_distance_tolerance:
+                overlap_count += 1
+
+        return overlap_count
+
+
+################################## 밀도 기반 클러스터링 ##################################
+class DensityBasedPathClusterer:
+    def __init__(self, processor, epsilon=0.005, min_samples=10):
+        """
+        DBSCAN 기반 밀도 클러스터링.
+        :param processor: GPXProcessor 인스턴스
+        :param epsilon: DBSCAN 반경 (약 0.005 radian = 500m)
+        :param min_samples: 밀집 판단 기준 포인트 수
+        """
+        self.processor = processor
+        self.epsilon = epsilon
+        self.min_samples = min_samples
+
+    def cluster_paths(self, paths):
+        """
+        경로를 병합하고 DBSCAN으로 밀도 기반 클러스터링 수행.
+        :param paths: GPX 경로 데이터 [(file_name, [(lat, lon), ...]), ...]
+        :return: 각 클러스터에 속한 파일 이름
+        """
+        all_points = []
+        path_mapping = []
+        for idx, (file, path) in enumerate(paths):
+            all_points.extend(path)
+            path_mapping.extend([idx] * len(path))
+
+        # 위도/경도를 라디안으로 변환
+        all_points = np.radians(np.array(all_points))
+
+        # DBSCAN 클러스터링 수행
+        db = DBSCAN(eps=self.epsilon, min_samples=self.min_samples, metric="haversine").fit(all_points)
+        labels = db.labels_
+
+        # 클러스터링 결과 정리
+        clusters = {}
+        for label, idx in zip(labels, path_mapping):
+            if label == -1:
+                continue
+            if label not in clusters:
+                clusters[label] = set()
+            clusters[label].add(paths[idx][0])
+
+        return clusters
 
 
 if __name__ == "__main__":
-    # 원래 경로를 포함한 GPX 파일 경로
-    original_file = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test/sample7.gpx"
+    ################################## GPX 데이터 로드 ##################################
+    directory_path = "C:/Users/정호원/OneDrive/바탕 화면/gpx 수집/test_clustering"
+    gpx_processor = GPXProcessor(max_distance_tolerance=20)
 
-    # GPX 경로 처리기
-    gpx_processor = GPXProcessor(grid_size=0.0005)  # 그리드 크기 약 50m
-    original_path = gpx_processor.extract_gpx_points(original_file)
+    gpx_files = [
+        (file, gpx_processor.extract_gpx_points(os.path.join(directory_path, file)))
+        for file in os.listdir(directory_path) if file.endswith(".gpx")
+    ]
 
-    # 새로운 경로 생성 (원 경로를 수정)
-    modified_path = gpx_processor.modify_route(original_path, lat_range=0.0007, lon_range=0.0007)
+    ################################## 기존 클러스터링 ##################################
+    clusterer = PathClusterer(gpx_processor, overlap_threshold=20)
+    clusters = clusterer.find_clusters(gpx_files)
 
-    # 경로 겹침 계산
-    results = gpx_processor.calculate_overlap(original_path, modified_path)
-    print(f"Overlap Ratio: {results['overlap_ratio']:.2f}%")
+    print("=== 기존 클러스터링 ===")
+    if clusters:
+        for idx, cluster in enumerate(clusters):
+            print(f"Cluster {idx + 1}:")
+            for file in cluster:
+                print(f"  - {file}")
+    else:
+        print("유사한 경로가 3개 이상 겹치는 클러스터는 없습니다.")
 
-    # 겹침 시각화
-    gpx_processor.plot_overlap(original_path, modified_path, results)
+    ################################## 밀도 기반 클러스터링 ##################################
+    density_clusterer = DensityBasedPathClusterer(gpx_processor, epsilon=0.005, min_samples=10)
+    density_clusters = density_clusterer.cluster_paths(gpx_files)
 
+    print("\n=== 밀도 기반 클러스터링 ===")
+    if density_clusters:
+        for cluster_id, files in density_clusters.items():
+            print(f"Cluster {cluster_id}:")
+            for file in files:
+                print(f"  - {file}")
+    else:
+        print("밀도 기반 클러스터에서 유사한 경로가 발견되지 않았습니다.")

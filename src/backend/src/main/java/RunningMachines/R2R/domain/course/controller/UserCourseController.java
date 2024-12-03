@@ -9,10 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/running")
@@ -25,7 +23,8 @@ public class UserCourseController {
     @Operation(summary = "사용자 러닝 기록하기", description = "추천 코스 따라 뛰었다면 courseId에 해당 코스id 넣으면 됩니다")
     @PostMapping("/record")
     public ResponseEntity<UserCourseResponseDto> saveUserCourseRecord(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                                                      @RequestBody UserCourseRequestDto userCourseRequestDto) {
-        return ResponseEntity.ok(userCourseService.saveUserCourse(customUserDetails.getUsername(), userCourseRequestDto));
+                                                                      @RequestPart UserCourseRequestDto userCourseRequestDto,
+                                                                      @RequestPart MultipartFile gpx) {
+        return ResponseEntity.ok(userCourseService.saveUserCourse(customUserDetails.getUsername(), gpx, userCourseRequestDto));
     }
 }

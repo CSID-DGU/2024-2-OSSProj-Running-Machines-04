@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CrewPostRepository extends JpaRepository<CrewPost, Long> {
-    List<CrewPost> findAllByUserIdAndBoard(Long userId, CrewBoard board);
+    int countByCrewId(Long crewId);
+
     List<CrewPost> findAllByCrewIdAndBoard(Long crewId, CrewBoard board);
 
     Optional<CrewPost> findByIdAndCrewIdAndBoard(Long id, Long crewId, CrewBoard board);
