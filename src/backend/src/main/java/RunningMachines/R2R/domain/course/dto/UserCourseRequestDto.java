@@ -17,7 +17,6 @@ public class UserCourseRequestDto {
     private double distance;
     private int duration;
     private double pace;
-//    private Boolean followRecommendCourse;
     private Long courseId;
 
     @Getter
