@@ -4,7 +4,6 @@ export type reviewRequest = {
 };
 
 export type runningRequest = {
-  gpxFile: File; // TODO: 수정
   distance: number;
   duration: number;
   pace: number;

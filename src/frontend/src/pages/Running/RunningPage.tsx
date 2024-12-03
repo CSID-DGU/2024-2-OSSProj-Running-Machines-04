@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import { Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
 import { LatLng } from "@/types/kakaoMap";
@@ -5,6 +7,8 @@ import useRunningCourseStore from "@/store/useRunningCourseStore";
 import { ReactComponent as EndIcon } from "@/assets/icons/EndIcon.svg";
 import { ReactComponent as StopIcon } from "@/assets/icons/StopIcon.svg";
 import { ReactComponent as RestartIcon } from "@/assets/icons/RestartIcon.svg";
+import { useRunningRecordPost } from "@/hooks/useRunning";
+import { useNavigate, useParams } from "react-router-dom";
 
 const calculateDistance = (path: LatLng[]) => {
   if (path.length < 2) return 0;
@@ -39,7 +43,51 @@ const formatTime = (seconds: number) => {
   return `${minutes}분 ${remainingSeconds}초`;
 };
 
+// 페이스를 숫자형태로 포맷
+const formatPace = (pace: string): number => {
+  const [minutes, seconds] = pace
+    .split("'")
+    .map((part) => parseInt(part.replace('"', "").trim()));
+  return minutes + seconds / 60;
+};
+
+// gpx 파일로 변환
+const convertToGPX = (path: LatLng[]): File => {
+  const gpxHeader = `<?xml version="1.0" encoding="UTF-8"?>
+  <gpx version="1.1" creator="YourAppName" xmlns="http://www.topografix.com/GPX/1/1">
+    <trk>
+      <name>Running Track</name>
+      <trkseg>`;
+
+  const gpxFooter = `</trkseg>
+    </trk>
+  </gpx>`;
+
+  const gpxData = path
+    .map((point) => {
+      return `<trkpt lat="${point.lat}" lon="${point.lng}">
+          <ele>0</ele> <!-- Assuming elevation is 0, you can add actual data if available -->
+          <time>${new Date().toISOString()}</time>
+        </trkpt>`;
+    })
+    .join("");
+
+  const gpxXML = `${gpxHeader}${gpxData}${gpxFooter}`;
+
+  // Convert the GPX XML string to a Blob
+  const blob = new Blob([gpxXML], { type: "application/gpx+xml" });
+
+  // Create a File object from the Blob
+  const gpxFile = new File([blob], "track.gpx", {
+    type: "application/gpx+xml",
+  });
+
+  return gpxFile;
+};
+
 const RunningPage = () => {
+  const navigate = useNavigate();
+
   const { runningCourse } = useRunningCourseStore(); // 선택된 코스
   const [state, setState] = useState<LatLng[]>([]); // 실시간 경로 리스트
   const stateRef = useRef<LatLng[]>([]); // 최신 state를 참조하기 위한 ref
@@ -48,10 +96,23 @@ const RunningPage = () => {
   const [pace, setPace] = useState("0"); // 평균 페이스 (분/킬로미터)
   const [isPaused, setIsPaused] = useState(false); // 정지 상태
 
+  const { id } = useParams();
+
+  const { mutate } = useRunningRecordPost(
+    {
+      distance: distance,
+      duration: duration,
+      pace: 1, // 포맷팅된 pace 값
+      // pace: formatPace(pace), // 포맷팅된 pace 값
+      courseId: Number(id),
+    },
+    convertToGPX(state),
+    Number(id)
+  );
+
   const handleStop = () => {
     setIsPaused((prev) => !prev); // 정지/재개 상태 토글
   };
-
   const handleDone = () => {
     setIsPaused(true);
     alert(`
@@ -60,6 +121,8 @@ const RunningPage = () => {
       시간: ${formatTime(duration)}
       평균 페이스: ${pace} 분/km
     `);
+
+    mutate();
   };
 
   useEffect(() => {
