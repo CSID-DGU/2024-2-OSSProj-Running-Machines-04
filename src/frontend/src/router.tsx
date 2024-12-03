@@ -14,7 +14,8 @@ import CrewMemberDetailPage from "@/pages/CrewMemberDetail/CrewMemberDetailPage"
 import OtherCrewPage from "@/pages/OtherCrew/OtherCrewPage";
 import SigninPage from "@/pages/Signin/SigninPage";
 import SignupPage from "@/pages/Signup/SIgnupPage";
-import RunningPage from "./pages/Running/RunningPage";
+import RunningPage from "@/pages/Running/RunningPage";
+import ReviewPage from "@/pages/Review/ReviewPage";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
 
       { path: "/record", element: <RecordPage /> },
       { path: "/record/:id/running", element: <RunningPage /> },
+      { path: "/record/:id/review/:courseId", element: <ReviewPage /> },
 
       { path: "/community", element: <CommunityPage /> },
       { path: "/community/:id", element: <CommunityDetailPage /> },

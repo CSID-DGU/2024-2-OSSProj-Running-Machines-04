@@ -1,5 +1,3 @@
-import { LatLng } from "./kakaoMap";
-
 export type RouteResponse = {
   courseId: number;
   courseUrl: string;
@@ -12,9 +10,4 @@ export type RouteResponse = {
   storeCounts: number;
   trafficLightCounts: number;
   courseLiked: boolean;
-};
-
-export type RouteStore = {
-  courseId: number;
-  path: LatLng[];
 };
