@@ -7,26 +7,24 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserCourseRequestDto {
-    private List<Waypoint> waypoints;
+//    private List<Waypoint> waypoints;
     private double distance;
     private int duration;
     private double pace;
     private Long courseId;
 
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Waypoint {
-        private double lat;
-        private double lon;
+//    @Getter
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    public static class Waypoint {
+//        private double lat;
+//        private double lon;
 //        private String timestamp;
-    }
+//    }
 
     public UserCourse toEntity(User user, Course course) {
         return UserCourse.builder()
@@ -35,7 +33,6 @@ public class UserCourseRequestDto {
                 .distance(this.distance)
                 .duration(this.duration)
                 .pace(this.pace)
-//                .followRecommendCourse(this.followRecommendCourse)
                 .build();
     }
 }
