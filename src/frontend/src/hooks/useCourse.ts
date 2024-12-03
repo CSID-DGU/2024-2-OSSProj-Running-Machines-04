@@ -1,6 +1,7 @@
 import {
   getAllCourseData,
   getLikesCourseData,
+  getPopularCourseData,
   getRecommendCourseData,
   postCourseBookmark,
   uploadGpx,
@@ -36,6 +37,13 @@ export const useRecommendCourseGet = ({ lat, lon }: courseResponseParams) => {
   return useQuery({
     queryKey: ["course", lat, lon],
     queryFn: () => getRecommendCourseData({ lat, lon }),
+  });
+};
+
+export const usePopularCourseGet = () => {
+  return useQuery({
+    queryKey: ["popular", "course"],
+    queryFn: getPopularCourseData,
   });
 };
 

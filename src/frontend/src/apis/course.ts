@@ -22,6 +22,11 @@ export const getRecommendCourseData = async ({
   return response.data;
 };
 
+export const getPopularCourseData = async () => {
+  const response = await api.get(`/course/popular`);
+  return response.data;
+};
+
 export const getLikesCourseData = async () => {
   const response = await api.get(`/course/likes`);
   return response.data;

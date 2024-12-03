@@ -1,17 +1,18 @@
-import { LatLng } from "@/types/kakaoMap";
+import { RouteResponse } from "@/types/routes";
 import { create } from "zustand";
 
+// 서버로부터 조회한 코스 데이터 저장소
 type CourseStore = {
-  course: LatLng[] | null;
-  setCourse: (newCourse: LatLng[]) => void; // 코스 업데이트
+  course: RouteResponse[] | [];
+  setCourse: (newCourse: RouteResponse[]) => void;
 };
 
 const useCourseStore = create<CourseStore>()((set) => ({
-  course: null,
+  course: [],
   setCourse: (newCourse) =>
     set(() => ({
       course: newCourse,
-    })), // 코스 업데이트
+    })),
 }));
 
 export default useCourseStore;
