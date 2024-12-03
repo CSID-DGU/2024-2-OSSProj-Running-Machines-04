@@ -44,6 +44,7 @@ const RunningPage = () => {
   const [duration, setDuration] = useState(0); // 총 소요 시간 (초 단위)
   const [pace, setPace] = useState("0"); // 평균 페이스 (분/킬로미터)
 
+  const handleStop = () => {};
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -155,9 +156,13 @@ const RunningPage = () => {
             )}
             <MapMarker position={current} />
           </Map>
-          <div
-            style={{ position: "fixed", bottom: 100, left: 20, color: "#000" }}
+          <button
+            onClick={handleStop}
+            className="fixed bottom-40 left-[45%] bg-red-400 px-4 py-2 text-2xl text-white rounded-md"
           >
+            종료
+          </button>
+          <div className="fixed bottom-40 left-10 text-black">
             <p>거리: {distance.toFixed(2)} km</p>
             <p>시간: {formatTime(duration)}</p>
             <p>페이스: {pace} 분/km</p>

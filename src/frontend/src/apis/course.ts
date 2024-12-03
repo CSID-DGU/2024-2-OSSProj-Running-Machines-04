@@ -1,5 +1,6 @@
 import { courseResponseParams } from "@/types/course";
 import { api } from ".";
+import { RouteResponse } from "@/types/routes";
 
 export const postCourseBookmark = async (courseId: number) => {
   const response = await api.post(`/course/${courseId}`);
@@ -15,10 +16,8 @@ export const uploadGpx = async (data: number) => {
 export const getRecommendCourseData = async ({
   lat,
   lon,
-}: courseResponseParams) => {
-  const response = await api.get(`/course/recommend`, {
-    params: { lat, lon },
-  });
+}: courseResponseParams): Promise<RouteResponse[]> => {
+  const response = await api.get(`/course/recommend?lat=${lat}&lon=${lon}`);
   return response.data;
 };
 

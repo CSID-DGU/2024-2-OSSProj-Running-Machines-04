@@ -2,11 +2,9 @@ import KakaoMap from "@/components/common/KakaoMap";
 import { ReactComponent as PlayIcon } from "@/assets/images/play.svg";
 import HomeCategory from "@/components/record/HomeCategory";
 import Searchbar from "@/components/record/Searchbar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { courseMenu } from "@/constants/course";
-import { useRecommendCourseGet } from "@/hooks/useCourse";
 import AlertModal from "@/components/common/AlertModal";
-import { RouteResponse } from "@/types/routes";
 import CourseSection from "@/components/record/CourseSection";
 import useSelectedCourseStore from "@/store/useSelectedCourseStore";
 import useCourseStore from "@/store/useCourseStore";
@@ -17,7 +15,7 @@ const RecordPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<courseMenu>(
     courseMenu.PERSONAL
   );
-  const { selectedCourse, setSelectedCourse } = useSelectedCourseStore();
+  const { setSelectedCourse, selectedCourse } = useSelectedCourseStore();
   const { course } = useCourseStore();
 
   // 선택한 코스 초기화 핸들러
@@ -41,15 +39,14 @@ const RecordPage = () => {
   const handleClickCourse = (id: number) => {
     if (course) {
       // 선택한 ID의 코스 업데이트
-      const selectedCourse = course.find((course) => course.courseId === id);
+      const selected = course.find((course) => course.courseId === id);
       console.log("id", id);
-
       console.log("courseData", course);
+      console.log("handleClick", selected);
+      console.log("selectedCourse", selectedCourse);
 
-      console.log("handleClick", selectedCourse);
-
-      if (selectedCourse) {
-        setSelectedCourse(selectedCourse); // 선택된 ID 업데이트
+      if (selected) {
+        setSelectedCourse(selected); // 선택된 ID 업데이트
         setOpenSheet(!openSheet); // Sheet 여부
       }
     }
@@ -60,7 +57,6 @@ const RecordPage = () => {
       {openSheet && (
         <CourseSection
           setOpenSheet={setOpenSheet}
-          resetSelectedCourse={resetSelectedCourse}
           onClickCourse={handleClickCourse}
           selectedCategory={selectedCategory}
         />
@@ -74,7 +70,7 @@ const RecordPage = () => {
           setSelectedCategory={setSelectedCategory}
           onClose={resetSelectedCourse}
         />
-        <KakaoMap onClickCourse={handleClickCourse} />
+        <KakaoMap openSheet={openSheet} onClickCourse={handleClickCourse} />
         <PlayIcon
           onClick={() => setConfirmModal(true)}
           className="fixed bottom-[20vh] z-50"
