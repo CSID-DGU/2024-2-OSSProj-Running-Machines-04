@@ -61,6 +61,9 @@ public class GalleryPostQueryService {
                 .map(post -> GallerySimpleResponseDto.builder()
                         .postId(post.getId())
                         .imageUrl(post.getImages().get(0).getImageUrl())
+                        .content(post.getContent() != null && post.getContent().length() > 30
+                                ? post.getContent().substring(0, 20) + "..."
+                                : post.getContent())
                         .build())
                 .collect(Collectors.toList());
 

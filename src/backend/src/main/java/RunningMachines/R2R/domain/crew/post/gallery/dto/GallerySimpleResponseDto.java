@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 public class GallerySimpleResponseDto {
     private Long postId;
     private String imageUrl;
+    private String content;
 }

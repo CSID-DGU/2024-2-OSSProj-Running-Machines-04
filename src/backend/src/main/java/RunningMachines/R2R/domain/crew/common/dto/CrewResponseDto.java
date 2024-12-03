@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CrewResponseDto {
 
+    private Long crewId;
     private String profileImageUrl;
     private String title;
     private int memberCount;
@@ -21,6 +22,7 @@ public class CrewResponseDto {
                 .profileImageUrl(crew.getImages() != null ? crew.getImages().getImageUrl() : "")
                 .title(crew.getTitle())
                 .memberCount(crew.getCrewUsers().size())
+                .crewId(crew.getId())
                 .build();
     }
 }
