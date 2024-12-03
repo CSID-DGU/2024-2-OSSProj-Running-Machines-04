@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
 import { LatLng } from "@/types/kakaoMap";
 import useRunningCourseStore from "@/store/useRunningCourseStore";
+import { ReactComponent as EndIcon } from "@/assets/icons/EndIcon.svg";
+import { ReactComponent as StopIcon } from "@/assets/icons/StopIcon.svg";
+import { ReactComponent as RestartIcon } from "@/assets/icons/RestartIcon.svg";
 
 const calculateDistance = (path: LatLng[]) => {
   if (path.length < 2) return 0;
@@ -43,8 +46,22 @@ const RunningPage = () => {
   const [distance, setDistance] = useState(0); // 총 거리
   const [duration, setDuration] = useState(0); // 총 소요 시간 (초 단위)
   const [pace, setPace] = useState("0"); // 평균 페이스 (분/킬로미터)
+  const [isPaused, setIsPaused] = useState(false); // 정지 상태
 
-  const handleStop = () => {};
+  const handleStop = () => {
+    setIsPaused((prev) => !prev); // 정지/재개 상태 토글
+  };
+
+  const handleDone = () => {
+    setIsPaused(true);
+    alert(`
+      러닝 기록
+      거리: ${distance.toFixed(2)} km
+      시간: ${formatTime(duration)}
+      평균 페이스: ${pace} 분/km
+    `);
+  };
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -55,7 +72,6 @@ const RunningPage = () => {
           };
           setState([initialLocation]);
           stateRef.current = [initialLocation];
-          console.log("initialLocation", initialLocation);
         },
         (error) => console.error("현재 위치를 받아오지 못하였습니다.", error),
         { enableHighAccuracy: true }
@@ -67,7 +83,9 @@ const RunningPage = () => {
 
   useEffect(() => {
     const addLocation = () => {
-      console.log("state", state);
+      console.log("state: ", state);
+
+      if (isPaused) return; // 정지 상태면 위치 추가 중단
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -77,8 +95,9 @@ const RunningPage = () => {
             };
 
             const lastLocation = stateRef.current[stateRef.current.length - 1];
-            console.log("newLocation", newLocation);
-            console.log("lastLocation", lastLocation);
+            console.log("newLocation: ", newLocation);
+            console.log("lastLocation: ", lastLocation);
+
             if (
               !lastLocation ||
               lastLocation.lat !== newLocation.lat ||
@@ -94,7 +113,7 @@ const RunningPage = () => {
               setDistance(newDistance);
 
               // 평균 페이스 계산
-              if (duration > 0) {
+              if (duration > 0 && newDistance > 0) {
                 const paceMinutes = duration / 60 / newDistance;
                 setPace(
                   `${Math.floor(paceMinutes)}'${Math.floor(
@@ -112,12 +131,14 @@ const RunningPage = () => {
     };
 
     const intervalId = setInterval(() => {
-      addLocation();
-      setDuration((prev) => prev + 1); // 1초 단위로 시간 증가
+      if (!isPaused) {
+        addLocation();
+        setDuration((prev) => prev + 1); // 1초 단위로 시간 증가
+      }
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [duration]);
+  }, [isPaused, duration]);
 
   const current = state[state.length - 1];
 
@@ -156,13 +177,15 @@ const RunningPage = () => {
             )}
             <MapMarker position={current} />
           </Map>
-          <button
-            onClick={handleStop}
-            className="fixed bottom-40 left-[45%] bg-red-400 px-4 py-2 text-2xl text-white rounded-md"
-          >
-            종료
-          </button>
-          <div className="fixed bottom-40 left-10 text-black">
+          <div className="fixed bottom-40 left-0 flex items-center justify-between w-full px-[15%]">
+            {isPaused ? (
+              <RestartIcon onClick={handleStop} />
+            ) : (
+              <StopIcon onClick={handleStop} />
+            )}
+            <EndIcon onClick={handleDone} />
+          </div>
+          <div className="fixed top-10 left-6 px-6 py-2 text-black bg-[rgba(255,255,255,0.8)]">
             <p>거리: {distance.toFixed(2)} km</p>
             <p>시간: {formatTime(duration)}</p>
             <p>페이스: {pace} 분/km</p>
