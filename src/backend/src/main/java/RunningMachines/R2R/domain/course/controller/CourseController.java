@@ -37,6 +37,12 @@ public class CourseController {
         return courseQueryService.getRecommendedCourses(customUserDetails.getUsername(), lat, lon);
     }
 
+    @Operation(summary = "인기 코스 목록 조회")
+    @GetMapping("/popular")
+    public List<CourseResponseDto> getPopularCourses(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return courseQueryService.getPopularCourses(customUserDetails.getUsername());
+    }
+
     @Operation(summary = "즐겨찾기 코스 목록 조회")
     @GetMapping("/likes")
     public ResponseEntity<List<CourseResponseDto>> likedCourse(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
