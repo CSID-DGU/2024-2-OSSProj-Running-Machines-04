@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import useSelectedCourseStore from "@/store/useSelectedCourseStore";
 
-type AlertModalProps = {
-  courseId: number;
-};
-
-const AlertModal = ({ courseId }: AlertModalProps) => {
+const AlertModal = () => {
   const [count, setCount] = useState(5);
   const [visible, setVisible] = useState(true);
   const navigate = useNavigate();
+
+  const { selectedCourse } = useSelectedCourseStore();
 
   useEffect(() => {
     if (count > 0) {
@@ -16,10 +15,15 @@ const AlertModal = ({ courseId }: AlertModalProps) => {
       return () => clearTimeout(timer);
     } else {
       // 코스 미선택시 courseId 0으로 설정
-      navigate(`/record/${courseId}/running`);
-      setVisible(false);
+      if (selectedCourse) {
+        navigate(`/record/${selectedCourse.courseId}/running`);
+        setVisible(false);
+      } else {
+        navigate(`/record/0/running`);
+        setVisible(false);
+      }
     }
-  }, [count, courseId, navigate]);
+  }, [count, selectedCourse, navigate]);
 
   if (!visible) return null;
 

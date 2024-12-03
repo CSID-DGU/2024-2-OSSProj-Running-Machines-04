@@ -4,15 +4,16 @@ import axios from "axios";
 import { api } from "@/apis";
 import { RouteResponse } from "@/types/routes";
 import { Route } from "@/types/kakaoMap";
-import useCourseStore from "@/store/useCourseStore";
+import useRunningCourseStore from "@/store/useRunningCourseStore";
+import useSelectedCourseStore from "@/store/useSelectedCourseStore";
 
 type KakaoMapProps = {
-  selectedCourse: RouteResponse;
   onClickCourse: (id: number) => void;
 };
 
-const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
-  const { setCourse } = useCourseStore();
+const KakaoMap = ({ onClickCourse }: KakaoMapProps) => {
+  const { setRunningCourse } = useRunningCourseStore();
+  const { selectedCourse } = useSelectedCourseStore();
 
   // 현재 위치(마커) 상태
   const [current, setCurrent] = useState({
@@ -20,7 +21,7 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
     lng: 127.0919,
   });
 
-  // 경로 정보 상태
+  // 추천 경로 정보 상태
   const [state, setState] = useState({
     center: { lat: 37.51265, lng: 127.0919 }, // 기본 위치 (잠실)
     // center: { lat: 37.5665, lng: 126.978 }, // 기본 위치 (서울 시청)
@@ -37,8 +38,8 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
           (position) => {
             // 현재 위치 설정
             setCurrent({
-              lat: 37.51265,
-              lng: 127.0919,
+              lat: 37.5665,
+              lng: 126.978,
               // lat: position.coords.latitude,
               // lng: position.coords.longitude,
             });
@@ -46,13 +47,13 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
             setState((prev) => ({
               ...prev,
               center: {
-                lat: 37.51265,
-                lng: 127.0919,
+                lat: 37.5665,
+                lng: 126.978,
                 // lat: position.coords.latitude,
                 // lng: position.coords.longitude,
               },
             }));
-            fetchGpxData(position.coords.latitude, position.coords.longitude);
+            fetchGpxData(current.lat, current.lng);
           },
           (err) => {
             setState((prev) => ({
@@ -120,6 +121,7 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
           isLoading: false,
         }));
       } catch (err) {
+        console.log("실패");
         // 실패시
         setState((prev) => ({
           ...prev,
@@ -130,15 +132,10 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
     };
 
     getCurrentLocation();
+    console.log(state);
   }, [state.isLoading]);
 
   const handlePolylineClick = (route: Route) => {
-    // 폴리라인 중심좌표 이동
-    // const centerLat =
-    //   route.path.reduce((sum, point) => sum + point.lat, 0) / route.path.length;
-    // const centerLng =
-    //   route.path.reduce((sum, point) => sum + point.lng, 0) / route.path.length;
-
     setState((prev) => ({
       ...prev,
       // 폴리라인 시작좌표 이동
@@ -147,7 +144,12 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
 
     // 선택한 폴리라인 값 업데이트
     onClickCourse(route.id);
-    setCourse(route.path);
+    console.log("선택한 코스: ", route);
+    console.log("selected state: ", selectedCourse);
+    console.log("state: ", state);
+
+    setRunningCourse(route.path);
+    // setSel
   };
 
   return (
@@ -160,7 +162,7 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
         width: "100%",
         height: "100vh",
       }}
-      level={selectedCourse.courseId !== 0 ? 4 : 7}
+      level={selectedCourse && selectedCourse.courseId !== 0 ? 4 : 7}
     >
       {state.routes.map((route) => (
         <>
@@ -169,7 +171,9 @@ const KakaoMap = ({ selectedCourse, onClickCourse }: KakaoMapProps) => {
             path={route.path}
             strokeWeight={6}
             strokeColor={
-              route.id === selectedCourse.courseId ? "#E21919" : "#15258E"
+              selectedCourse && route.id == selectedCourse.courseId
+                ? "#E21919"
+                : "#15258E"
             } // 선택된 폴리라인 강조
             strokeOpacity={0.7}
             strokeStyle="solid"
