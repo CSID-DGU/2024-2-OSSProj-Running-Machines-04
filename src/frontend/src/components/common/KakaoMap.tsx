@@ -124,7 +124,7 @@ const KakaoMap = ({ onClickCourse, openSheet }: KakaoMapProps) => {
 
     getCurrentLocation();
     console.log("마지막 state", kakaomapState);
-  }, [kakaomapState, course]);
+  }, [kakaomapState.isLoading, course]);
 
   const handlePolylineClick = (route: Route) => {
     setKakaomapState({
