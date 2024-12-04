@@ -1,15 +1,11 @@
 package RunningMachines.R2R.domain.user.dto;
 
-import RunningMachines.R2R.domain.user.entity.Prefer;
 import RunningMachines.R2R.domain.user.entity.Preference;
 import RunningMachines.R2R.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor

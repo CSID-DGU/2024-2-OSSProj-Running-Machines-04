@@ -1,10 +1,8 @@
 package RunningMachines.R2R.domain.user.controller;
 
 import RunningMachines.R2R.domain.user.dto.UserInfoResponseDto;
-import RunningMachines.R2R.domain.user.dto.UserSignupRequestDto;
 import RunningMachines.R2R.domain.user.service.MyPageQueryService;
 import RunningMachines.R2R.global.auth.CustomUserDetails;
-import RunningMachines.R2R.global.auth.TokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
