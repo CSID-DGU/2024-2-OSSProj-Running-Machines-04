@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ReactComponent as CourseCTA } from "@/assets/icons/CourseCTA.svg";
 import BottomSheet from "./BottomSheet";
 import useSelectedCourseStore from "@/store/useSelectedCourseStore";
@@ -28,11 +28,38 @@ const CourseSection = ({
   const { setKakaomapState } = useKakaomapStore();
   const { parsedCourse } = useParsedCourseStore();
 
-  // 추천코스 선택시 api 호출
-  const { data: recommend } = useRecommendCourseGet({
+  // 위치 초기화
+  const [location, setLocation] = useState<{ lat: number; lon: number }>({
     lat: 37.5665,
     lon: 126.978,
-  }); // 임의 좌표
+  });
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      // 브라우저에서 위치 정보 가져오기
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLocation({
+              lat: position.coords.latitude,
+              lon: position.coords.longitude,
+            });
+          },
+          (error) => {
+            console.error("위치 정보를 가져오는데 실패했습니다.", error);
+          }
+        );
+      }
+    }, 5000); // 5초마다 위치 업데이트
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // 추천코스 선택시 api 호출
+  const { data: recommend } = useRecommendCourseGet({
+    lat: location.lat,
+    lon: location.lon,
+  });
 
   // 인기코스 선택시 api 호출
   const { data: popular } = usePopularCourseGet();
