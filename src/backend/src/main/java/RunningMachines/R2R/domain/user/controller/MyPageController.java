@@ -1,5 +1,6 @@
 package RunningMachines.R2R.domain.user.controller;
 
+import RunningMachines.R2R.domain.user.dto.UserDistanceDto;
 import RunningMachines.R2R.domain.user.dto.UserInfoResponseDto;
 import RunningMachines.R2R.domain.user.service.MyPageQueryService;
 import RunningMachines.R2R.global.auth.CustomUserDetails;
@@ -8,9 +9,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/mypage")
@@ -24,5 +25,11 @@ public class MyPageController {
     @PostMapping(value = "/userInfo")
     public ResponseEntity<UserInfoResponseDto> signup(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return ResponseEntity.ok(myPageQueryService.getUserInfo(customUserDetails.getUsername()));
+    }
+
+    @Operation(summary = "달린 거리 달력")
+    @GetMapping("/{year}/{month}")
+    public ResponseEntity<List<UserDistanceDto>> getUserRunningDistance(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable int year, @PathVariable int month) {
+        return ResponseEntity.ok(myPageQueryService.getUserDistance(customUserDetails.getUsername(), year, month));
     }
 }
