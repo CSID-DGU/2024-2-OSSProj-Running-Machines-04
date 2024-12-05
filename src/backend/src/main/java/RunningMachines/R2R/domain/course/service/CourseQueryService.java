@@ -112,8 +112,10 @@ public class CourseQueryService {
         // 리뷰 태그가 없으면 파일명 파싱해 코스 태그 생성
         String name = fileName.substring(0, fileName.lastIndexOf('.')); // 확장자 제거
         String[] tags = name.split("_"); // 파일명을 '_'로 구분하여 태그 리스트 생성
-        tags = Arrays.copyOfRange(tags, 1, tags.length - 1); // 첫,마지막 번째 태그를 제외한 배열 생성 (파일명 인덱스 및 거리값 제거)
-        return List.of(tags);
+        String tag1 = tags[1]; // 난이도
+        String tag2 = tags[2] + "_" + tags[3]; // 편의시설
+        String tag3 = tags[4]; // 트랙 여부
+        return List.of(tag1, tag2, tag3);
     }
 
     // 즐겨찾기 코스 조회
