@@ -5,6 +5,7 @@ import RunningMachines.R2R.domain.course.repository.UserCourseRepository;
 import RunningMachines.R2R.domain.user.dto.UserDistanceDto;
 import RunningMachines.R2R.domain.user.dto.UserInfoResponseDto;
 import RunningMachines.R2R.domain.user.dto.UserRecentResponseDto;
+import RunningMachines.R2R.domain.user.dto.UserStatsResponseDto;
 import RunningMachines.R2R.domain.user.entity.User;
 import RunningMachines.R2R.domain.user.repository.UserRepository;
 import RunningMachines.R2R.global.exception.CustomException;
@@ -12,12 +13,11 @@ import RunningMachines.R2R.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalTime;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -73,5 +73,50 @@ public class MyPageQueryService {
         }
 
         return responseDtos;
+    }
+
+    public UserStatsResponseDto getUserStats(String email, String period) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startDateTime = null;
+        LocalDateTime endDateTime = null;
+
+        if ("month".equals(period)) {
+            startDateTime = now.withDayOfMonth(1).with(LocalTime.MIN);
+            endDateTime = now.withDayOfMonth(now.toLocalDate().lengthOfMonth()).with(LocalTime.MAX);
+        } else if ("week".equals(period)) {
+            DayOfWeek currentDay = now.getDayOfWeek();
+            startDateTime = now.minusDays(currentDay.getValue() - 1).with(LocalTime.MIN);
+            endDateTime = now.plusDays(7 - currentDay.getValue()).with(LocalTime.MAX);
+        }
+
+        List<UserCourse> courses = userCourseRepository.findByUserIdAndDateRange(user.getId(), startDateTime, endDateTime);
+
+        double distanceAvg = courses.stream()
+                .mapToDouble(UserCourse::getDistance)
+                .average()
+                .orElse(0.0);
+
+        double durationAvg = courses.stream()
+                .mapToInt(UserCourse::getDuration)
+                .average()
+                .orElse(0.0);
+
+        double paceAvg = courses.stream()
+                .mapToDouble(UserCourse::getPace)
+                .average()
+                .orElse(0.0);
+
+        distanceAvg = Math.round(distanceAvg * 100) / 100.0;
+        durationAvg = (int) Math.round(durationAvg);
+        paceAvg = Math.round(paceAvg * 100) / 100.0;
+
+        return UserStatsResponseDto.builder()
+                .distance(distanceAvg)
+                .duration(durationAvg)
+                .pace(paceAvg)
+                .build();
     }
 }
