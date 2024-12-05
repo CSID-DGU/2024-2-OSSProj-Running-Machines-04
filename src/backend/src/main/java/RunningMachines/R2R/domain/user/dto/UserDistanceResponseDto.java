@@ -11,12 +11,12 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDistanceDto {
+public class UserDistanceResponseDto {
     private LocalDate date;
     private Double totalDistance;
 
-    public static UserDistanceDto of(LocalDate date, Double totalDistance) {
-        return UserDistanceDto.builder()
+    public static UserDistanceResponseDto of(LocalDate date, Double totalDistance) {
+        return UserDistanceResponseDto.builder()
                 .date(date)
                 .totalDistance(totalDistance)
                 .build();

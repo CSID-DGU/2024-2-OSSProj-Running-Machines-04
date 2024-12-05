@@ -1,6 +1,6 @@
 package RunningMachines.R2R.domain.user.controller;
 
-import RunningMachines.R2R.domain.user.dto.UserDistanceDto;
+import RunningMachines.R2R.domain.user.dto.UserDistanceResponseDto;
 import RunningMachines.R2R.domain.user.dto.UserInfoResponseDto;
 import RunningMachines.R2R.domain.user.dto.UserRecentResponseDto;
 import RunningMachines.R2R.domain.user.dto.UserStatsResponseDto;
@@ -31,7 +31,7 @@ public class MyPageController {
 
     @Operation(summary = "달린 거리 달력")
     @GetMapping("/{year}/{month}")
-    public ResponseEntity<List<UserDistanceDto>> getUserRunningDistance(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable int year, @PathVariable int month) {
+    public ResponseEntity<List<UserDistanceResponseDto>> getUserRunningDistance(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable int year, @PathVariable int month) {
         return ResponseEntity.ok(myPageQueryService.getUserDistance(customUserDetails.getUsername(), year, month));
     }
 

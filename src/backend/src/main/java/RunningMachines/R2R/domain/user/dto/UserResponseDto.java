@@ -16,7 +16,7 @@ public class UserResponseDto {
     private String nickname;
     private String profileImageUrl;
 
-    public static UserResponseDto of(User user) {
+    public static UserResponseDto from(User user) {
         return UserResponseDto.builder()
                 .userId(user.getId())
                 .email(user.getEmail())

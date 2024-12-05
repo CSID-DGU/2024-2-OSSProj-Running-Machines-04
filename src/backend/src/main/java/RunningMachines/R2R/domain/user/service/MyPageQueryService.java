@@ -2,7 +2,7 @@ package RunningMachines.R2R.domain.user.service;
 
 import RunningMachines.R2R.domain.course.entity.UserCourse;
 import RunningMachines.R2R.domain.course.repository.UserCourseRepository;
-import RunningMachines.R2R.domain.user.dto.UserDistanceDto;
+import RunningMachines.R2R.domain.user.dto.UserDistanceResponseDto;
 import RunningMachines.R2R.domain.user.dto.UserInfoResponseDto;
 import RunningMachines.R2R.domain.user.dto.UserRecentResponseDto;
 import RunningMachines.R2R.domain.user.dto.UserStatsResponseDto;
@@ -33,7 +33,7 @@ public class MyPageQueryService {
         return UserInfoResponseDto.from(user);
     }
 
-    public List<UserDistanceDto> getUserDistance(String email, int year, int month) {
+    public List<UserDistanceResponseDto> getUserDistance(String email, int year, int month) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -51,14 +51,14 @@ public class MyPageQueryService {
             dailyDistanceMap.put(date, dailyDistanceMap.getOrDefault(date, 0.0) + userCourse.getDistance());
         }
 
-        List<UserDistanceDto> userDistanceDtos = new ArrayList<>();
+        List<UserDistanceResponseDto> userDistanceResponseDtos = new ArrayList<>();
         LocalDate currentDate = start;
         while (!currentDate.isAfter(end)) {
             Double totalDistance = dailyDistanceMap.getOrDefault(currentDate, 0.0);
-            userDistanceDtos.add(UserDistanceDto.of(currentDate, totalDistance));
+            userDistanceResponseDtos.add(UserDistanceResponseDto.of(currentDate, totalDistance));
             currentDate = currentDate.plusDays(1);
         }
-        return userDistanceDtos;
+        return userDistanceResponseDtos;
     }
 
     public List<UserRecentResponseDto> getUserRecentRunning(String email) {
