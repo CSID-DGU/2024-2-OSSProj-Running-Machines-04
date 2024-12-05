@@ -4,6 +4,7 @@ import RunningMachines.R2R.domain.course.entity.UserCourse;
 import RunningMachines.R2R.domain.course.repository.UserCourseRepository;
 import RunningMachines.R2R.domain.user.dto.UserDistanceDto;
 import RunningMachines.R2R.domain.user.dto.UserInfoResponseDto;
+import RunningMachines.R2R.domain.user.dto.UserRecentResponseDto;
 import RunningMachines.R2R.domain.user.entity.User;
 import RunningMachines.R2R.domain.user.repository.UserRepository;
 import RunningMachines.R2R.global.exception.CustomException;
@@ -58,5 +59,19 @@ public class MyPageQueryService {
             currentDate = currentDate.plusDays(1);
         }
         return userDistanceDtos;
+    }
+
+    public List<UserRecentResponseDto> getUserRecentRunning(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        List<UserCourse> userCourses = userCourseRepository.findTop2ByUserIdOrderByCreatedAtDesc(user.getId());
+
+        List<UserRecentResponseDto> responseDtos = new ArrayList<>();
+        for (UserCourse userCourse : userCourses) {
+            responseDtos.add(UserRecentResponseDto.of(userCourse));
+        }
+
+        return responseDtos;
     }
 }

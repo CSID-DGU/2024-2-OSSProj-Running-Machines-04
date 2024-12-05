@@ -15,4 +15,6 @@ public interface UserCourseRepository extends JpaRepository<UserCourse, Long> {
             @Param("startDateTime") LocalDateTime startDateTime,
             @Param("endDateTime") LocalDateTime endDateTime
     );
+
+    List<UserCourse> findTop2ByUserIdOrderByCreatedAtDesc(Long userId);
 }

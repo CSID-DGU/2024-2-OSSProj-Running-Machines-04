@@ -2,6 +2,7 @@ package RunningMachines.R2R.domain.user.controller;
 
 import RunningMachines.R2R.domain.user.dto.UserDistanceDto;
 import RunningMachines.R2R.domain.user.dto.UserInfoResponseDto;
+import RunningMachines.R2R.domain.user.dto.UserRecentResponseDto;
 import RunningMachines.R2R.domain.user.service.MyPageQueryService;
 import RunningMachines.R2R.global.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,5 +32,11 @@ public class MyPageController {
     @GetMapping("/{year}/{month}")
     public ResponseEntity<List<UserDistanceDto>> getUserRunningDistance(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable int year, @PathVariable int month) {
         return ResponseEntity.ok(myPageQueryService.getUserDistance(customUserDetails.getUsername(), year, month));
+    }
+
+    @Operation(summary = "최근 기록 2개")
+    @GetMapping("/recent")
+    public ResponseEntity<List<UserRecentResponseDto>> getUserRecentRunning(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ResponseEntity.ok(myPageQueryService.getUserRecentRunning(customUserDetails.getUsername()));
     }
 }
