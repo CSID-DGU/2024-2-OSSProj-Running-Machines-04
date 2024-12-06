@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -16,13 +17,15 @@ public class UserRecentResponseDto {
     private double distance;
     private int duration;
     private double pace;
+    private List<String> tags;
     private LocalDateTime createdAt;
 
-    public static UserRecentResponseDto of(UserCourse userCourse) {
+    public static UserRecentResponseDto of(UserCourse userCourse, List<String> tags) {
         return UserRecentResponseDto.builder()
                 .distance(userCourse.getDistance())
                 .duration(userCourse.getDuration())
                 .pace(userCourse.getPace())
+                .tags(tags)
                 .createdAt(userCourse.getCreatedAt())
                 .build();
     }
