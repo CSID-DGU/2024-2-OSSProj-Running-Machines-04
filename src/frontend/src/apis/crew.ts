@@ -45,8 +45,18 @@ export const JoinCrew = async (crewId: number): Promise<CrewJoinResponse> => {
   return response.data;
 };
 
-export const CreateCrew = async (data: number) => {
-  const response = await api.post(`/crew/create`, { data });
+export const CreateCrew = async ({
+  certificationImage,
+  profileImage,
+}: {
+  certificationImage: File;
+  profileImage: File;
+}) => {
+  const formData = new FormData();
+  formData.append("certificationImage", certificationImage);
+  formData.append("profileImage", profileImage);
+
+  const response = await api.post(`/crew/create`, formData);
   return response.data;
 };
 
@@ -87,7 +97,6 @@ export const getCrewGalleryDetailComments = async (
   return response.data;
 };
 
-// 백엔드 확인 필요(multipart?)
 export const postCrewGallery = async ({
   crewId,
   data,

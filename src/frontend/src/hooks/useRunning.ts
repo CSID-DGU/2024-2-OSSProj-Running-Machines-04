@@ -9,6 +9,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
+// 리뷰 작성
 export const useCourseReviewPost = (
   userCourseId: number,
   data: reviewRequest
@@ -33,6 +34,7 @@ export const useCourseReviewPost = (
   });
 };
 
+// 사용자 러닝 기록하기
 export const useRunningRecordPost = (
   data: runningRequest,
   gpx: File,

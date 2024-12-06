@@ -1,10 +1,14 @@
-import { boardType } from "@/constants/board";
-
 export type boardResponse = {
   title: string;
   writer: string;
   createdAt: string;
   commentCount: number;
+};
+
+export type boardRequest = {
+  boardName: string;
+  title: string;
+  content: string;
 };
 
 export type replies = {
