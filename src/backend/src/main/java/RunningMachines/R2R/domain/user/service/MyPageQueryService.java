@@ -1,6 +1,8 @@
 package RunningMachines.R2R.domain.user.service;
 
+import RunningMachines.R2R.domain.course.entity.Review;
 import RunningMachines.R2R.domain.course.entity.UserCourse;
+import RunningMachines.R2R.domain.course.entity.ReviewTag;
 import RunningMachines.R2R.domain.course.repository.UserCourseRepository;
 import RunningMachines.R2R.domain.user.dto.UserDistanceResponseDto;
 import RunningMachines.R2R.domain.user.dto.UserInfoResponseDto;
@@ -18,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +72,13 @@ public class MyPageQueryService {
 
         List<UserRecentResponseDto> responseDtos = new ArrayList<>();
         for (UserCourse userCourse : userCourses) {
-            responseDtos.add(UserRecentResponseDto.of(userCourse));
+            List<String> tags = new ArrayList<>();
+            for (Review review : userCourse.getReviews()) {
+                for (ReviewTag reviewTag : review.getReviewTags()) {
+                    tags.add(reviewTag.getTag().getName());
+                }
+            }
+            responseDtos.add(UserRecentResponseDto.of(userCourse, tags));
         }
 
         return responseDtos;
