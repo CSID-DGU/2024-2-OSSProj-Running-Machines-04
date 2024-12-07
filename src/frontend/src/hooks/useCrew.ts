@@ -1,5 +1,6 @@
 import {
   CreateCrew,
+  getCrew,
   getCrewGallery,
   getCrewGalleryDetail,
   getCrewGalleryDetailComments,
@@ -92,7 +93,7 @@ export const useCreateCrew = ({
 export const useCrewGet = () => {
   return useQuery({
     queryKey: ["crew"],
-    queryFn: () => getCrewNotice,
+    queryFn: () => getCrew(),
   });
 };
 

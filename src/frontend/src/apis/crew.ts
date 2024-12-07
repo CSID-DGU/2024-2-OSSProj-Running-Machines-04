@@ -61,7 +61,7 @@ export const CreateCrew = async ({
 };
 
 // 다른 크루 조회 api
-export const getCrew = async (): Promise<CrewResponse> => {
+export const getCrew = async (): Promise<CrewResponse[]> => {
   const response = await api.get(`/crew`);
   return response.data;
 };

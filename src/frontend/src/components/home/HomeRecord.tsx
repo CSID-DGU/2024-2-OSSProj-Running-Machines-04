@@ -1,6 +1,9 @@
 import { ReactComponent as HomeBgImg } from "@/assets/images/HomeBgImg.svg";
+import { useUserInfoPost } from "@/hooks/useMypage";
 
 const HomeRecord = () => {
+  const { data } = useUserInfoPost();
+
   return (
     <div className="py-5 flex flex-col justify-center items-center relative border-b-4 border-[#F3F3F3]">
       <HomeBgImg className="absolute top-0 left-0" />

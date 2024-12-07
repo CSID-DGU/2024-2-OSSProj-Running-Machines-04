@@ -4,15 +4,20 @@ import { ReactComponent as RightArrowIcon } from "@/assets/icons/RightArrowIcon.
 import { homeFaceRankingResponse } from "@/types/home";
 import { dummyFaceCrew } from "@/constants/dummy";
 import { useEffect, useState } from "react";
+import { useUserInfoPost } from "@/hooks/useMypage";
 
 const FaceRanking = () => {
   const navigate = useNavigate();
   const [faceData, setFaceData] =
     useState<homeFaceRankingResponse[]>(dummyFaceCrew);
 
+  const { data } = useUserInfoPost();
+
   useEffect(() => {
-    // TODO: DistanceCrew API
-    setFaceData(dummyFaceCrew);
+    if (data) {
+      // TODO: 실제 데이터로 변경
+      setFaceData(dummyFaceCrew);
+    }
   }, []);
 
   return (

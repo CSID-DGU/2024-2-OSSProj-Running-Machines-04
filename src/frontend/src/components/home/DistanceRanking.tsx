@@ -4,15 +4,20 @@ import { ReactComponent as RightArrowIcon } from "@/assets/icons/RightArrowIcon.
 import { useEffect, useState } from "react";
 import { dummyDistanceCrew } from "@/constants/dummy";
 import { homeRankingResponse } from "@/types/home";
+import { useUserInfoPost } from "@/hooks/useMypage";
 
 const DistanceRanking = () => {
   const navigate = useNavigate();
   const [distanceData, setDistanceData] =
     useState<homeRankingResponse[]>(dummyDistanceCrew);
 
+  const { data } = useUserInfoPost();
+
   useEffect(() => {
-    // TODO: DistanceCrew API
-    setDistanceData(dummyDistanceCrew);
+    if (data) {
+      // TODO: 실제 데이터로 변경
+      setDistanceData(dummyDistanceCrew);
+    }
   }, []);
 
   return (
