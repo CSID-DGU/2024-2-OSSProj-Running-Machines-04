@@ -25,7 +25,7 @@ const Header = () => {
   };
 
   return (
-    <div className="h-16 px-5 flex items-center justify-between border-b border-solid border-[#444]">
+    <div className="bg-white h-16 px-5 flex items-center justify-between border-b border-solid border-[#444]">
       <div className="text-[#444] text-lg font-bold">{headerMap()}</div>
       <Logo className="mr-3" />
     </div>

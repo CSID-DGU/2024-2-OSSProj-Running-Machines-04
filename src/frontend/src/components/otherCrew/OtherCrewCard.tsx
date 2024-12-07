@@ -1,13 +1,19 @@
 import { ReactComponent as CTOIcon } from "@/assets/icons/CTOIcon.svg";
 import { ReactComponent as CrewPeopleIcon } from "@/assets/icons/CrewPeopleIcon.svg";
 import { CrewResponse } from "@/types/crew";
+import { useNavigate } from "react-router-dom";
 
 type OtherCrewCardPrps = {
   crew: CrewResponse;
 };
 const OtherCrewCard = ({ crew }: OtherCrewCardPrps) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="flex justify-between items-center px-8 py-6">
+    <div
+      onClick={() => navigate(`/other-crew/${crew.crewId}`)}
+      className="flex justify-between items-center px-8 py-6"
+    >
       <div className="flex gap-2">
         <div className="w-[60px] h-[60px] rounded-full overflow-hidden">
           <img

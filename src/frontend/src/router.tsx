@@ -12,10 +12,12 @@ import GalleryDetailPage from "@/pages/GalleryDetail/GalleryDetailPage";
 import CrewMembersPage from "@/pages/CrewMembers/CrewMembersPage";
 import CrewMemberDetailPage from "@/pages/CrewMemberDetail/CrewMemberDetailPage";
 import OtherCrewPage from "@/pages/OtherCrew/OtherCrewPage";
+import OtherCrewDetailPage from "@/pages/OtherCrewDetail/OtherCrewDetailPage";
 import SigninPage from "@/pages/Signin/SigninPage";
 import SignupPage from "@/pages/Signup/SIgnupPage";
 import RunningPage from "@/pages/Running/RunningPage";
 import ReviewPage from "@/pages/Review/ReviewPage";
+import CrewChattingPage from "@/pages/CrewChatting/CrewChattingPage";
 
 const router = createBrowserRouter([
   {
@@ -33,12 +35,14 @@ const router = createBrowserRouter([
       { path: "/community/write", element: <CommunityWritePage /> },
 
       { path: "/crew", element: <MyCrewPage /> },
+      { path: "/crew/chat", element: <CrewChattingPage /> },
       { path: "/crew/notice/:id", element: <NoticeDetailPage /> },
       { path: "/crew/gallery/:id", element: <GalleryDetailPage /> },
       { path: "/crew/members", element: <CrewMembersPage /> },
       { path: "/crew/members/:id", element: <CrewMemberDetailPage /> },
 
       { path: "/other-crew", element: <OtherCrewPage /> },
+      { path: "/other-crew/:id", element: <OtherCrewDetailPage /> },
 
       { path: "/mypage", element: <MyPage /> },
 

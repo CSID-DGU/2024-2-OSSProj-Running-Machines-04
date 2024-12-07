@@ -12,8 +12,8 @@ const Layout = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  const noHeaderPath = ["/record", "/community/write"];
-  const noNavbarPath = ["/other-crew", "/signin", "/signup"];
+  const noHeaderPath = ["/record", "/community/write", "/crew/chat"];
+  const noNavbarPath = ["/other-crew", "/signin", "/signup", "/crew/chat"];
   const authPath = ["/", "/signin", "/signup"];
 
   useEffect(() => {

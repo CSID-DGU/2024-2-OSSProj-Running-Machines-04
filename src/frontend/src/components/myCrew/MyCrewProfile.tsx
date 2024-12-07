@@ -39,6 +39,12 @@ const MyCrewProfile = () => {
                   <span className="text-[12px]">members</span>
                 </div>
               </div>
+              <button
+                onClick={() => navigate("/crew/chat")}
+                className="w-full text-center py-1 border border-[#D9D9D9] text-[1rem] rounded-lg shadow-sm"
+              >
+                채팅
+              </button>
             </div>
           </div>
         )
