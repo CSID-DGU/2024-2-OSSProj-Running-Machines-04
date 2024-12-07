@@ -40,4 +40,12 @@ public class NoticePostController {
     public ResponseEntity<CrewMainNoticeResponseDto> getNoticePostsByCrew(@PathVariable Long crewId) {
         return ResponseEntity.ok(noticePostQueryService.getNoticePostsByCrew(crewId));
     }
+
+    @GetMapping("/redirectToChat")
+    public ResponseEntity<Void> redirectToChat(@PathVariable Long crewId) {
+        String chatUrl = "/crew/" + crewId + "/chat";
+        return ResponseEntity.status(303) // Redirect 상태 코드
+                .header("Location", chatUrl)
+                .build();
+    }
 }

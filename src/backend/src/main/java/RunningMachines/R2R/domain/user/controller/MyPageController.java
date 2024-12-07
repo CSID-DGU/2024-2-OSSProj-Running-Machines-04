@@ -24,8 +24,8 @@ public class MyPageController {
     private final MyPageQueryService myPageQueryService;
 
     @Operation(summary = "유저 정보")
-    @PostMapping(value = "/userInfo")
-    public ResponseEntity<UserInfoResponseDto> signup(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    @GetMapping(value = "/userInfo")
+    public ResponseEntity<UserInfoResponseDto> getUserInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return ResponseEntity.ok(myPageQueryService.getUserInfo(customUserDetails.getUsername()));
     }
 
