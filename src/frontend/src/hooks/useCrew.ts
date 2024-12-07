@@ -15,6 +15,7 @@ import {
 } from "@/apis/crew";
 import { CrewGalleryRequest, CrewNoticeRequest } from "@/types/crew";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 // 크루 공지 조회
 export const useCrewNoticeGet = (crewId: number) => {
@@ -33,17 +34,15 @@ export const useCrewNoticeDetailGet = (crewId: number, crewPostId: number) => {
 };
 
 // 크루 공지 등록
-export const useCrewNoticePost = ({
-  crewId,
-  data,
-}: {
-  crewId: number;
-  data: CrewNoticeRequest;
-}) => {
+export const useCrewNoticePost = (crewId: number, data: CrewNoticeRequest) => {
+  const navigate = useNavigate();
+
   return useMutation({
     mutationFn: () => postCrewNotice({ crewId, data }),
     onSuccess: () => {
       console.log("크루 공지 등록 성공");
+      navigate("/crew");
+      // window.location.reload();
     },
     onError: () => {
       console.log("크루 공지 등록 실패");
@@ -127,17 +126,18 @@ export const useCrewGalleryDetailCommentsGet = (
 };
 
 // 크루 갤러리 글 작성
-export const useCrewGalleryPost = ({
-  crewId,
-  data,
-}: {
-  crewId: number;
-  data: CrewGalleryRequest;
-}) => {
+export const useCrewGalleryPost = (
+  crewId: number,
+  data: CrewGalleryRequest
+) => {
+  const navigate = useNavigate();
+
   return useMutation({
     mutationFn: () => postCrewGallery({ crewId, data }),
     onSuccess: () => {
       console.log("크루 갤러리 글 작성 성공");
+      navigate("/crew");
+      // window.location.reload();
     },
     onError: () => {
       console.log("크루 갤러리 글 작성 실패");

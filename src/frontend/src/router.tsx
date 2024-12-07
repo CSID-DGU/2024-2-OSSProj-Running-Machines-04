@@ -18,6 +18,7 @@ import SignupPage from "@/pages/Signup/SIgnupPage";
 import RunningPage from "@/pages/Running/RunningPage";
 import ReviewPage from "@/pages/Review/ReviewPage";
 import CrewChattingPage from "@/pages/CrewChatting/CrewChattingPage";
+import CrewWritePage from "@/pages/CrewWrite/CrewWritePage";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
 
       { path: "/crew", element: <MyCrewPage /> },
       { path: "/crew/chat", element: <CrewChattingPage /> },
+      { path: "/crew/write", element: <CrewWritePage /> },
       { path: "/crew/notice/:id", element: <NoticeDetailPage /> },
       { path: "/crew/gallery/:id", element: <GalleryDetailPage /> },
       { path: "/crew/members", element: <CrewMembersPage /> },

@@ -102,7 +102,13 @@ export const postCrewGallery = async ({
   crewId: number;
   data: CrewGalleryRequest;
 }) => {
-  const response = await api.post(`/crew/${crewId}/gallery`, { data });
+  const formData = new FormData();
+  formData.append("content", data.content);
+  data.images.forEach((image) => {
+    formData.append(`images`, image);
+  });
+
+  const response = await api.post(`/crew/${crewId}/gallery`, formData);
   return response.data;
 };
 
