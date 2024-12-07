@@ -53,7 +53,6 @@ public class WebSecurityConfig {
 
         configuration.addAllowedOrigin("http://localhost:3000"); // 로컬
         configuration.addAllowedOrigin("https://ready2run.vercel.app"); // 프론트 IPv4 주소
-        configuration.addAllowedOrigin("https://52.78.82.12.nip.io"); // https 배포 주소
         configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
         configuration.addAllowedHeader("*"); // 모든 헤더 허용
         configuration.setAllowCredentials(true); // 인증 정보 허용
