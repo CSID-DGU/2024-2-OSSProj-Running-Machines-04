@@ -1,6 +1,7 @@
 package RunningMachines.R2R.global.util;
 
 import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
+import RunningMachines.R2R.domain.course.dto.WaypointDto;
 import RunningMachines.R2R.global.exception.CustomException;
 import RunningMachines.R2R.global.exception.ErrorCode;
 import RunningMachines.R2R.global.s3.S3Provider;
@@ -35,12 +36,19 @@ public class GpxParser {
 
             // GPX파일을 모두 열어 파싱
             for (String fileKey : fileKeys) {
-                List<String> waypoints = new ArrayList<>();
+                List<WaypointDto> waypoints = new ArrayList<>();
                 String fileName = "";
+
+                // TODO - 모델과 연동해 거리 계산
+                double distance = 0; // 임시 0 지정
+
+                String urlString = "";
 
                 try {
                     URL url = s3Provider.getFileUrl(fileKey); // S3에서 각 파일 URL 가져오기
-//                    log.info("URL 가져오기 성공: {}", url);
+                    log.info("URL 가져오기 성공: {}", url);
+
+                    urlString = url.toString();
 
                     InputStream inputStream = url.openStream(); // S3에서 가져온 파일을 InputStream으로 읽음
 
@@ -60,7 +68,11 @@ public class GpxParser {
                         // 각 웨이포인트의 위경도 추출해 리스트에 추가
                         String latitude = nodeList.item(i).getAttributes().getNamedItem("lat").getNodeValue();
                         String longitude = nodeList.item(i).getAttributes().getNamedItem("lon").getNodeValue();
-                        waypoints.add("lat: " + latitude + ", lon: " + longitude);
+                        // Builder 패턴을 사용해 WaypointDto 객체 생성 후 리스트에 추가
+                        waypoints.add(WaypointDto.builder()
+                                .lat(Double.parseDouble(latitude))
+                                .lon(Double.parseDouble(longitude))
+                                .build());
                     }
 
                     inputStream.close();
@@ -68,7 +80,7 @@ public class GpxParser {
                     log.error("파일 파싱 중 오류 발생 - 파일 키: {}, 오류: {}", fileKey, e.getMessage(), e);
                     continue; // 특정 파일 파싱 중 오류가 발생하면 그 파일을 건너뜀
                 }
-                gpxResponses.add(new GpxResponseDto(fileName, waypoints));
+                gpxResponses.add(new GpxResponseDto(fileName, waypoints, distance, urlString));
             }
         } catch (Exception e) {
             log.error("GPX 파일 목록을 가져오는 중 오류 발생: {}", e.getMessage(), e);

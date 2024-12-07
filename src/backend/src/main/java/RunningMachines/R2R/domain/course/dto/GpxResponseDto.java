@@ -9,5 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 public class GpxResponseDto {
     private String fileName;
-    private List<String> waypoints;
+    private List<WaypointDto> waypoints;
+    private Double distance;
+    private String courseUrl;
 }

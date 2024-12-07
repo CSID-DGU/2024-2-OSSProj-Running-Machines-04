@@ -15,7 +15,7 @@ public class AuthQueryService {
 
     public UserResponseDto getUserInfo(String email) {
         return userRepository.findByEmail(email)
-                .map(UserResponseDto::of)
+                .map(UserResponseDto::from)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 }

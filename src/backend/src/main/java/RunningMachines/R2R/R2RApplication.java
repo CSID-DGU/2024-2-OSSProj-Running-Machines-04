@@ -11,5 +11,4 @@ public class R2RApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(R2RApplication.class, args);
 	}
-
 }

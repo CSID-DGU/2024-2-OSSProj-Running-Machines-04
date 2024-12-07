@@ -29,9 +29,9 @@ const CommnunityHeader = ({ board, setBoard }: CommnunityHeaderProps) => {
         함께 달려요
       </div>
       <div
-        onClick={() => setBoard(boardType.RECOMMEND)}
+        onClick={() => setBoard(boardType.SHOES)}
         className={`${getFontColor(
-          boardType.RECOMMEND
+          boardType.SHOES
         )} text-[14px] font-semibold cursor-pointer`}
       >
         러닝화 추천

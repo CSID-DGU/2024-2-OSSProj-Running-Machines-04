@@ -83,7 +83,7 @@ const CommunityWriteInput = ({
             <div className="mt-4">
               <img
                 src={previewImage}
-                alt="image"
+                alt="프로필 사진"
                 className="w-full h-48 object-cover rounded"
               />
             </div>

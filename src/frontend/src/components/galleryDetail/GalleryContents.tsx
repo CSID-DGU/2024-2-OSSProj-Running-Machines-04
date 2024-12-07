@@ -1,9 +1,9 @@
 import { ReactComponent as HeartIcon } from "@/assets/icons/HeartIcon.svg";
 import { ReactComponent as CommentIcon } from "@/assets/icons/CommentIcon.svg";
 import { useState } from "react";
-import BottomSheet from "../record/BottomSheet";
-import Comment from "../common/Comment";
-import Reply from "../common/Reply";
+import BottomSheet from "@/components/record/BottomSheet";
+import Comment from "@/components/common/Comment";
+import Reply from "@/components/common/Reply";
 
 const GalleryContents = () => {
   const [isScrapped, setIsScrapped] = useState(false);
@@ -29,7 +29,7 @@ const GalleryContents = () => {
           <img
             className=""
             src="https://newsimg-hams.hankookilbo.com/2024/06/25/9b490f29-4415-43bb-bdf8-b77c3ca67413.jpg"
-            alt="image"
+            alt="갤러리 사진"
           />
         </div>
         <div className="flex justify-between px-4 py-2">

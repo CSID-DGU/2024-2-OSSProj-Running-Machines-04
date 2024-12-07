@@ -17,14 +17,31 @@ public class Prefer extends BaseEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private Elevation elevation;  // 고도
+    private Preference elevation; // 고도
 
-    private boolean convenience;  // 편의시설 여부
+    @Enumerated(EnumType.STRING)
+    private Preference convenience; // 편의시설 여부
 
-    private boolean nature; // 자연 여부
+    @Enumerated(EnumType.STRING)
+    private Preference track; // 트랙
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", unique = true, nullable = false)
     private User user;
 
+    public void increaseElevation() {
+        switch (elevation) {
+            case LOW -> this.elevation = Preference.MEDIUM;
+            case MEDIUM -> this.elevation = Preference.HIGH;
+            case HIGH -> {}
+        }
+    }
+
+    public void decreaseElevation() {
+        switch (elevation) {
+            case LOW -> {}
+            case MEDIUM -> this.elevation = Preference.LOW;
+            case HIGH -> this.elevation = Preference.MEDIUM;
+        }
+    }
 }

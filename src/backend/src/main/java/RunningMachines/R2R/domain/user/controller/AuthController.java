@@ -12,16 +12,11 @@ import RunningMachines.R2R.global.auth.TokenRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -34,9 +29,9 @@ public class AuthController {
     private final TokenProvider tokenProvider;
 
     @Operation(summary = "회원가입")
-    @PostMapping(value = "/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponseDto> signup(@RequestPart UserSignupRequestDto userSignupRequestDto,
-                                                  @RequestPart(value = "image", required = false) MultipartFile image) {
+    @PostMapping(value = "/signup")
+    public ResponseEntity<TokenDto> signup(@RequestPart("userSignupRequestDto") UserSignupRequestDto userSignupRequestDto,
+                                           @RequestPart(value = "image", required = false) MultipartFile image) {
         return ResponseEntity.ok(authCommandService.signup(userSignupRequestDto, image));
     }
 

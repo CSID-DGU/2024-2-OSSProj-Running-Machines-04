@@ -25,7 +25,7 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth"; // 권한 정보 키 (JWT의 "auth" 필드에 권한 정보 저장)
     private static final String BEARER_TYPE = "Bearer"; // 토큰 타입을 나타내는 상수 (Bearer)
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // AccessToken의 유효시간 (30분)
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24; // AccessToken의 유효시간 (24시간)
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // RefreshToken의 유효시간 (7일)
     private static final long THREE_DAYS = 1000 * 60 * 60 * 24 * 3; // 토큰 만료 조건 설정용 (3일) -> 우효시간 3일 이하면 토큰 재발급
 
