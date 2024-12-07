@@ -25,7 +25,6 @@ public class GalleryPostController {
     private final GalleryPostCommandService galleryPostCommandService;
     private final GalleryPostQueryService galleryPostQueryService;
     private final GalleryPostLikeService galleryPostLikeService;
-    private final CrewPostCommentRepository crewPostCommentRepository;
     private final CrewPostCommentService crewPostCommentService;
 
     @PostMapping
@@ -62,5 +61,13 @@ public class GalleryPostController {
     public ResponseEntity<List<CrewPostCommentResponseDto>> getComments(@PathVariable Long crewId, @PathVariable Long crewPostId) {
         List<CrewPostCommentResponseDto> comments = crewPostCommentService.getComments(crewPostId);
         return ResponseEntity.ok(comments);
+    }
+
+    @GetMapping("/redirectToChat")
+    public ResponseEntity<Void> redirectToChat(@PathVariable Long crewId) {
+        String chatUrl = "/crew/" + crewId + "/chat";
+        return ResponseEntity.status(303) // Redirect 상태 코드
+                .header("Location", chatUrl)
+                .build();
     }
 }
