@@ -87,7 +87,7 @@ export type CrewGalleryDetaiCommentslResponse = {
   authorName: string;
   authorProfile: string;
   createdAt: string;
-}[];
+};
 
 // 백엔드 확인 필요(multipart)
 export type CrewGalleryRequest = {

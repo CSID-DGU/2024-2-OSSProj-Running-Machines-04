@@ -2,25 +2,24 @@ import { ReactComponent as HeartIcon } from "@/assets/icons/HeartIcon.svg";
 import { ReactComponent as CommentIcon } from "@/assets/icons/CommentIcon.svg";
 import { useState } from "react";
 import BottomSheet from "@/components/record/BottomSheet";
-import Comment from "@/components/common/Comment";
-import Reply from "@/components/common/Reply";
+import { CrewGalleryDetaiCommentslResponse } from "@/types/crew";
+import GalleryComment from "../common/GalleryComment";
 
-const GalleryContents = () => {
+type GalleryContentsProps = {
+  comments?: CrewGalleryDetaiCommentslResponse[];
+};
+const GalleryContents = ({ comments }: GalleryContentsProps) => {
   const [isScrapped, setIsScrapped] = useState(false);
   const [commentSheet, setCommentSheet] = useState(false);
 
   return (
     <>
-      {commentSheet && (
+      {commentSheet && comments && (
         <BottomSheet setOpenSheet={setCommentSheet}>
           <>
-            <Comment />
-            <Reply />
-            <Reply />
-            <Reply />
-            <Comment />
-            <Comment />
-            <Comment />
+            {comments.map((comment) => (
+              <GalleryComment comment={comment} />
+            ))}
           </>
         </BottomSheet>
       )}

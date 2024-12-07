@@ -64,59 +64,6 @@ export const dummyCourseData = [
   },
 ];
 
-export const dummyCommunityData: boardResponse[] = [
-  {
-    title: "string",
-    writer: "string",
-    createdAt: "string",
-    commentCount: 1,
-  },
-  {
-    title: "string",
-    writer: "string",
-    createdAt: "string",
-    commentCount: 1,
-  },
-];
-
-export const dummyCommunityDetailData: boardDetailResponse = {
-  postId: 1,
-  title: "게시글 제목",
-  writer: "작성자 이름",
-  content: "게시글 내용",
-  createdAt: "2023-10-10T12:00:00",
-  comments: [
-    {
-      commentId: 1,
-      content: "댓글 내용",
-      writer: "댓글 작성자",
-      createdAt: "2023-10-10T12:30:00",
-      replies: [
-        {
-          commentId: 3,
-          content: "대댓글의 대댓글",
-          writer: "대댓글 작성자",
-          createdAt: "2023-10-10T13:15:00",
-        },
-      ],
-    },
-    {
-      commentId: 2,
-      content: "대댓글 내용",
-      writer: "댓글 작성자",
-      createdAt: "2023-10-10T13:00:00",
-      replies: [
-        {
-          commentId: 3,
-          content: "대댓글의 대댓글",
-          writer: "대댓글 작성자",
-          createdAt: "2023-10-10T13:15:00",
-        },
-      ],
-    },
-  ],
-};
-
 export const dummyDistanceCrew: homeRankingResponse[] = [
   {
     rank: 1,

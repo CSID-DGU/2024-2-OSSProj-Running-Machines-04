@@ -29,7 +29,7 @@ const router = createBrowserRouter([
       { path: "/record/:id/review/:courseId", element: <ReviewPage /> },
 
       { path: "/community", element: <CommunityPage /> },
-      { path: "/community/:id", element: <CommunityDetailPage /> },
+      { path: "/community/:board/:id", element: <CommunityDetailPage /> },
       { path: "/community/write", element: <CommunityWritePage /> },
 
       { path: "/crew", element: <MyCrewPage /> },

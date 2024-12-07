@@ -2,14 +2,16 @@ import OtherCrewCard from "@/components/otherCrew/OtherCrewCard";
 import { ReactComponent as BackIcon } from "@/assets/icons/BackIcon.svg";
 import { useNavigate } from "react-router-dom";
 import { useCrewGet } from "@/hooks/useCrew";
+import Spinner from "@/components/common/Spinner";
 
 const OtherCrewPage = () => {
   const navigate = useNavigate();
   const { data, isLoading, error } = useCrewGet();
 
   // 데이터가 없거나 로딩 중일 때의 처리
-  if (isLoading) return <div>로딩 중</div>;
-  if (error) return <div>에러 발생</div>;
+  if (isLoading) return;
+  <Spinner />;
+  if (error) return <div>error</div>;
 
   return (
     <div>

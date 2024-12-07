@@ -1,6 +1,7 @@
+import { homeUserResponse } from "@/types/home";
 import { api } from ".";
 
-export const getHomeData = async () => {
+export const getHomeData = async (): Promise<homeUserResponse> => {
   const response = await api.get(`home/user`);
   return response.data;
 };

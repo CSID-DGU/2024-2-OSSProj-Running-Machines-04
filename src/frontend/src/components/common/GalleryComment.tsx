@@ -1,11 +1,10 @@
-import { comment } from "@/types/board";
-import { CrewGalleryDetailResponse } from "@/types/crew";
+import { CrewGalleryDetaiCommentslResponse } from "@/types/crew";
 
-type CommentProps = {
-  comment: comment;
+type GalleryCommentProps = {
+  comment: CrewGalleryDetaiCommentslResponse;
 };
 
-const Comment = ({ comment }: CommentProps) => {
+const GalleryComment = ({ comment }: GalleryCommentProps) => {
   return (
     <div className="flex items-center gap-3 py-4">
       <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
@@ -17,7 +16,7 @@ const Comment = ({ comment }: CommentProps) => {
       </div>
       <div>
         <div className="flex items-center gap-2">
-          <span className="text-[#444] text-[15px]">{comment.writer}</span>
+          <span className="text-[#444] text-[15px]">{comment.authorName}</span>
           <span className="text-[#515151] text-[10px]">
             {comment.createdAt.slice(0, 10)}
           </span>
@@ -28,4 +27,4 @@ const Comment = ({ comment }: CommentProps) => {
   );
 };
 
-export default Comment;
+export default GalleryComment;

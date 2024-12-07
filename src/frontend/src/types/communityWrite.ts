@@ -1,11 +1,5 @@
 export type communityRequestType = {
+  boardName: string;
   title: string;
-  description: string;
-  image: File | null;
-};
-
-export const initialCommunityRequest = {
-  title: "",
-  description: "",
-  image: null,
+  content: string;
 };

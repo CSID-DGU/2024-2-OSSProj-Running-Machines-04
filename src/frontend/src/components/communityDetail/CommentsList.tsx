@@ -1,16 +1,18 @@
 import Comment from "@/components/common/Comment";
 import Reply from "@/components/common/Reply";
+import { comment } from "@/types/board";
 
-const CommentsList = () => {
+type CommentsListProps = {
+  comments: comment[];
+};
+
+const CommentsList = ({ comments }: CommentsListProps) => {
   return (
     <div>
-      <Comment />
-      <Reply />
-      <Reply />
-      <Reply />
-      <Comment />
-      <Comment />
-      <Comment />
+      {comments.map((comment) => (
+        <Comment comment={comment} />
+      ))}
+      {/* <Reply /> */}
     </div>
   );
 };

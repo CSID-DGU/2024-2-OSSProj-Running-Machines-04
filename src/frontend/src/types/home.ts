@@ -1,3 +1,9 @@
+export type homeUserResponse = {
+  totalDistance: number;
+  averagePace: number;
+  totalDuration: number;
+};
+
 export type homeRankingResponse = {
   rank: number;
   crewId: number;

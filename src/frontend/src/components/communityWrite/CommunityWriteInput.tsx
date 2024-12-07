@@ -4,11 +4,15 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 type CommunityWriteInputProps = {
   contents: communityRequestType;
   setContents: Dispatch<SetStateAction<communityRequestType>>;
+  images: File[] | [];
+  setImages: Dispatch<SetStateAction<File[] | []>>;
 };
 
 const CommunityWriteInput = ({
   contents,
   setContents,
+  images,
+  setImages,
 }: CommunityWriteInputProps) => {
   const [previewImage, setPreviewImage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -16,10 +20,7 @@ const CommunityWriteInput = ({
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setContents((prevContents) => ({
-        ...prevContents,
-        image: file,
-      }));
+      setImages((prevContents) => [...prevContents, file]);
       setPreviewImage(URL.createObjectURL(file));
     }
   };
@@ -31,25 +32,25 @@ const CommunityWriteInput = ({
     }));
   };
 
-  const handleDescriptionChange = (
+  const handleContentChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setContents((prevContents) => ({
       ...prevContents,
-      description: event.target.value,
+      content: event.target.value,
     }));
   };
 
   const autoResizeTextarea = () => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto"; // Reset height to auto to calculate the new height
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Set to scroll height
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   };
 
   useEffect(() => {
-    autoResizeTextarea(); // Adjust height on initial render
-  }, [contents.description]);
+    autoResizeTextarea();
+  }, [contents.content]);
 
   return (
     <div className="px-6 py-8">
@@ -101,8 +102,8 @@ const CommunityWriteInput = ({
             rows={5}
             className="w-full px-3 py-2 border rounded-lg focus:outline-none resize-none"
             placeholder="내용을 적어주세요"
-            value={contents.description}
-            onChange={handleDescriptionChange}
+            value={contents.content}
+            onChange={handleContentChange}
           ></textarea>
         </div>
       </div>

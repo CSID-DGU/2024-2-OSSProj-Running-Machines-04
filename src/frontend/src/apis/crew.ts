@@ -1,4 +1,5 @@
 import {
+  CrewGalleryDetaiCommentslResponse,
   CrewGalleryDetailResponse,
   CrewGalleryRequest,
   CrewGalleryResponse,
@@ -92,7 +93,7 @@ export const getCrewGalleryDetail = async (
 export const getCrewGalleryDetailComments = async (
   crewId: number,
   postId: number
-): Promise<CrewGalleryDetailResponse> => {
+): Promise<CrewGalleryDetaiCommentslResponse[]> => {
   const response = await api.get(`/crew/${crewId}/gallery/${postId}/comments`);
   return response.data;
 };

@@ -5,7 +5,7 @@ const Reply = () => {
   return (
     <div className="ml-4 flex items-center gap-2">
       <ReplyIcon />
-      <Comment />
+      {/* <Comment  /> */}
     </div>
   );
 };

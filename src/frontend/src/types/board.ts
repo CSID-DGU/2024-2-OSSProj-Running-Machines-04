@@ -1,8 +1,11 @@
 export type boardResponse = {
+  postId: number;
   title: string;
   writer: string;
   createdAt: string;
   commentCount: number;
+  contentPreview: string;
+  postImages: string[];
 };
 
 export type boardRequest = {
@@ -27,10 +30,12 @@ export type comment = {
 };
 
 export type boardDetailResponse = {
-  postId: number;
   title: string;
   writer: string;
   content: string;
   createdAt: string;
   comments: comment[];
+  board: string;
+  postImages: string[];
+  postImageIds: number[];
 };
