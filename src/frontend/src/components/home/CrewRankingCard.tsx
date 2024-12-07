@@ -61,7 +61,7 @@ const CrewRankingCard = ({
               <div className="text-[#444] text-[18px] font-semibold">
                 {distanceData.title}
               </div>
-              <div className="text-[18px]">{distanceData.distance}km</div>
+              <div className="text-[18px]">{distanceData.distance}</div>
             </div>
             <div className="w-[80px] h-[80px] rounded-full overflow-hidden">
               <img
