@@ -29,9 +29,13 @@ const GalleryContents = () => {
             {commentSheet && commentsData && (
               <BottomSheet setOpenSheet={setCommentSheet}>
                 <>
-                  {commentsData.map((comment) => (
-                    <GalleryComment comment={comment} />
-                  ))}
+                  {commentsData.length > 0 ? (
+                    commentsData.map((comment) => (
+                      <GalleryComment comment={comment} />
+                    ))
+                  ) : (
+                    <p className="text-[#444] px-3">댓글이 아직 없습니다</p>
+                  )}
                 </>
               </BottomSheet>
             )}
@@ -50,10 +54,10 @@ const GalleryContents = () => {
                 <CommentIcon onClick={() => setCommentSheet(true)} />
               </div>
               <div className="px-6">
-                <span className="text-[18px] font-bold">러미사</span> 오늘은
-                새로운 크루원들과 러닝을 했습니다! 서로의 실력을 알아가며 부족한
-                점을 서로 채워주는 모습이 참 보기 좋네요~ 앞으로도 활발한 활동
-                기대하겠습니다!
+                <span className="text-[20px] font-bold mr-3 mb-3 text-[#444]">
+                  {data.authorNickName}
+                </span>
+                {data.content}
               </div>
             </div>
           </>

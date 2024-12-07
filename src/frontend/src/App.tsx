@@ -13,7 +13,13 @@ const Layout = () => {
   const navigate = useNavigate();
 
   const noHeaderPath = ["/record", "/community/write", "/crew/chat"];
-  const noNavbarPath = ["/other-crew", "/signin", "/signup", "/crew/chat"];
+  const noNavbarPath = [
+    "/other-crew",
+    "/signin",
+    "/signup",
+    "/crew/chat",
+    "/crew/gallery/",
+  ];
   const authPath = ["/", "/signin", "/signup"];
 
   useEffect(() => {

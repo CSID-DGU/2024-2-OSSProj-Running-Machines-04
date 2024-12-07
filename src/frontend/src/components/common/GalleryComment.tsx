@@ -10,8 +10,8 @@ const GalleryComment = ({ comment }: GalleryCommentProps) => {
       <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
         <img
           className="w-full h-full object-cover"
-          src="https://blog.malcang.com/wp-content/uploads/2024/03/1-1.png"
-          alt=""
+          src={comment.authorProfile}
+          alt="프로필"
         />
       </div>
       <div>

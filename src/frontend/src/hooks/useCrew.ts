@@ -155,6 +155,7 @@ export const useCrewGalleryCommentsPost = (
     mutationFn: () => postCrewGalleryComments(crewId, postId, content),
     onSuccess: () => {
       console.log("크루 갤러리 댓글 작성 성공");
+      window.location.reload();
     },
     onError: () => {
       console.log("크루 갤러리 댓글 작성 실패");

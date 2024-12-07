@@ -21,6 +21,7 @@ const CommunityDetailPage = () => {
     comment,
     selectedComment
   );
+
   const handleCommentSubmit = () => {
     console.log(comment);
     mutate();
