@@ -25,7 +25,7 @@ public class CommentController {
     public ResponseEntity<Long> createComment(@PathVariable String boardName, @PathVariable Long postId, @RequestBody CommentCreateRequestDto requestDto) {
         requestDto.setPostId(postId);
         Long commentId = commentCommandService.createComment(requestDto);
-        return ResponseEntity.ok(commentId);
+        return ResponseEntity.ok(postId);
     }
 
     @PostMapping("/{commentId}/reply")
