@@ -2,19 +2,14 @@ import {
   getCalendar,
   getMonthlyStats,
   getRecentStats,
-  postUserInfo,
+  getUserInfo,
 } from "@/apis/mypage";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
-export const useUserInfoPost = () => {
-  return useMutation({
-    mutationFn: () => postUserInfo(),
-    onSuccess: () => {
-      console.log("유저 정보 작성 성공");
-    },
-    onError: () => {
-      console.log("유저 정보 작성 실패");
-    },
+export const useUserInfoGet = () => {
+  return useQuery({
+    queryKey: ["userInfo"],
+    queryFn: () => getUserInfo(),
   });
 };
 

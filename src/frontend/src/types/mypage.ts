@@ -23,4 +23,4 @@ export type MypageRecentResponse = {
   pace: number;
   tags: string[];
   createdAt: string;
-}[];
+};

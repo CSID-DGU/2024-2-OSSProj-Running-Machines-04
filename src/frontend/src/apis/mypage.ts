@@ -6,8 +6,8 @@ import {
 } from "@/types/mypage";
 import { api } from ".";
 
-export const postUserInfo = async (): Promise<MypageResponse> => {
-  const response = await api.post(`/mypage/userInfo`);
+export const getUserInfo = async (): Promise<MypageResponse> => {
+  const response = await api.get(`/mypage/userInfo`);
   return response.data;
 };
 
@@ -30,7 +30,7 @@ export const getMonthlyStats = async (
 };
 
 // 최근 기록 2개
-export const getRecentStats = async (): Promise<MypageRecentResponse> => {
+export const getRecentStats = async (): Promise<MypageRecentResponse[]> => {
   const response = await api.get(`/mypage/recent`);
   return response.data;
 };
