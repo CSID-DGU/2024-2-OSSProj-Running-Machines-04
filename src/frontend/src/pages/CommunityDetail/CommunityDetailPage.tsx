@@ -4,13 +4,27 @@ import { ReactComponent as HeartIcon } from "@/assets/icons/HeartIcon.svg";
 import { ReactComponent as BackIcon } from "@/assets/icons/BackIcon.svg";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useBoardDetailGet } from "@/hooks/useBoard";
+import { useBoardCommentPost, useBoardDetailGet } from "@/hooks/useBoard";
 import Spinner from "@/components/common/Spinner";
+import CommentInput from "@/components/common/CommentInput";
 
 const CommunityDetailPage = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id, board } = useParams();
   const [isScrapped, setIsScrapped] = useState(false);
+  const [comment, setComment] = useState("");
+  const [selectedComment, setSelectedComment] = useState<number | null>(null);
+
+  const { mutate } = useBoardCommentPost(
+    String(board),
+    Number(id),
+    comment,
+    selectedComment
+  );
+  const handleCommentSubmit = () => {
+    console.log(comment);
+    mutate();
+  };
 
   const { data, isLoading } = useBoardDetailGet({
     boardName: "FREE",
@@ -24,6 +38,11 @@ const CommunityDetailPage = () => {
       ) : (
         data && (
           <>
+            <CommentInput
+              comment={comment}
+              setComment={setComment}
+              onSubmit={handleCommentSubmit}
+            />
             <div className="shadow-sm w-full flex justify-start p-4 mb-6">
               <BackIcon onClick={() => navigate("/community")} />
             </div>
@@ -36,7 +55,11 @@ const CommunityDetailPage = () => {
                   stroke={isScrapped ? "#F17171" : "#afafaf"}
                 />
               </div>
-              <CommentsList comments={data.comments} />
+              <CommentsList
+                comments={data.comments}
+                setSelectedComment={setSelectedComment}
+                selectedComment={selectedComment}
+              />
             </div>
           </>
         )

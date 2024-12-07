@@ -37,7 +37,7 @@ export const searchBoard = async (boardName: string, keyword: string) => {
   return response.data;
 };
 
-export const postBoardLike = async (
+export const postBoardCommentLike = async (
   boardName: string,
   postId: number,
   commentId: number
@@ -45,5 +45,19 @@ export const postBoardLike = async (
   const response = await api.post(
     `/board/${boardName}/${postId}/${commentId}/like`
   );
+  return response.data;
+};
+
+export const postBoardCommemt = async (
+  boardName: string,
+  postId: number,
+  content: string,
+  parentCommentId: number | null
+) => {
+  const response = await api.post(`/board/${boardName}/${postId}`, {
+    content: content,
+    postId: postId,
+    parentCommentId: parentCommentId,
+  });
   return response.data;
 };

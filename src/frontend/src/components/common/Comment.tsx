@@ -1,18 +1,37 @@
 import { comment } from "@/types/board";
-import { CrewGalleryDetailResponse } from "@/types/crew";
+import { Dispatch, SetStateAction } from "react";
 
 type CommentProps = {
   comment: comment;
+  selectedComment?: number | null;
+  setSelectedComment?: Dispatch<SetStateAction<number | null>>;
 };
 
-const Comment = ({ comment }: CommentProps) => {
+const Comment = ({
+  comment,
+  selectedComment,
+  setSelectedComment,
+}: CommentProps) => {
+  const handleClick = (id: number) => {
+    if (setSelectedComment) {
+      if (selectedComment == id) {
+        setSelectedComment(null);
+      } else setSelectedComment(id);
+    }
+  };
+
   return (
-    <div className="flex items-center gap-3 py-4">
+    <div
+      onClick={() => handleClick(comment.commentId)}
+      className={`flex items-center gap-3 py-4 ${
+        selectedComment === comment.commentId ? "bg-[#f7f7f7]" : ""
+      }`}
+    >
       <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
         <img
           className="w-full h-full object-cover"
-          src="https://blog.malcang.com/wp-content/uploads/2024/03/1-1.png"
-          alt=""
+          src={comment.profileImage}
+          alt="프로필"
         />
       </div>
       <div>

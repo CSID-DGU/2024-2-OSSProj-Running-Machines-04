@@ -2,7 +2,8 @@ import {
   getBoardData,
   getBoardDetailData,
   postBoard,
-  postBoardLike,
+  postBoardCommemt,
+  postBoardCommentLike,
   searchBoard,
 } from "@/apis/board";
 import { boardRequest } from "@/types/board";
@@ -55,18 +56,37 @@ export const useBoardSearch = (boardName: string, keyword: string) => {
   });
 };
 
-export const useBoardLike = (
+export const useBoardCommentLike = (
   boardName: string,
   postId: number,
   commentId: number
 ) => {
   return useMutation({
-    mutationFn: () => postBoardLike(boardName, postId, commentId),
+    mutationFn: () => postBoardCommentLike(boardName, postId, commentId),
     onSuccess: () => {
       console.log("커뮤니티 좋아요 성공");
     },
     onError: () => {
       console.log("커뮤니티 좋아요 실패");
+    },
+  });
+};
+
+export const useBoardCommentPost = (
+  boardName: string,
+  postId: number,
+  content: string,
+  parentCommentId: number | null
+) => {
+  return useMutation({
+    mutationFn: () =>
+      postBoardCommemt(boardName, postId, content, parentCommentId),
+    onSuccess: () => {
+      console.log("커뮤니티 댓글 작성 성공");
+      window.location.reload();
+    },
+    onError: () => {
+      console.log("커뮤니티 댓글 작성 실패");
     },
   });
 };
