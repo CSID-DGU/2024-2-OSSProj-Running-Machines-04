@@ -24,7 +24,6 @@ public class CrewController {
     public ResponseEntity<Integer> createCrew(@RequestParam String title, @RequestPart MultipartFile certificationImage,@RequestPart MultipartFile profileImage) {
         CrewCreateCommandDto crewCreateCommandDto = CrewCreateCommandDto.builder()
                 .title(title)
-                .certificationImage(certificationImage)
                 .profileImage(profileImage)
                 .build();
 

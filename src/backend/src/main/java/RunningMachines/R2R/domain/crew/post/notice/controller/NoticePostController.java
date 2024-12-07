@@ -27,8 +27,8 @@ public class NoticePostController {
     @PostMapping
     public ResponseEntity<Long> createNoticePost(@PathVariable Long crewId, @RequestBody NoticePostCreateRequestDto requestDto) {
         User currentUser = authCommandService.getCurrentUser();
-        noticePostCommandService.createNoticePost(crewId, currentUser, requestDto);
-        return ResponseEntity.ok(crewId);
+        Long crewPostId = noticePostCommandService.createNoticePost(crewId, currentUser, requestDto);
+        return ResponseEntity.ok(crewPostId);
     }
 
     @GetMapping("/{crewPostId}")
