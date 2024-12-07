@@ -1,16 +1,33 @@
 import Comment from "@/components/common/Comment";
 import Reply from "@/components/common/Reply";
+import { comment } from "@/types/board";
+import { Dispatch, SetStateAction } from "react";
 
-const CommentsList = () => {
+type CommentsListProps = {
+  comments: comment[];
+  selectedComment: number | null;
+  setSelectedComment: Dispatch<SetStateAction<number | null>>;
+};
+
+const CommentsList = ({
+  comments,
+  selectedComment,
+  setSelectedComment,
+}: CommentsListProps) => {
   return (
     <div>
-      <Comment />
-      <Reply />
-      <Reply />
-      <Reply />
-      <Comment />
-      <Comment />
-      <Comment />
+      {comments.map((comment) => (
+        <>
+          <Comment
+            key={comment.commentId}
+            comment={comment}
+            setSelectedComment={setSelectedComment}
+            selectedComment={selectedComment}
+          />
+          {comment.replies &&
+            comment.replies.map((reply) => <Reply reply={reply} />)}
+        </>
+      ))}
     </div>
   );
 };

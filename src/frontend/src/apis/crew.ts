@@ -1,4 +1,5 @@
 import {
+  CrewGalleryDetaiCommentslResponse,
   CrewGalleryDetailResponse,
   CrewGalleryRequest,
   CrewGalleryResponse,
@@ -29,13 +30,10 @@ export const postCrewNotice = async ({
   return response.data;
 };
 
-export const getCrewNoticeDetail = async ({
-  crewId,
-  crewPostId,
-}: {
-  crewId: number;
-  crewPostId: number;
-}): Promise<CrewNoticeDetailResponse> => {
+export const getCrewNoticeDetail = async (
+  crewId: number,
+  crewPostId: number
+): Promise<CrewNoticeDetailResponse> => {
   const response = await api.get(`/crew/${crewId}/notice/${crewPostId}`);
   return response.data;
 };
@@ -45,13 +43,23 @@ export const JoinCrew = async (crewId: number): Promise<CrewJoinResponse> => {
   return response.data;
 };
 
-export const CreateCrew = async (data: number) => {
-  const response = await api.post(`/crew/create`, { data });
+export const CreateCrew = async ({
+  certificationImage,
+  profileImage,
+}: {
+  certificationImage: File;
+  profileImage: File;
+}) => {
+  const formData = new FormData();
+  formData.append("certificationImage", certificationImage);
+  formData.append("profileImage", profileImage);
+
+  const response = await api.post(`/crew/create`, formData);
   return response.data;
 };
 
 // 다른 크루 조회 api
-export const getCrew = async (): Promise<CrewResponse> => {
+export const getCrew = async (): Promise<CrewResponse[]> => {
   const response = await api.get(`/crew`);
   return response.data;
 };
@@ -82,12 +90,11 @@ export const getCrewGalleryDetail = async (
 export const getCrewGalleryDetailComments = async (
   crewId: number,
   postId: number
-): Promise<CrewGalleryDetailResponse> => {
+): Promise<CrewGalleryDetaiCommentslResponse[]> => {
   const response = await api.get(`/crew/${crewId}/gallery/${postId}/comments`);
   return response.data;
 };
 
-// 백엔드 확인 필요(multipart?)
 export const postCrewGallery = async ({
   crewId,
   data,
@@ -95,7 +102,13 @@ export const postCrewGallery = async ({
   crewId: number;
   data: CrewGalleryRequest;
 }) => {
-  const response = await api.post(`/crew/${crewId}/gallery`, { data });
+  const formData = new FormData();
+  formData.append("content", data.content);
+  data.images.forEach((image) => {
+    formData.append(`images`, image);
+  });
+
+  const response = await api.post(`/crew/${crewId}/gallery`, formData);
   return response.data;
 };
 

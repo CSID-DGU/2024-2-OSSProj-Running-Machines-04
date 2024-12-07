@@ -3,43 +3,36 @@ import CommunityList from "@/components/community/CommunityList";
 import MarathonList from "@/components/community/MarathonList";
 import { boardType } from "@/constants/board";
 import { ReactComponent as WriteIcon } from "@/assets/icons/WriteIcon.svg";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBoardGet } from "@/hooks/useBoard";
-import { boardResponse } from "@/types/board";
-import { dummyCommunityData } from "@/constants/dummy";
+import Spinner from "@/components/common/Spinner";
 
 const CommunityPage = () => {
   const navigate = useNavigate();
   const [board, setBoard] = useState<boardType>(boardType.FREE);
-  const [boardData, setBoardData] =
-    useState<boardResponse[]>(dummyCommunityData);
 
-  const { data } = useBoardGet(board);
-
-  useEffect(() => {
-    if (data) {
-      setBoardData(data);
-    }
-  }, [data]);
+  const { data: boardData, isLoading } = useBoardGet(board);
 
   return (
     <>
-      {boardData ? (
-        <div className="mb-24">
-          <CommnunityHeader board={board} setBoard={setBoard} />
-          <WriteIcon
-            className="fixed bottom-[12%] right-[6%] cursor-pointer"
-            onClick={() => navigate("/community/write")}
-          />
-          {board === boardType.MARATHON ? (
-            <MarathonList data={boardData} />
-          ) : (
-            <CommunityList data={boardData} />
-          )}
-        </div>
+      {isLoading ? (
+        <Spinner />
       ) : (
-        <div>로딩 중입니다.</div>
+        boardData && (
+          <div className="mb-24">
+            <CommnunityHeader board={board} setBoard={setBoard} />
+            <WriteIcon
+              className="fixed bottom-[12%] right-[6%] cursor-pointer"
+              onClick={() => navigate("/community/write")}
+            />
+            {board === boardType.MARATHON ? (
+              <MarathonList data={boardData} boardName={board} />
+            ) : (
+              <CommunityList data={boardData} boardName={board} />
+            )}
+          </div>
+        )
       )}
     </>
   );

@@ -1,11 +1,16 @@
 import { ReactComponent as ReplyIcon } from "@/assets/icons/ReplyIcon.svg";
-import Comment from "@/components/common/Comment";
+import { comment, replies } from "@/types/board";
+import Comment from "./Comment";
 
-const Reply = () => {
+type ReplyProps = {
+  reply: comment;
+};
+
+const Reply = ({ reply }: ReplyProps) => {
   return (
     <div className="ml-4 flex items-center gap-2">
       <ReplyIcon />
-      <Comment />
+      <Comment comment={reply} />
     </div>
   );
 };

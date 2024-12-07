@@ -7,7 +7,6 @@ export const postCourseBookmark = async (courseId: number) => {
   return response.data;
 };
 
-// TODO: data 형식 수정
 export const uploadGpx = async (data: number) => {
   const response = await api.post(`/course/uploadGpx`, { data });
   return response.data;

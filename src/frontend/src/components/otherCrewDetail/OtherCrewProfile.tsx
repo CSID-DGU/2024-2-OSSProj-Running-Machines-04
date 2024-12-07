@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-
 const OtherCrewProfile = () => {
   return (
     <div className="py-6 px-10 flex items-center justify-between">
@@ -22,6 +20,9 @@ const OtherCrewProfile = () => {
             <span className="text-[12px]">members</span>
           </div>
         </div>
+        <button className="w-full text-center py-1 border border-[#D9D9D9] text-[1rem] rounded-lg shadow-sm">
+          가입하기
+        </button>
       </div>
     </div>
   );

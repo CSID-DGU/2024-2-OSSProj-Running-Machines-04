@@ -1,15 +1,24 @@
-export type homeRankingResponse = {
-  rank: number;
-  crewId: number;
-  crewName: string;
-  distance: number;
-  profileImage: string;
+export type homeUserResponse = {
+  totalDistance: number;
+  averagePace: number;
+  totalDuration: number;
 };
 
-export type homeFaceRankingResponse = {
-  rank: number;
+export type homeRankingResponse = {
+  image: string;
   crewId: number;
-  crewName: string;
-  face: string;
-  profileImage: string;
+  title: string;
+  distance: string;
+};
+
+export type homePaceRankingResponse = {
+  image: string;
+  crewId: number;
+  title: string;
+  averagePace: string;
+};
+
+export type homeCrewResponse = {
+  distanceRankings: homeRankingResponse[];
+  paceRankings: homePaceRankingResponse[];
 };
