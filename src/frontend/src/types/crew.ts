@@ -1,16 +1,16 @@
+export type noticePostType = {
+  crewPostId: number;
+  title: string;
+  author: string;
+  lastModified: string;
+};
+
 export type CrewNoticeResponse = {
   crewTitle: string;
   crewProfileImage: string;
   postCount: number;
   memberCount: number;
-  noticePost: [
-    {
-      crewPostId: number;
-      title: string;
-      author: string;
-      lastModified: string;
-    }
-  ];
+  noticePost: noticePostType[];
 };
 
 export type CrewNoticeRequest = {
@@ -57,11 +57,10 @@ export type CrewMemberResponse = {
   members: Member[];
 };
 
-// content 확정되면 수정
 export type Post = {
   postId: number;
   imageUrl: string;
-  content?: string;
+  content: string;
 };
 
 export type CrewGalleryResponse = {

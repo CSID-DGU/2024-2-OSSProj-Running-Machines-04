@@ -25,16 +25,10 @@ export const useCrewNoticeGet = (crewId: number) => {
 };
 
 // 크루 공지 상세 조회
-export const useCrewNoticeDetailGet = ({
-  crewId,
-  crewPostId,
-}: {
-  crewId: number;
-  crewPostId: number;
-}) => {
+export const useCrewNoticeDetailGet = (crewId: number, crewPostId: number) => {
   return useQuery({
     queryKey: ["notice", crewId],
-    queryFn: () => getCrewNoticeDetail({ crewId, crewPostId }),
+    queryFn: () => getCrewNoticeDetail(crewId, crewPostId),
   });
 };
 

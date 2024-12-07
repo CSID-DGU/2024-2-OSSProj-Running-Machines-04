@@ -53,13 +53,13 @@ const CommunityWriteInput = ({
   }, [contents.content]);
 
   return (
-    <div className="px-6 py-8">
+    <div className="px-6 py-8 w-full">
       <input
         type="text"
         placeholder="제목을 입력해주세요"
         value={contents.title}
         onChange={handleTitleChange}
-        className="text-[22px] focus:bg-none"
+        className="text-[22px] focus:bg-none w-full"
       />
       <div className="w-full max-w-md mx-auto mt-6 p-4 border rounded-lg shadow-md bg-white">
         <div className="mb-4">

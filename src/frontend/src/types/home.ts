@@ -5,17 +5,20 @@ export type homeUserResponse = {
 };
 
 export type homeRankingResponse = {
-  rank: number;
+  image: string;
   crewId: number;
-  crewName: string;
-  distance: number;
-  profileImage: string;
+  title: string;
+  distance: string;
 };
 
-export type homeFaceRankingResponse = {
-  rank: number;
+export type homePaceRankingResponse = {
+  image: string;
   crewId: number;
-  crewName: string;
-  face: string;
-  profileImage: string;
+  title: string;
+  averagePace: string;
+};
+
+export type homeCrewResponse = {
+  distanceRankings: homeRankingResponse[];
+  paceRankings: homePaceRankingResponse[];
 };

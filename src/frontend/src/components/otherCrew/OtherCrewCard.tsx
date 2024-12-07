@@ -13,7 +13,6 @@ const OtherCrewCard = ({ crew }: OtherCrewCardPrps) => {
           <img
             className="w-full h-full object-cover"
             src={crew.profileImageUrl}
-            // src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTr2fqdlFDppEAoCuV34aZIe61WnpTwVygxuNMM3szqDMMZRF-dL7jxDKQFBRrXIppNoZ0&usqp=CAU"
             alt="프로필"
           />
         </div>

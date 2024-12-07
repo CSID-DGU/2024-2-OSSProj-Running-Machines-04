@@ -30,13 +30,10 @@ export const postCrewNotice = async ({
   return response.data;
 };
 
-export const getCrewNoticeDetail = async ({
-  crewId,
-  crewPostId,
-}: {
-  crewId: number;
-  crewPostId: number;
-}): Promise<CrewNoticeDetailResponse> => {
+export const getCrewNoticeDetail = async (
+  crewId: number,
+  crewPostId: number
+): Promise<CrewNoticeDetailResponse> => {
   const response = await api.get(`/crew/${crewId}/notice/${crewPostId}`);
   return response.data;
 };

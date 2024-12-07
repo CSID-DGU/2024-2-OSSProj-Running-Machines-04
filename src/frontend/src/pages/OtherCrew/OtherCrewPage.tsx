@@ -9,8 +9,7 @@ const OtherCrewPage = () => {
   const { data, isLoading, error } = useCrewGet();
 
   // 데이터가 없거나 로딩 중일 때의 처리
-  if (isLoading) return;
-  <Spinner />;
+  if (isLoading) return <Spinner />;
   if (error) return <div>error</div>;
 
   return (
