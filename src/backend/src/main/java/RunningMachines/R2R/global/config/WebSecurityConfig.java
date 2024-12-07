@@ -36,7 +36,7 @@ public class WebSecurityConfig {
                         // requestMatchers(): 특정 요청과 일치하는 url에 대한 액세스 설정
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/courses/**").permitAll()
+                        .requestMatchers("/course/**").permitAll()
                         .requestMatchers("/v3/**").permitAll()
                         .anyRequest().authenticated()
                 )
