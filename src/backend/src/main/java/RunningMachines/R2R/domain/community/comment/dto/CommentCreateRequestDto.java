@@ -17,4 +17,7 @@ public class CommentCreateRequestDto {
     public void setPostId(Long postId) {
         this.postId = postId;
     }
+    public void setParentCommentId(Long parentCommentId) {
+        this.parentCommentId = parentCommentId;
+    }
 }
