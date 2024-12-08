@@ -1,5 +1,8 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ReactComponent as CourseCTA } from "@/assets/icons/CourseCTA.svg";
+import { ReactComponent as Toilet } from "@/assets/icons/Toilet.svg";
+import { ReactComponent as TrafficLight } from "@/assets/icons/TrafficLight.svg";
+import { ReactComponent as Store } from "@/assets/icons/Store.svg";
 import BottomSheet from "./BottomSheet";
 import useSelectedCourseStore from "@/store/useSelectedCourseStore";
 import {
@@ -115,12 +118,12 @@ const CourseSection = ({
                   <div className="text-[#444] font-semibold">
                     {selectedCourse.name}
                   </div>
-                  <div className="text-[#444] text-sm">
+                  <div className="text-[#444] text-sm text-center">
                     "{selectedCourse.description}"
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-1">
                   <div className="text-[30px] font-semibold text-right">
                     <div className="flex justify-end items-center gap-3">
                       {selectedCourse.distance}km
@@ -131,9 +134,21 @@ const CourseSection = ({
                       />
                     </div>
                   </div>
+                  <div className="flex gap-3 justify-end">
+                    <div className="flex items-center gap-1">
+                      <TrafficLight /> {selectedCourse.trafficLightCounts}개
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Store /> {selectedCourse.storeCounts}개
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Toilet />
+                      {selectedCourse.toiletCounts}개
+                    </div>
+                  </div>
                   <div className="flex flex-wrap justify-end gap-2">
                     {selectedCourse.tags.map((tag) => (
-                      <div className="bg-[#B1FF8C] p-1 rounded text-[14px] font-extralight">
+                      <div className="bg-[#B1FF8C] p-1 rounded text-[14px] font-light">
                         #{tag}
                       </div>
                     ))}
@@ -166,16 +181,28 @@ const CourseSection = ({
                       </div>
                     </div>
 
-                    <div className="w-[50%] flex flex-col gap-4">
+                    <div className="w-[50%] flex flex-col gap-1">
                       <div className="flex justify-end items-center gap-3 text-3xl font-bold">
                         {couseData.distance}km
                         <CourseCTA
                           onClick={() => handleCourseClick(couseData.courseId)}
                         />
                       </div>
+                      <div className="flex gap-3 justify-end">
+                        <div className="flex items-center gap-1">
+                          <TrafficLight /> {couseData.trafficLightCounts}개
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Store /> {couseData.storeCounts}개
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Toilet />
+                          {couseData.toiletCounts}개
+                        </div>
+                      </div>
                       <div className="flex flex-wrap justify-end gap-2">
                         {couseData.tags.map((tag) => (
-                          <div className="bg-[#B1FF8C] px-2 rounded text-[14px] font-extralight">
+                          <div className="bg-[#B1FF8C] px-2 rounded text-[14px] font-light">
                             #{tag}
                           </div>
                         ))}

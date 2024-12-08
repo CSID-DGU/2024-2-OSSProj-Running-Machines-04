@@ -29,7 +29,9 @@ const RecordPage = () => {
       tags: [],
       description: "",
       toiletCounts: 0,
+      toiletLocation: [],
       storeCounts: 0,
+      storeLocation: [],
       trafficLightCounts: 0,
       courseLiked: false,
     });
