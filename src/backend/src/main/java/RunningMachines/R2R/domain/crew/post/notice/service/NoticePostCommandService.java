@@ -22,7 +22,7 @@ public class NoticePostCommandService {
     private final CrewRepository crewRepository;
 
     @Transactional
-    public void createNoticePost(Long crewId, User user, NoticePostCreateRequestDto noticePostCreateRequestDto) {
+    public Long createNoticePost(Long crewId, User user, NoticePostCreateRequestDto noticePostCreateRequestDto) {
         Crew crew = validateCrew(crewId);
         validateLeader(crew, user);
 
@@ -34,7 +34,8 @@ public class NoticePostCommandService {
                 .user(user)
                 .build();
 
-        crewPostRepository.save(crewPost);
+        CrewPost savedPost = crewPostRepository.save(crewPost);
+        return savedPost.getId();
     }
 
     private Crew validateCrew(Long crewId) {

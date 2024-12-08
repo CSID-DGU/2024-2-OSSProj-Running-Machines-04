@@ -19,11 +19,13 @@ public class CommentResponseDto {
     private LocalDateTime createdAt;
     private List<CommentResponseDto> replies;
     private int likeCount;
+    private String writerProfileUrl;
 
     public static CommentResponseDto from(Comment comment) {
         return CommentResponseDto.builder()
                 .commentId(comment.getId())
                 .writerNickname(comment.getUser().getNickname())
+                .writerProfileUrl(comment.getUser().getProfileImageUrl())
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
                 .replies(comment.getReplies().stream()

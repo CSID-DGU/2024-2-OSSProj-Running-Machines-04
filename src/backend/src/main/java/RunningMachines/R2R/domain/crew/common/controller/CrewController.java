@@ -6,6 +6,7 @@ import RunningMachines.R2R.domain.crew.common.dto.CrewMemberResponseDto;
 import RunningMachines.R2R.domain.crew.common.dto.CrewResponseDto;
 import RunningMachines.R2R.domain.crew.common.service.CrewCommandService;
 import RunningMachines.R2R.domain.crew.common.service.CrewQueryService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,6 @@ public class CrewController {
     public ResponseEntity<Integer> createCrew(@RequestParam String title, @RequestPart MultipartFile certificationImage,@RequestPart MultipartFile profileImage) {
         CrewCreateCommandDto crewCreateCommandDto = CrewCreateCommandDto.builder()
                 .title(title)
-                .certificationImage(certificationImage)
                 .profileImage(profileImage)
                 .build();
 
@@ -48,6 +48,18 @@ public class CrewController {
     @GetMapping("/{crewId}/member")
     public ResponseEntity<CrewMemberResponseDto> getCrewMember(@PathVariable Long crewId) {
         CrewMemberResponseDto responseDto = crewQueryService.getCrewMember(crewId);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @Operation(summary = "크루 멤버 프로필 조회")
+    @GetMapping("/{crewId}/member/{memberId}/{year}/{month}")
+    public ResponseEntity<CrewMemberResponseDto> getCrewMember(
+            @PathVariable Long crewId,
+            @PathVariable Long memberId,
+            @PathVariable int year,
+            @PathVariable int month) {
+
+        CrewMemberResponseDto responseDto = crewQueryService.getCrewMemberProfile(crewId, memberId, year, month);
         return ResponseEntity.ok(responseDto);
     }
 }
