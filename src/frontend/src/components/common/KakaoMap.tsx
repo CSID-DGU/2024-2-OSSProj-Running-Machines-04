@@ -20,8 +20,6 @@ const KakaoMap = ({ onClickCourse, openSheet }: KakaoMapProps) => {
   const { kakaomapState, setKakaomapState } = useKakaomapStore();
   const { setParsedCourse } = useParsedCourseStore();
 
-  console.log("course: ", course);
-
   // 현재 위치(마커) 상태
   const [current, setCurrent] = useState({
     lat: 37.51265,
@@ -172,6 +170,32 @@ const KakaoMap = ({ onClickCourse, openSheet }: KakaoMapProps) => {
           />
         </>
       ))}
+      {/* 편의점 좌표 */}
+      {course.map((location) =>
+        location.storeLocation.map((store, index) => (
+          <MapMarker
+            key={index}
+            position={{ lat: store.lat, lng: store.lon }}
+            image={{
+              src: "store.png",
+              size: { width: 24, height: 24 },
+            }}
+          />
+        ))
+      )}
+      {/* 화장실 좌표 */}
+      {course.map((location) =>
+        location.toiletLocation.map((toilet, index) => (
+          <MapMarker
+            key={index}
+            position={{ lat: toilet.lat, lng: toilet.lon }}
+            image={{
+              src: "toilet.png",
+              size: { width: 24, height: 24 },
+            }}
+          />
+        ))
+      )}
       {kakaomapState.errMsg && (
         <div style={{ color: "red" }}>{kakaomapState.errMsg}</div>
       )}

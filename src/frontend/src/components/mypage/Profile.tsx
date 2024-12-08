@@ -3,16 +3,7 @@ import { ReactComponent as SettingIcon } from "@/assets/icons/SettingIcon.svg";
 import Spinner from "../common/Spinner";
 
 const Profile = () => {
-  // const { data, isLoading } = useUserInfoGet();
-  const data = {
-    nickName: "러닝짱",
-    profileImageUrl:
-      "https://ready2run.s3.ap-northeast-2.amazonaws.com/profile/3/9225a4c2-706c-4eeb-81f4-efe8f085e0cb.jpeg",
-    elevation: "HIGH",
-    convenience: "MEDIUM",
-    track: "MEDIUM",
-  };
-  const isLoading = false;
+  const { data, isLoading } = useUserInfoGet();
 
   return (
     <>

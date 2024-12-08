@@ -30,7 +30,7 @@ const Comment = ({
       <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
         <img
           className="w-full h-full object-cover"
-          src={comment.profileImage}
+          src={comment.writerProfileUrl}
           alt="프로필"
         />
       </div>
