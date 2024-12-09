@@ -25,7 +25,7 @@ const Profile = () => {
                 {data.nickName}
               </div>
               <div className="flex flex-col gap-2 p-2 rounded shadow-sm bg-white">
-                <div className="text-[8px] font-semibold text-black flex justify-between">
+                <div className="text-[10px] font-semibold text-black flex justify-between">
                   <p>나의 러닝 스타일</p>
                   <p className="cursor-pointer">〉</p>
                 </div>
