@@ -26,7 +26,10 @@ public class CrewController {
         CrewCreateCommandDto crewCreateCommandDto = CrewCreateCommandDto.builder()
                 .title(title)
                 .profileImage(profileImage)
+                .certificationImage(certificationImage)
                 .build();
+
+        crewCreateCommandDto.validate();
 
         Integer crewPasscode = crewCommandService.createCrew(crewCreateCommandDto);
 
