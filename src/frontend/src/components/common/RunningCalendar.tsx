@@ -18,7 +18,7 @@ const RunningCalendar = ({ runningData }: RunningCalendarProps) => {
 
   // 타일 스타일링
   const tileContent = ({ date }: { date: Date }) => {
-    const distance = getDistanceByDate(date);
+    const distance = getDistanceByDate(date) || 0;
 
     if (distance > 0) {
       return (

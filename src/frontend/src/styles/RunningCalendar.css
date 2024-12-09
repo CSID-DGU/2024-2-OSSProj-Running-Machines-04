@@ -11,7 +11,6 @@
   height: 50px;
   z-index: 10;
   background-color: #b0ff8c98;
-  border-radius: 5px;
   padding: 2px;
   font-size: 1.25rem;
   text-align: center;
@@ -24,6 +23,7 @@
 
 /* 기본 날짜 스타일 */
 .react-calendar__tile {
+  border-radius: 5px;
   position: relative;
   padding: 10px;
   height: 50px;
