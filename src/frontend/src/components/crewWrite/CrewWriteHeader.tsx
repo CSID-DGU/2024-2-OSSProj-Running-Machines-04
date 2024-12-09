@@ -1,4 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
+import { useNavigate } from "react-router-dom";
 
 type crewWriteHeaderProps = {
   type: string;
@@ -7,10 +8,17 @@ type crewWriteHeaderProps = {
 };
 
 const CrewWriteHeader = ({ onSubmit, type, setType }: crewWriteHeaderProps) => {
+  const navigate = useNavigate();
+
   return (
     <div>
       <div className="flex items-center justify-between py-5 px-8 border-b border-[#D9D9D9]">
-        <div className="cursor-pointer text-[18px] text-[#515151]">뒤로</div>
+        <div
+          onClick={() => navigate("/crew")}
+          className="cursor-pointer text-[18px] text-[#515151]"
+        >
+          뒤로
+        </div>
         <div className="text-[18px] font-bold">게시물 작성</div>
         <div
           onClick={onSubmit}

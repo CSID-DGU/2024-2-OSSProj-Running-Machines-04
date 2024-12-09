@@ -1,4 +1,3 @@
-import Spinner from "../common/Spinner";
 import { MypageRecentResponse } from "@/types/mypage";
 
 type RecentRecordProps = {

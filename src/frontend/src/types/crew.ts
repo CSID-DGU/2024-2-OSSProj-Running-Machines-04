@@ -1,3 +1,5 @@
+import { MypageCalendarResponse } from "./mypage";
+
 export type noticePostType = {
   crewPostId: number;
   title: string;
@@ -57,6 +59,23 @@ export type CrewMemberResponse = {
   members: Member[];
 };
 
+export type recentRunsType = {
+  distance: number;
+  duration: number;
+  pace: number;
+  tags: string[];
+  createdAt: string;
+};
+
+export type CrewMemberDetailResponse = {
+  crewTitle: string;
+  postCount: number;
+  memberCount: number;
+  members: Member[];
+  userDistance: MypageCalendarResponse[];
+  recentRuns: recentRunsType[];
+};
+
 export type Post = {
   postId: number;
   imageUrl: string;
@@ -92,4 +111,18 @@ export type CrewGalleryDetaiCommentslResponse = {
 export type CrewGalleryRequest = {
   content: string;
   images: File[];
+};
+
+export type CrewChatResponse = {
+  crewId: number;
+  senderNickname: string;
+  content: string;
+  imageUrls: string[];
+  createdAt: string;
+};
+
+export type CrewChatRequest = {
+  crewId: number;
+  content: string;
+  images: string[];
 };

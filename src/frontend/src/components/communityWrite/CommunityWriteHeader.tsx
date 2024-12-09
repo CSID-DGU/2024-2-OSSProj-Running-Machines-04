@@ -1,6 +1,7 @@
 import { boardType } from "@/constants/board";
 import { communityRequestType } from "@/types/communityWrite";
 import { Dispatch, SetStateAction } from "react";
+import { useNavigate } from "react-router-dom";
 
 type CommunityWriteHeaderProps = {
   onSubmit: () => void;
@@ -13,10 +14,17 @@ const CommunityWriteHeader = ({
   contents,
   setContents,
 }: CommunityWriteHeaderProps) => {
+  const navigate = useNavigate();
+
   return (
     <div>
       <div className="flex items-center justify-between py-5 px-8 border-b border-[#D9D9D9]">
-        <div className="cursor-pointer text-[18px] text-[#515151]">뒤로</div>
+        <div
+          onClick={() => navigate("/community")}
+          className="cursor-pointer text-[18px] text-[#515151]"
+        >
+          뒤로
+        </div>
         <div className="text-[18px] font-bold">게시물 작성</div>
         <div
           onClick={onSubmit}

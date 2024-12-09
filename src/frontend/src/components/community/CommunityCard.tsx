@@ -26,11 +26,13 @@ const CommunityCard = ({ board, boardName }: CommunityCardProps) => {
         <div className="text-[14px] text-[#515151]">{board.contentPreview}</div>
       </div>
       <div className="w-[70px] h-[4.375rem] overflow-hidden">
-        <img
-          className="w-full h-full object-cover"
-          src={board.postImages[0]}
-          alt="사진"
-        />
+        {board.postImages[0] && (
+          <img
+            className="w-full h-full object-cover"
+            src={board.postImages[0]}
+            alt="사진"
+          />
+        )}
       </div>
     </div>
   );
