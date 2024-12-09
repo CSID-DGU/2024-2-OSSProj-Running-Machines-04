@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByBoard(Board board);
+    List<Post> findByBoardOrderByCreatedAtDesc(Board board);
 
     @Query("SELECT p FROM Post p WHERE p.board = :board AND " +
             "(LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +

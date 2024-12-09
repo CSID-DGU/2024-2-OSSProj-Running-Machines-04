@@ -28,7 +28,7 @@ public class PostQueryService {
 
     @Transactional(readOnly = true)
     public List<PostShowSimpleResponseDto> getPostsByBoard(Board board) {
-        List<Post> posts = postRepository.findByBoard(board);
+        List<Post> posts = postRepository.findByBoardOrderByCreatedAtDesc(board);
         return posts.stream()
                 .map(PostShowSimpleResponseDto::fromPost)
                 .collect(Collectors.toList());
