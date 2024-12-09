@@ -1,3 +1,5 @@
+import { MypageCalendarResponse } from "./mypage";
+
 export type noticePostType = {
   crewPostId: number;
   title: string;
@@ -57,11 +59,6 @@ export type CrewMemberResponse = {
   members: Member[];
 };
 
-export type userDistanceType = {
-  date: string;
-  totalDistance: number;
-};
-
 export type recentRunsType = {
   distance: number;
   duration: number;
@@ -75,7 +72,7 @@ export type CrewMemberDetailResponse = {
   postCount: number;
   memberCount: number;
   members: Member[];
-  userDistance: userDistanceType[];
+  userDistance: MypageCalendarResponse[];
   recentRuns: recentRunsType[];
 };
 

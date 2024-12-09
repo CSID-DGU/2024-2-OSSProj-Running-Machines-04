@@ -1,4 +1,4 @@
-import Calendar from "@/components/common/Calendar";
+import Calendar from "@/components/common/RunningCalendar";
 import Spinner from "@/components/common/Spinner";
 import CrewMemberDetailTitle from "@/components/crewMemberDetail/CrewMemberDetailTitle";
 import CrewMemberTitle from "@/components/crewMembers/CrewMemberTitle";
@@ -33,7 +33,7 @@ const CrewMemberDetailPage = () => {
           <div className="mb-24">
             <CrewMemberTitle />
             <CrewMemberDetailTitle user={currentUser} />
-            <Calendar />
+            <Calendar runningData={data.userDistance} />
             {data.recentRuns.map((record) => (
               <RecentRecord record={record} />
             ))}

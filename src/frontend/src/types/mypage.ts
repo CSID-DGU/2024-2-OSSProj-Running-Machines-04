@@ -9,7 +9,7 @@ export type MypageResponse = {
 export type MypageCalendarResponse = {
   date: string;
   totalDistance: number;
-}[];
+};
 
 export type MypageMonthlyResponse = {
   distance: number;

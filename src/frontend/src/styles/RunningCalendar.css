@@ -1,0 +1,30 @@
+/* 기본 달력 스타일 */
+.react-calendar {
+  border: none;
+}
+
+/* 강조된 날짜 스타일 */
+.react-calendar__tile .highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 50px;
+  z-index: 10;
+  background-color: #b0ff8c98;
+  border-radius: 5px;
+  padding: 2px;
+  font-size: 1.25rem;
+  text-align: center;
+  color: black;
+}
+
+.react-calendar__tile--now {
+  background-color: #9893e566 !important; /* 오늘 날짜 강조 */
+}
+
+/* 기본 날짜 스타일 */
+.react-calendar__tile {
+  position: relative;
+  padding: 10px;
+  height: 50px;
+}
