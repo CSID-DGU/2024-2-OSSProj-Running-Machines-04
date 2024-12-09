@@ -1,6 +1,7 @@
 import {
   CreateCrew,
   getCrew,
+  getCrewChat,
   getCrewGallery,
   getCrewGalleryDetail,
   getCrewGalleryDetailComments,
@@ -9,12 +10,17 @@ import {
   getCrewNotice,
   getCrewNoticeDetail,
   JoinCrew,
+  postCrewChat,
   postCrewGallery,
   postCrewGalleryComments,
   postCrewGalleryLike,
   postCrewNotice,
 } from "@/apis/crew";
-import { CrewGalleryRequest, CrewNoticeRequest } from "@/types/crew";
+import {
+  CrewChatRequest,
+  CrewGalleryRequest,
+  CrewNoticeRequest,
+} from "@/types/crew";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
@@ -186,6 +192,30 @@ export const useCrewGalleryLikePost = (crewId: number, postId: number) => {
     },
     onError: () => {
       console.log("크루 갤러리 댓글 작성 실패");
+    },
+  });
+};
+
+// 크루 채팅 불러오기
+export const useCrewChatGet = (crewId: number) => {
+  return useQuery({
+    queryKey: ["chat", crewId],
+    queryFn: () => getCrewChat(crewId),
+    refetchInterval: 500, // 500ms 간격으로 refetch
+  });
+};
+
+// 크루 채팅 등록
+export const useCrewChatPost = (options: { onSuccess: () => void }) => {
+  return useMutation({
+    mutationFn: (data: { crewId: number; data: CrewChatRequest }) =>
+      postCrewChat(data.crewId, data.data),
+    onSuccess: () => {
+      console.log("채팅 등록 성공");
+      options.onSuccess();
+    },
+    onError: () => {
+      console.log("채팅 등록 실패");
     },
   });
 };

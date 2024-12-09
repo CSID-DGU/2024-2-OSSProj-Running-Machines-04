@@ -112,3 +112,17 @@ export type CrewGalleryRequest = {
   content: string;
   images: File[];
 };
+
+export type CrewChatResponse = {
+  crewId: number;
+  senderNickname: string;
+  content: string;
+  imageUrls: string[];
+  createdAt: string;
+};
+
+export type CrewChatRequest = {
+  crewId: number;
+  content: string;
+  images: string[];
+};
