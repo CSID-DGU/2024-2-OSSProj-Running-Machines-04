@@ -1,4 +1,4 @@
-import { useCrewGet, useCrewMemberGet } from "@/hooks/useCrew";
+import { useCrewMemberGet } from "@/hooks/useCrew";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../common/Spinner";
 

@@ -8,7 +8,7 @@ type RunningCalendarProps = {
   runningData: MypageCalendarResponse[];
 };
 
-const RunningCalendar = ({ runningData }: RunningCalendarProps) => {
+const RunningCalendar = ({ runningData = [] }: RunningCalendarProps) => {
   // 날짜에 해당하는 거리 가져오기
   const getDistanceByDate = (date: Date): number => {
     const dateString = date.toISOString().split("T")[0]; // YYYY-MM-DD 포맷
@@ -18,7 +18,7 @@ const RunningCalendar = ({ runningData }: RunningCalendarProps) => {
 
   // 타일 스타일링
   const tileContent = ({ date }: { date: Date }) => {
-    const distance = getDistanceByDate(date) || 0;
+    const distance = getDistanceByDate(date);
 
     if (distance > 0) {
       return (
