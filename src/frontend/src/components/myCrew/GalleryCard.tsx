@@ -4,14 +4,15 @@ import { useNavigate } from "react-router-dom";
 
 type GalleryCardProps = {
   post: Post;
+  otherCrew?: boolean;
 };
-const GalleryCard = ({ post }: GalleryCardProps) => {
+const GalleryCard = ({ post, otherCrew }: GalleryCardProps) => {
   const [hover, setHover] = useState(false);
   const navigate = useNavigate();
 
   return (
     <div
-      onClick={() => navigate(`/crew/gallery/${post.postId}`)}
+      onClick={() => !otherCrew && navigate(`/crew/gallery/${post.postId}`)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className="relative w-[33vw] h-[33vw] flex justify-center items-center p-4"

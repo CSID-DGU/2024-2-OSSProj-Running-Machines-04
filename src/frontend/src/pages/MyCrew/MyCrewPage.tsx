@@ -9,20 +9,22 @@ const MyCrewPage = () => {
   const navigate = useNavigate();
 
   const { isLoading: galleryLoading } = useCrewGalleryGet(1);
-  const { isLoading: noticeLoading } = useCrewNoticeGet(1);
+  const { data, isLoading: noticeLoading } = useCrewNoticeGet(1);
   return (
     <>
       {galleryLoading || noticeLoading ? (
         <Spinner />
       ) : (
-        <div className="mb-24">
-          <WriteIcon
-            className="z-10 fixed bottom-[12%] right-[6%] cursor-pointer"
-            onClick={() => navigate("/crew/write")}
-          />
-          <MyCrewProfile />
-          <ContentsSection />
-        </div>
+        data && (
+          <div className="mb-24">
+            <WriteIcon
+              className="z-10 fixed bottom-[12%] right-[6%] cursor-pointer"
+              onClick={() => navigate("/crew/write")}
+            />
+            <MyCrewProfile profileUrl={data.crewProfileImage} />
+            <ContentsSection />
+          </div>
+        )
       )}
     </>
   );

@@ -9,10 +9,8 @@ import Spinner from "../common/Spinner";
 const ContentsSection = () => {
   const [menu, setMenu] = useState<crewMenu>(crewMenu.NOTICE);
 
-  const { data: gallery = { posts: [] }, isLoading: galleryLoading } =
-    useCrewGalleryGet(1);
-  const { data: notice = { noticePost: [] }, isLoading: noticeLoading } =
-    useCrewNoticeGet(1);
+  const { data: gallery, isLoading: galleryLoading } = useCrewGalleryGet(1);
+  const { data: notice, isLoading: noticeLoading } = useCrewNoticeGet(1);
 
   return (
     <>
@@ -57,18 +55,23 @@ const ContentsSection = () => {
           )}
           <div>
             {menu === crewMenu.NOTICE &&
+              notice &&
               Array.isArray(notice.noticePost) &&
               notice.noticePost.length > 0 && (
                 <div className="flex flex-wrap gap-3 p-5">
                   {notice.noticePost.map((post) => (
-                    <NoticeCard post={post} key={post.crewPostId} />
+                    <NoticeCard
+                      post={post}
+                      key={post.crewPostId}
+                      crewName={notice.crewTitle}
+                    />
                   ))}
                 </div>
               )}
           </div>
           <div>
             {menu === crewMenu.GALLERY &&
-              Array.isArray(gallery.posts) &&
+              gallery &&
               gallery.posts.length > 0 && (
                 <div className="flex justify-center px-[0.5vw]">
                   <div className="w-full flex flex-wrap justify-start items-start">

@@ -2,7 +2,11 @@ import { useCrewMemberGet } from "@/hooks/useCrew";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../common/Spinner";
 
-const MyCrewProfile = () => {
+type MyCrewProfileProps = {
+  profileUrl: string;
+};
+
+const MyCrewProfile = ({ profileUrl }: MyCrewProfileProps) => {
   const navigate = useNavigate();
   const { data, isLoading } = useCrewMemberGet(1);
 
@@ -16,8 +20,8 @@ const MyCrewProfile = () => {
             <div className="max-w-[110px] w-[30vw] max-h-[110px] h-[30vw] rounded-full overflow-hidden">
               <img
                 className="w-full h-full object-cover"
-                src="https://blog.mealligram.com/wp-content/uploads/2024/03/1.jpg"
-                alt=""
+                src={profileUrl}
+                alt="프로필"
               />
             </div>
             <div className="flex flex-col gap-3">
