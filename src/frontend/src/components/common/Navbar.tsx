@@ -21,41 +21,43 @@ const Navbar = () => {
   };
 
   return (
-    <div className="z-50 bg-white fixed bottom-0 left-0 w-full flex justify-around py-4 shadow-navbarShadow">
-      <div
-        onClick={() => navigate("/")}
-        className="flex flex-col items-center justify-center gap-1"
-      >
-        <HomeIcon fill={getIconColor("/")} />
-        <div className="text-[8px]">홈</div>
-      </div>
-      <div
-        onClick={() => navigate("/record")}
-        className="flex flex-col items-center justify-center gap-1"
-      >
-        <RecordIcon fill={getIconColor("/record")} />
-        <div className="text-[8px]">기록</div>
-      </div>
-      <div
-        onClick={() => navigate("/community")}
-        className="flex flex-col items-center justify-center gap-1"
-      >
-        <CommunityIcon fill={getIconColor("/community")} />
-        <div className="text-[8px]">커뮤니티</div>
-      </div>
-      <div
-        onClick={() => navigate("/crew")}
-        className="flex flex-col items-center justify-center gap-1"
-      >
-        <CrewIcon fill={getIconColor("/crew")} />
-        <div className="text-[8px]">나의 크루</div>
-      </div>
-      <div
-        onClick={() => navigate("/mypage")}
-        className="flex flex-col items-center justify-center gap-1"
-      >
-        <MypageIcon stroke={getIconColor("/mypage")} />
-        <div className="text-[8px]">마이페이지</div>
+    <div className="z-50 fixed bottom-0 left-[50%] translate-x-[-50%] w-full max-w-[430px]">
+      <div className="bg-white w-full flex justify-around py-4 shadow-navbarShadow">
+        <div
+          onClick={() => navigate("/")}
+          className="cursor-pointer flex flex-col items-center justify-center gap-1"
+        >
+          <HomeIcon fill={getIconColor("/")} />
+          <div className="text-[8px]">홈</div>
+        </div>
+        <div
+          onClick={() => navigate("/record")}
+          className="cursor-pointer flex flex-col items-center justify-center gap-1"
+        >
+          <RecordIcon fill={getIconColor("/record")} />
+          <div className="text-[8px]">기록</div>
+        </div>
+        <div
+          onClick={() => navigate("/community")}
+          className="cursor-pointer flex flex-col items-center justify-center gap-1"
+        >
+          <CommunityIcon fill={getIconColor("/community")} />
+          <div className="text-[8px]">커뮤니티</div>
+        </div>
+        <div
+          onClick={() => navigate("/crew")}
+          className="cursor-pointer flex flex-col items-center justify-center gap-1"
+        >
+          <CrewIcon fill={getIconColor("/crew")} />
+          <div className="text-[8px]">나의 크루</div>
+        </div>
+        <div
+          onClick={() => navigate("/mypage")}
+          className="cursor-pointer flex flex-col items-center justify-center gap-1"
+        >
+          <MypageIcon stroke={getIconColor("/mypage")} />
+          <div className="text-[8px]">마이페이지</div>
+        </div>
       </div>
     </div>
   );

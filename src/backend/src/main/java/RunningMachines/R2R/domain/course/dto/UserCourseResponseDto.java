@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserCourseResponseDto {
+    private Long userCourseId;
     private double distance;
     private int duration;
     private double pace;
@@ -18,6 +19,7 @@ public class UserCourseResponseDto {
 
     public static UserCourseResponseDto from(UserCourse userCourse) {
         return UserCourseResponseDto.builder()
+                .userCourseId(userCourse.getId())
                 .distance(userCourse.getDistance())
                 .duration(userCourse.getDuration())
                 .pace(userCourse.getPace())

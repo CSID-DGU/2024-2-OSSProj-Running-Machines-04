@@ -1,17 +1,23 @@
-import CrewMemberCard from "./CrewMemberCard";
+import CrewMemberCard from "@/components/crewMembers/CrewMemberCard";
+import { useCrewMemberGet } from "@/hooks/useCrew";
+import Spinner from "../common/Spinner";
 
 const CrewMemberSection = () => {
+  const { data, isLoading } = useCrewMemberGet(1);
   return (
-    <div className="mx-6 bg-[#f4f4f4] rounded-md">
-      <CrewMemberCard />
-      <CrewMemberCard />
-      <CrewMemberCard />
-      <CrewMemberCard />
-      <CrewMemberCard />
-      <CrewMemberCard />
-      <CrewMemberCard />
-      <CrewMemberCard />
-    </div>
+    <>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        data && (
+          <div className="mx-6 bg-[#f4f4f4] rounded-md">
+            {data.members.map((member) => (
+              <CrewMemberCard key={member.userId} member={member} />
+            ))}
+          </div>
+        )
+      )}
+    </>
   );
 };
 

@@ -1,12 +1,17 @@
-import CommunityCard from "./CommunityCard";
+import CommunityCard from "@/components/community/CommunityCard";
+import { boardType } from "@/constants/board";
+import { boardResponse } from "@/types/board";
 
-const CommunityList = () => {
-  const cards = Array.from({ length: 8 });
+type CommunityListProps = {
+  data: boardResponse[];
+  boardName: boardType;
+};
 
+const CommunityList = ({ data, boardName }: CommunityListProps) => {
   return (
     <div className="flex flex-col">
-      {cards.map((_, index) => (
-        <CommunityCard key={index} id={index} />
+      {data.map((board, index) => (
+        <CommunityCard key={index} board={board} boardName={boardName} />
       ))}
     </div>
   );

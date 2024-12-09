@@ -1,50 +1,156 @@
 package RunningMachines.R2R.domain.course.service;
 
 import RunningMachines.R2R.domain.course.dto.CourseResponseDto;
-import RunningMachines.R2R.domain.course.dto.GpxResponseDto;
-import RunningMachines.R2R.global.util.GpxParser;
+import RunningMachines.R2R.domain.course.entity.Course;
+import RunningMachines.R2R.domain.course.entity.Review;
+import RunningMachines.R2R.domain.course.entity.ReviewTag;
+import RunningMachines.R2R.domain.course.repository.CourseLikeRepository;
+import RunningMachines.R2R.domain.course.repository.CourseRepository;
+import RunningMachines.R2R.domain.course.repository.ReviewRepository;
+import RunningMachines.R2R.domain.user.entity.User;
+import RunningMachines.R2R.domain.user.repository.UserRepository;
+import RunningMachines.R2R.global.exception.CustomException;
+import RunningMachines.R2R.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CourseQueryService {
 
-    private final GpxParser gpxParser;
+    private final CourseRepository courseRepository;
+    private final CourseLikeRepository courseLikeRepository;
+    private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
+    private final WebClient webClient;
 
-    // 위경도를 기반으로 가져온 코스 정보 추출
-    public List<CourseResponseDto> getCourses(double lat, double lon) {
-        // 코스 리스트
-        List<GpxResponseDto> gpxs = gpxParser.parseGpxs(lat, lon);
-        // 반환값을 담을 리스트
-        List<CourseResponseDto> courseResponses = new ArrayList<>();
+    // 위경도 기반 추천 코스 조회
+    public List<CourseResponseDto> getRecommendedCourses(String email, double lat, double lon) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        for (GpxResponseDto gpx : gpxs) {
-            String fileName = gpx.getFileName();
-            List<String> waypoints = gpx.getWaypoints();
+        Map<String, Object> requestBody = Map.of(
+                "latitude", lat,
+                "longitude", lon,
+                "elevation_preference", String.valueOf(user.getPrefer().getElevation()),
+                "convenience_preference", String.valueOf(user.getPrefer().getConvenience()),
+                "track_preference", String.valueOf(user.getPrefer().getTrack())
+        );
 
-            // TODO - 모델 서버와 연동하여 실제 거리 받아오기
-            double distance = 0; // 임시로 0으로 설정
+        String endpoint = "/recommendCourse";
 
-            // 파일명으로부터 태그 생성
-            List<String> tags = createTags(fileName);
+        List<Map<String, String>> fileNameList = new ArrayList<>();
+        try {
+            // API 호출
+            fileNameList = webClient.post()
+                    .uri(endpoint)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) // Content-Type 명시
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(List.class) // 응답 처리
+                    .block(); // 동기적으로 처리
 
-            // 각 파일에 대한 CourseResponseDto 생성 및 리스트에 추가
-            courseResponses.add(new CourseResponseDto(fileName, waypoints, distance, tags));
+        } catch (WebClientResponseException e) {
+            // 서버 응답에 대한 에러 처리
+//            System.err.println("Error during API call: " + e.getResponseBodyAsString());
+            throw new RuntimeException("Failed to call API: " + e.getStatusCode(), e);
+        } catch (Exception e) {
+            // 기타 에러 처리
+//            System.err.println("Unexpected error: " + e.getMessage());
+            throw new RuntimeException("Unexpected error during API call", e);
         }
-        return courseResponses;
+
+        List<CourseResponseDto> courses = new ArrayList<>(); // 결과 담는 리스트
+        if (fileNameList != null) {
+            for (Map<String, String> file : fileNameList) {
+                String fileName = file.get("file_name");
+
+                Course course = courseRepository.findByFileName(fileName);
+
+                boolean coursedLike = courseLikeRepository.existsByCourseAndUser(course, user);
+
+                CourseResponseDto courseResponseDto = CourseResponseDto.of(course, createTags(course, fileName), coursedLike);
+
+                courses.add(courseResponseDto);
+            }
+        }
+        return courses;
     }
 
-    // 파일명 파싱해 코스 태그 생성
-    // TODO - 해당 코스에 대한 리뷰가 있을 경우 상위 3개의 태그 가져와서 코스 태그 생성
-    private List<String> createTags(String fileName) {
+    public List<String> createTags(Course course, String fileName) {
+        List<Review> reviews = reviewRepository.findByCourseId(course.getId());
+
+        if (!reviews.isEmpty()) {
+            List<String> tags = new ArrayList<>();
+
+            for (Review review : reviews) {
+                for (ReviewTag reviewTag : review.getReviewTags()) {
+                    tags.add(reviewTag.getTag().getName());
+                }
+            }
+
+            // 가장 많이 선택된 3개의 태그 선택
+            return tags.stream()
+                    .collect(Collectors.groupingBy(tag -> tag, Collectors.counting())) // 태그 개수 count
+                    .entrySet().stream()
+                    .sorted(Map.Entry.<String, Long>comparingByValue().reversed()) // 내림차순 정렬
+                    .limit(3) // 상위 3개
+                    .map(Map.Entry::getKey) // key만 추출(태그명)
+                    .toList();
+        }
+
+        // 리뷰 태그가 없으면 파일명 파싱해 코스 태그 생성
         String name = fileName.substring(0, fileName.lastIndexOf('.')); // 확장자 제거
         String[] tags = name.split("_"); // 파일명을 '_'로 구분하여 태그 리스트 생성
-        tags = Arrays.copyOf(tags, tags.length - 1); // 파일명 제일 앞에 있는 인덱스 제거
-        return List.of(tags);
+        String tag1 = tags[1]; // 난이도
+        String tag2 = tags[2] + "_" + tags[3]; // 편의시설
+        String tag3 = tags[4]; // 트랙 여부
+        return List.of(tag1, tag2, tag3);
+    }
+
+    // 즐겨찾기 코스 조회
+    public List<CourseResponseDto> getLikeCourses(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        return courseLikeRepository.findByUser(user).stream()
+                .map(courseLike -> CourseResponseDto.of(courseLike.getCourse(), createTags(courseLike.getCourse(), courseLike.getCourse().getFileName()), true))
+                .toList();
+    }
+
+    public List<String> allCourseUrl() {
+        return courseRepository.findAll().stream()
+                .map(Course::getCourseUrl)
+                .collect(Collectors.toList());
+    }
+
+    // 인기 코스 조회 (10개 제한)
+    public List<CourseResponseDto> getPopularCourses(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        List<Course> courses = courseRepository.findTop10ByUserCourseCount(PageRequest.of(0, 10));
+
+        List<CourseResponseDto> courseResponseDtos = new ArrayList<>();
+
+        for (Course course : courses) {
+            List<String> tags = createTags(course, course.getFileName());
+            boolean coursedLike = courseLikeRepository.existsByCourseAndUser(course, user);
+
+            CourseResponseDto courseResponseDto = CourseResponseDto.of(course, tags, coursedLike);
+            courseResponseDtos.add(courseResponseDto);
+        }
+
+        return courseResponseDtos;
     }
 }

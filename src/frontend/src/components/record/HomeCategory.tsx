@@ -1,28 +1,34 @@
 import { ReactComponent as FlagIcon } from "@/assets/icons/FlagIcon.svg";
 import { ReactComponent as PopularIcon } from "@/assets/icons/PopularIcon.svg";
 import { ReactComponent as ScrappedIcon } from "@/assets/icons/ScrappedIcon.svg";
+import { courseMenu } from "@/constants/course";
 import { Dispatch, SetStateAction } from "react";
 
 type HomeCategoryProps = {
   setOpenSheet: Dispatch<SetStateAction<boolean>>;
-  setSelectedCategory: Dispatch<SetStateAction<string>>;
+  setSelectedCategory: Dispatch<SetStateAction<courseMenu>>;
+  onClose: () => void;
 };
 
 const HomeCategory = ({
   setOpenSheet,
   setSelectedCategory,
+  onClose,
 }: HomeCategoryProps) => {
   const handelPersonalClick = () => {
     setOpenSheet(true);
-    setSelectedCategory("personal");
+    setSelectedCategory(courseMenu.PERSONAL);
+    onClose();
   };
   const handelPopularClick = () => {
     setOpenSheet(true);
-    setSelectedCategory("popular");
+    setSelectedCategory(courseMenu.POPULAR);
+    onClose();
   };
   const handelScrappedClick = () => {
     setOpenSheet(true);
-    setSelectedCategory("scrapped");
+    setSelectedCategory(courseMenu.SCRAPPED);
+    onClose();
   };
 
   return (

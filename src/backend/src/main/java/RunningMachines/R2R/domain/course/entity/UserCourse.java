@@ -28,6 +28,8 @@ public class UserCourse extends BaseEntity {
 
     private double pace;  // 페이스 (km당 시간)
 
+//    private Boolean followRecommendCourse; // 추천 코스 따라 간 여부
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -36,7 +38,7 @@ public class UserCourse extends BaseEntity {
     @JoinColumn(name = "course_id")
     private Course course; // 코스 따라 뛰는 경우에 Course 받아옴
 
-    @OneToMany(mappedBy = "userCourse")
+    @OneToMany(mappedBy = "userCourse", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
 }

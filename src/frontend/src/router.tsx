@@ -11,6 +11,14 @@ import NoticeDetailPage from "@/pages/NoticeDetail/NoticeDetailPage";
 import GalleryDetailPage from "@/pages/GalleryDetail/GalleryDetailPage";
 import CrewMembersPage from "@/pages/CrewMembers/CrewMembersPage";
 import CrewMemberDetailPage from "@/pages/CrewMemberDetail/CrewMemberDetailPage";
+import OtherCrewPage from "@/pages/OtherCrew/OtherCrewPage";
+import OtherCrewDetailPage from "@/pages/OtherCrewDetail/OtherCrewDetailPage";
+import SigninPage from "@/pages/Signin/SigninPage";
+import SignupPage from "@/pages/Signup/SIgnupPage";
+import RunningPage from "@/pages/Running/RunningPage";
+import ReviewPage from "@/pages/Review/ReviewPage";
+import CrewChattingPage from "@/pages/CrewChatting/CrewChattingPage";
+import CrewWritePage from "@/pages/CrewWrite/CrewWritePage";
 
 const router = createBrowserRouter([
   {
@@ -20,18 +28,28 @@ const router = createBrowserRouter([
       { path: "/", element: <HomePage /> },
 
       { path: "/record", element: <RecordPage /> },
+      { path: "/record/:id/running", element: <RunningPage /> },
+      { path: "/record/:id/review/:courseId", element: <ReviewPage /> },
 
       { path: "/community", element: <CommunityPage /> },
-      { path: "/community/:id", element: <CommunityDetailPage /> },
+      { path: "/community/:board/:id", element: <CommunityDetailPage /> },
       { path: "/community/write", element: <CommunityWritePage /> },
 
       { path: "/crew", element: <MyCrewPage /> },
+      { path: "/crew/chat", element: <CrewChattingPage /> },
+      { path: "/crew/write", element: <CrewWritePage /> },
       { path: "/crew/notice/:id", element: <NoticeDetailPage /> },
       { path: "/crew/gallery/:id", element: <GalleryDetailPage /> },
       { path: "/crew/members", element: <CrewMembersPage /> },
       { path: "/crew/members/:id", element: <CrewMemberDetailPage /> },
 
+      { path: "/other-crew", element: <OtherCrewPage /> },
+      { path: "/other-crew/:id", element: <OtherCrewDetailPage /> },
+
       { path: "/mypage", element: <MyPage /> },
+
+      { path: "/signin", element: <SigninPage /> },
+      { path: "/signup", element: <SignupPage /> },
     ],
   },
 ]);
