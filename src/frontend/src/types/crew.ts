@@ -57,6 +57,28 @@ export type CrewMemberResponse = {
   members: Member[];
 };
 
+export type userDistanceType = {
+  date: string;
+  totalDistance: number;
+};
+
+export type recentRunsType = {
+  distance: number;
+  duration: number;
+  pace: number;
+  tags: string[];
+  createdAt: string;
+};
+
+export type CrewMemberDetailResponse = {
+  crewTitle: string;
+  postCount: number;
+  memberCount: number;
+  members: Member[];
+  userDistance: userDistanceType[];
+  recentRuns: recentRunsType[];
+};
+
 export type Post = {
   postId: number;
   imageUrl: string;

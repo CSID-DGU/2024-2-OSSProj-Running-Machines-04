@@ -5,6 +5,7 @@ import {
   getCrewGalleryDetail,
   getCrewGalleryDetailComments,
   getCrewMember,
+  getCrewMemberDetail,
   getCrewNotice,
   getCrewNoticeDetail,
   JoinCrew,
@@ -95,6 +96,19 @@ export const useCrewMemberGet = (crewId: number) => {
   return useQuery({
     queryKey: ["crewMember"],
     queryFn: () => getCrewMember(crewId),
+  });
+};
+
+// 크루 멤버 프로필 조회 api
+export const useCrewMemberDetailGet = (
+  crewId: number,
+  memberId: number,
+  year: number,
+  month: number
+) => {
+  return useQuery({
+    queryKey: ["crewMember", memberId],
+    queryFn: () => getCrewMemberDetail(crewId, memberId, year, month),
   });
 };
 

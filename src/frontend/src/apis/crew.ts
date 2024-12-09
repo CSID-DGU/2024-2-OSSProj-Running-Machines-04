@@ -4,6 +4,7 @@ import {
   CrewGalleryRequest,
   CrewGalleryResponse,
   CrewJoinResponse,
+  CrewMemberDetailResponse,
   CrewMemberResponse,
   CrewNoticeDetailResponse,
   CrewNoticeRequest,
@@ -69,6 +70,19 @@ export const getCrewMember = async (
   crewId: number
 ): Promise<CrewMemberResponse> => {
   const response = await api.get(`/crew/${crewId}/member`);
+  return response.data;
+};
+
+// 크루 멤버 프로필 조회 api
+export const getCrewMemberDetail = async (
+  crewId: number,
+  memberId: number,
+  year: number,
+  month: number
+): Promise<CrewMemberDetailResponse> => {
+  const response = await api.get(
+    `/crew/${crewId}/member/${memberId}/${year}/${month}`
+  );
   return response.data;
 };
 
