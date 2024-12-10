@@ -95,7 +95,7 @@ const RunningPage = () => {
 
   const formattedData: runningRequest = {
     distance: distance,
-    duration: duration,
+    duration: duration / 60, // 분 단위
     pace: formatPace(pace), // 포맷팅된 pace 값
   };
 
