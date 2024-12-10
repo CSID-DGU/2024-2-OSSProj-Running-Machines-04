@@ -18,7 +18,7 @@ const GalleryCard = ({ post, otherCrew }: GalleryCardProps) => {
       className="relative w-[33vw] h-[33vw] flex justify-center items-center p-4"
     >
       <img
-        className="absolute left-0 top-0 w-full h-full"
+        className="absolute left-0 top-0 w-full h-full object-cover"
         src={post.imageUrl}
         alt="사진"
       />

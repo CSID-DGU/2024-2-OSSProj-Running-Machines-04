@@ -40,7 +40,7 @@ const GalleryContents = () => {
               </BottomSheet>
             )}
             <div>
-              <div className="max-h-[50vh] max-w-screen overflow-scroll">
+              <div className="max-h-[50vh] max-w-screen overflow-x-scroll flex justify-center">
                 {data.imageUrls.map((image) => (
                   <img className="" src={image} alt="갤러리 사진" />
                 ))}
