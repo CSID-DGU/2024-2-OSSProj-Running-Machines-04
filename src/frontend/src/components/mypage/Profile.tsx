@@ -31,7 +31,7 @@ const Profile = () => {
                 </div>
                 <div className="text-black text-[8px] font-light">
                   <p>{`경사있는 길을 ${
-                    data.convenience == "HIGH" ? "즐겨요" : "즐기지 않아요"
+                    data.elevation == "HIGH" ? "즐겨요" : "즐기지 않아요"
                   }!`}</p>
                   <p>{`편의시설이 있는 길을 ${
                     data.convenience == "HIGH" ? "선호해요" : "선호하지 않아요"
