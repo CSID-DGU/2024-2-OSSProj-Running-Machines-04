@@ -46,6 +46,19 @@
 <br>
 
 
+## 📹 시연 영상
+
+[🔗 실제 러닝 및 추천 시스템 반영 시연 영상](https://youtu.be/toloDRARm5A?si=1Qow1DmUy_fxUOz2)
+<img width="900" alt="스크린샷 2024-12-11 오후 3 38 11" src="https://github.com/user-attachments/assets/f416b857-dc9d-4e59-ab20-458f951745b0">
+ 
+ <br />
+
+[🔗 전체 서비스 시연 영상](https://youtu.be/oZt4-3rxUDE?si=W1kNUoARySAnHNOk)
+<img width="900" alt="스크린샷 2024-12-11 오후 3 38 46" src="https://github.com/user-attachments/assets/5ce44780-2f05-410f-a33e-969801a91694">
+
+<br>
+
+
 ## ⏳ 개발 동기 및 목적
 
 현대 사회에서 건강 관리와 자기 계발의 중요성이 대두됨에 따라 러닝이 많은 사람들에게 인기 있는 운동으로 자리 잡았고, 다양한 사람들이 자신만의 방식으로 러닝을 즐기고 있다. 하지만 초보 러너부터 숙련된 러너까지 겪고 있는 불편함과 어려움이 존재한다.
@@ -167,12 +180,6 @@
 
 
 <br>
-
-## 📹 시연 영상
-추가 예정
-
-<br>
-
 
 ## 💼 전체 시스템 블록 다이어그램
 <img width="800" alt="스크린샷 2024-12-04 오후 4 02 24" src="https://github.com/user-attachments/assets/847ca856-63c2-4a02-bdcd-19bfa21ad703">
