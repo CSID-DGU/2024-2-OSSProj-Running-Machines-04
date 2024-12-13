@@ -168,14 +168,16 @@
 - **Vercel**  
 
 ### Backend
-- **Spring Boot**  
-- **MySQL**  
+- **SpringBoot**  
+- **MySQL**
+- **FastAPI**
 
 ### Data Analysis
 - **Python**, **R**  
 
 ### Server
-- **AWS EC2**, **AWS S3**  
+- **AWS EC2, S3, RDS**
+- **Nginx**  
 
 
 
