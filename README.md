@@ -213,9 +213,12 @@
 <img width="800" alt="스크린샷 2024-12-04 오후 4 03 19" src="https://github.com/user-attachments/assets/9f09bc18-a1c2-40b4-832f-00f1193bccb2">
 <br>
 
+## 🔗 시스템 아키텍처
+<img width="800" alt="image" src="https://github.com/user-attachments/assets/6581678e-b8ae-4382-90aa-d014092b500d" />
+
 <br>
 
-## 🗂️ 디렉토리 구성
+## 🗂️ 디렉터리 구성
 ```
 📦src
 ├── 📂ai
