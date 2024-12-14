@@ -195,34 +195,7 @@
 <img width="800" alt="스크린샷 2024-12-04 오후 4 03 19" src="https://github.com/user-attachments/assets/9f09bc18-a1c2-40b4-832f-00f1193bccb2">
 <br>
 
-
-## 👨‍🎓 기대효과
-### 경제적 측면  
-1. **헬스케어 시장 성장**  
-   - 맞춤형 러닝 코스를 통해 러닝 문화를 대중화하고 헬스케어 및 웰니스 산업 성장 촉진.  
-
-2. **지역 경제 활성화**  
-   - 러닝 이벤트로 지역 상권 활성화 및 도시 브랜드 가치 상승.  
-
-3. **비즈니스 기회 확대**  
-   - 러닝 크루 통합 플랫폼을 통한 광고 및 협업 기회 제공.  
-
-4. **데이터 활용**  
-   - 러닝 데이터로 맞춤형 서비스 제공 및 헬스케어 비즈니스 모델 창출.  
-
-### 사회적 측면  
-1. **건강 증진**  
-   - 러닝 참여 확대를 통해 건강한 라이프스타일과 지역 사회 건강 증진.  
-
-2. **사회적 연대 강화**  
-   - 커뮤니티 기능으로 소통과 협력 문화 증진.  
-
-3. **포용적 러닝 문화**  
-   - 초보자와 소외계층도 참여 가능한 지속 가능한 러닝 환경 조성.  
-
-4. **공공 건강 기여**  
-   - 데이터 기반 예방 의학 발전 및 의료 부담 감소.
-
+<br>
 
 ## 🗂️ 디렉토리 구성
 ```
@@ -521,4 +494,48 @@
  ┗ 📜tsconfig.json
 ```
 </details>
-  
+<br>
+
+## 👨‍🎓 기대효과
+### 경제적 측면  
+1. **헬스케어 시장 성장**  
+   - 맞춤형 러닝 코스를 통해 러닝 문화를 대중화하고 헬스케어 및 웰니스 산업 성장 촉진.  
+
+2. **지역 경제 활성화**  
+   - 러닝 이벤트로 지역 상권 활성화 및 도시 브랜드 가치 상승.  
+
+3. **비즈니스 기회 확대**  
+   - 러닝 크루 통합 플랫폼을 통한 광고 및 협업 기회 제공.  
+
+4. **데이터 활용**  
+   - 러닝 데이터로 맞춤형 서비스 제공 및 헬스케어 비즈니스 모델 창출.  
+
+### 사회적 측면  
+1. **건강 증진**  
+   - 러닝 참여 확대를 통해 건강한 라이프스타일과 지역 사회 건강 증진.  
+
+2. **사회적 연대 강화**  
+   - 커뮤니티 기능으로 소통과 협력 문화 증진.  
+
+3. **포용적 러닝 문화**  
+   - 초보자와 소외계층도 참여 가능한 지속 가능한 러닝 환경 조성.  
+
+4. **공공 건강 기여**  
+   - 데이터 기반 예방 의학 발전 및 의료 부담 감소.
+<br>
+
+## 📋 자료
+- 회의록
+  - [회의록](https://thisishyeona.notion.site/5c1c3f4da05d4cb0a90c471817076ac6)
+- 이슈관리
+  - [이슈 관리](https://github.com/CSID-DGU/2024-2-OSSProj-Running-Machines-04/issues)
+- API 명세서
+  - [API 명세서](https://thisishyeona.notion.site/API-2f1c22ec5e9a4bcea832ea6095215cfd?pvs=73)
+- 보고서
+  - [수행계획서](https://github.com/CSID-DGU/2024-2-OSSProj-Running-Machines-04/blob/main/doc/241015_6%EC%A3%BC%EC%B0%A8_%EC%88%98%ED%96%89%EA%B3%84%ED%9A%8D%EC%84%9C_%EB%B0%9C%ED%91%9C/Running%20Machines_04%20%EC%98%A4%ED%94%88%EC%86%8C%EC%8A%A4SW%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%88%98%ED%96%89%EA%B3%84%ED%9A%8D%EC%84%9C_1016.pdf)
+  - [중간보고서](https://github.com/CSID-DGU/2024-2-OSSProj-Running-Machines-04/blob/main/doc/241119_%EC%A4%91%EA%B0%84%EB%B3%B4%EA%B3%A0%EC%84%9C/Running%20Machines_04%20%EC%98%A4%ED%94%88%EC%86%8C%EC%8A%A4SW%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A4%91%EA%B0%84%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf)
+  - [최종보고서]()
+- 발표자료
+  - [수행 계획서 발표](https://github.com/CSID-DGU/2024-2-OSSProj-Running-Machines-04/blob/main/doc/241015_6%EC%A3%BC%EC%B0%A8_%EC%88%98%ED%96%89%EA%B3%84%ED%9A%8D%EC%84%9C_%EB%B0%9C%ED%91%9C/Running%20Machines_04_%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C_1016.pdf)
+  - [중간 발표](https://github.com/CSID-DGU/2024-2-OSSProj-Running-Machines-04/blob/main/doc/241113_%EC%A4%91%EA%B0%84%EB%B0%9C%ED%91%9C.pdf)
+  - [최종 발표](https://github.com/CSID-DGU/2024-2-OSSProj-Running-Machines-04/blob/main/doc/241210_%EC%B5%9C%EC%A2%85%EB%B0%9C%ED%91%9C.pdf)
