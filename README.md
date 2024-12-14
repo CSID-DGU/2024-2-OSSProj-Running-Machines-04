@@ -297,204 +297,58 @@
   ```
 📦frontend
  ┣ 📂public
- ┃ ┣ 📜R2R_logo.png
  ┃ ┣ 📜index.html
  ┃ ┣ 📜manifest.json
  ┃ ┣ 📜robots.txt
- ┃ ┣ 📜store.png
- ┃ ┗ 📜toilet.png
  ┣ 📂src
  ┃ ┣ 📂apis
- ┃ ┃ ┣ 📜auth.ts
- ┃ ┃ ┣ 📜board.ts
- ┃ ┃ ┣ 📜course.ts
- ┃ ┃ ┣ 📜crew.ts
- ┃ ┃ ┣ 📜home.ts
- ┃ ┃ ┣ 📜index.ts
- ┃ ┃ ┣ 📜mypage.ts
- ┃ ┃ ┗ 📜running.ts
  ┃ ┣ 📂assets
  ┃ ┃ ┣ 📂fonts
- ┃ ┃ ┃ ┗ 📜.gitkeep
  ┃ ┃ ┣ 📂icons
- ┃ ┃ ┃ ┣ 📜BackIcon.svg
- ┃ ┃ ┃ ┣ 📜BigLogo.svg
- ┃ ┃ ┃ ┣ 📜CTOIcon.svg
- ┃ ┃ ┃ ┣ 📜CommentIcon.svg
- ┃ ┃ ┃ ┣ 📜CommunityIcon.svg
- ┃ ┃ ┃ ┣ 📜CourseCTA.svg
- ┃ ┃ ┃ ┣ 📜CrewIcon.svg
- ┃ ┃ ┃ ┣ 📜CrewPeopleIcon.svg
- ┃ ┃ ┃ ┣ 📜EndIcon.svg
- ┃ ┃ ┃ ┣ 📜FlagIcon.svg
- ┃ ┃ ┃ ┣ 📜HeartIcon.svg
- ┃ ┃ ┃ ┣ 📜HomeIcon.svg
- ┃ ┃ ┃ ┣ 📜MypageIcon.svg
- ┃ ┃ ┃ ┣ 📜NoticeIcon.svg
- ┃ ┃ ┃ ┣ 📜PopularIcon.svg
- ┃ ┃ ┃ ┣ 📜RecordIcon.svg
- ┃ ┃ ┃ ┣ 📜ReplyIcon.svg
- ┃ ┃ ┃ ┣ 📜RestartIcon.svg
- ┃ ┃ ┃ ┣ 📜RightArrowIcon.svg
- ┃ ┃ ┃ ┣ 📜ScrappedIcon.svg
- ┃ ┃ ┃ ┣ 📜SearchIcon.svg
- ┃ ┃ ┃ ┣ 📜SettingIcon.svg
- ┃ ┃ ┃ ┣ 📜SpinnerIcon.gif
- ┃ ┃ ┃ ┣ 📜StopIcon.svg
- ┃ ┃ ┃ ┣ 📜Store.svg
- ┃ ┃ ┃ ┣ 📜Toilet.svg
- ┃ ┃ ┃ ┣ 📜TrafficLight.svg
- ┃ ┃ ┃ ┗ 📜WriteIcon.svg
  ┃ ┃ ┗ 📂images
- ┃ ┃ ┃ ┣ 📜HomeBgImg.svg
- ┃ ┃ ┃ ┣ 📜logo.svg
- ┃ ┃ ┃ ┗ 📜play.svg
  ┃ ┣ 📂components
  ┃ ┃ ┣ 📂common
- ┃ ┃ ┃ ┣ 📜AlertModal.tsx
- ┃ ┃ ┃ ┣ 📜Comment.tsx
- ┃ ┃ ┃ ┣ 📜CommentInput.tsx
- ┃ ┃ ┃ ┣ 📜GalleryComment.tsx
- ┃ ┃ ┃ ┣ 📜Header.tsx
- ┃ ┃ ┃ ┣ 📜KakaoMap.tsx
- ┃ ┃ ┃ ┣ 📜Navbar.tsx
- ┃ ┃ ┃ ┣ 📜ProfileCard.tsx
- ┃ ┃ ┃ ┣ 📜Reply.tsx
- ┃ ┃ ┃ ┣ 📜RunningCalendar.tsx
- ┃ ┃ ┃ ┣ 📜ScrollToTop.tsx
- ┃ ┃ ┃ ┗ 📜Spinner.tsx
  ┃ ┃ ┣ 📂community
- ┃ ┃ ┃ ┣ 📜CommnunityHeader.tsx
- ┃ ┃ ┃ ┣ 📜CommunityCard.tsx
- ┃ ┃ ┃ ┣ 📜CommunityList.tsx
- ┃ ┃ ┃ ┣ 📜MarathonCard.tsx
- ┃ ┃ ┃ ┗ 📜MarathonList.tsx
  ┃ ┃ ┣ 📂communityDetail
- ┃ ┃ ┃ ┣ 📜CommentsList.tsx
- ┃ ┃ ┃ ┗ 📜CommunityDetailInfo.tsx
  ┃ ┃ ┣ 📂communityWrite
- ┃ ┃ ┃ ┣ 📜CommunityWriteHeader.tsx
- ┃ ┃ ┃ ┗ 📜CommunityWriteInput.tsx
  ┃ ┃ ┣ 📂crewMemberDetail
- ┃ ┃ ┃ ┗ 📜CrewMemberDetailTitle.tsx
  ┃ ┃ ┣ 📂crewMembers
- ┃ ┃ ┃ ┣ 📜CrewMemberCard.tsx
- ┃ ┃ ┃ ┣ 📜CrewMemberSection.tsx
- ┃ ┃ ┃ ┗ 📜CrewMemberTitle.tsx
  ┃ ┃ ┣ 📂crewWrite
- ┃ ┃ ┃ ┣ 📜CrewWriteHeader.tsx
- ┃ ┃ ┃ ┗ 📜CrewWriteInput.tsx
  ┃ ┃ ┣ 📂galleryDetail
- ┃ ┃ ┃ ┗ 📜GalleryContents.tsx
  ┃ ┃ ┣ 📂home
- ┃ ┃ ┃ ┣ 📜CrewRankingCard.tsx
- ┃ ┃ ┃ ┣ 📜DistanceRanking.tsx
- ┃ ┃ ┃ ┣ 📜HomeRecord.tsx
- ┃ ┃ ┃ ┗ 📜PaceRanking.tsx
  ┃ ┃ ┣ 📂myCrew
- ┃ ┃ ┃ ┣ 📜ContentsSection.tsx
- ┃ ┃ ┃ ┣ 📜GalleryCard.tsx
- ┃ ┃ ┃ ┣ 📜MyCrewProfile.tsx
- ┃ ┃ ┃ ┗ 📜NoticeCard.tsx
  ┃ ┃ ┣ 📂mypage
- ┃ ┃ ┃ ┣ 📜Profile.tsx
- ┃ ┃ ┃ ┣ 📜RecentRecord.tsx
- ┃ ┃ ┃ ┗ 📜Stats.tsx
  ┃ ┃ ┣ 📂otherCrew
- ┃ ┃ ┃ ┗ 📜OtherCrewCard.tsx
  ┃ ┃ ┣ 📂otherCrewDetail
- ┃ ┃ ┃ ┣ 📜OtherCrewContents.tsx
- ┃ ┃ ┃ ┗ 📜OtherCrewProfile.tsx
  ┃ ┃ ┣ 📂record
- ┃ ┃ ┃ ┣ 📜BottomSheet.tsx
- ┃ ┃ ┃ ┣ 📜CourseCard.tsx
- ┃ ┃ ┃ ┣ 📜CourseSection.tsx
- ┃ ┃ ┃ ┣ 📜HomeCategory.tsx
- ┃ ┃ ┃ ┗ 📜Searchbar.tsx
  ┃ ┃ ┗ 📂signup
- ┃ ┃ ┃ ┣ 📜Step1.tsx
- ┃ ┃ ┃ ┣ 📜Step2.tsx
- ┃ ┃ ┃ ┣ 📜Step3.tsx
- ┃ ┃ ┃ ┗ 📜Step4.tsx
  ┃ ┣ 📂constants
- ┃ ┃ ┣ 📜board.ts
- ┃ ┃ ┣ 📜course.ts
- ┃ ┃ ┣ 📜crew.ts
- ┃ ┃ ┗ 📜preference.ts
  ┃ ┣ 📂context
- ┃ ┃ ┗ 📜.gitkeep
  ┃ ┣ 📂hooks
- ┃ ┃ ┣ 📜useAuth.ts
- ┃ ┃ ┣ 📜useBoard.ts
- ┃ ┃ ┣ 📜useCourse.ts
- ┃ ┃ ┣ 📜useCrew.ts
- ┃ ┃ ┣ 📜useHome.ts
- ┃ ┃ ┣ 📜useMypage.ts
- ┃ ┃ ┗ 📜useRunning.ts
  ┃ ┣ 📂pages
  ┃ ┃ ┣ 📂Community
- ┃ ┃ ┃ ┗ 📜CommunityPage.tsx
  ┃ ┃ ┣ 📂CommunityDetail
- ┃ ┃ ┃ ┗ 📜CommunityDetailPage.tsx
  ┃ ┃ ┣ 📂CommunityWrite
- ┃ ┃ ┃ ┗ 📜CommunityWritePage.tsx
  ┃ ┃ ┣ 📂CrewChatting
- ┃ ┃ ┃ ┗ 📜CrewChattingPage.tsx
  ┃ ┃ ┣ 📂CrewMemberDetail
- ┃ ┃ ┃ ┗ 📜CrewMemberDetailPage.tsx
  ┃ ┃ ┣ 📂CrewMembers
- ┃ ┃ ┃ ┗ 📜CrewMembersPage.tsx
  ┃ ┃ ┣ 📂CrewWrite
- ┃ ┃ ┃ ┗ 📜CrewWritePage.tsx
  ┃ ┃ ┣ 📂GalleryDetail
- ┃ ┃ ┃ ┗ 📜GalleryDetailPage.tsx
  ┃ ┃ ┣ 📂Home
- ┃ ┃ ┃ ┗ 📜HomePage.tsx
  ┃ ┃ ┣ 📂MyCrew
- ┃ ┃ ┃ ┗ 📜MyCrewPage.tsx
  ┃ ┃ ┣ 📂Mypage
- ┃ ┃ ┃ ┗ 📜MyPage.jsx
  ┃ ┃ ┣ 📂NoticeDetail
- ┃ ┃ ┃ ┗ 📜NoticeDetailPage.tsx
  ┃ ┃ ┣ 📂OtherCrew
- ┃ ┃ ┃ ┗ 📜OtherCrewPage.tsx
  ┃ ┃ ┣ 📂OtherCrewDetail
- ┃ ┃ ┃ ┗ 📜OtherCrewDetailPage.tsx
  ┃ ┃ ┣ 📂Record
- ┃ ┃ ┃ ┗ 📜RecordPage.tsx
  ┃ ┃ ┣ 📂Review
- ┃ ┃ ┃ ┗ 📜ReviewPage.tsx
  ┃ ┃ ┣ 📂Running
- ┃ ┃ ┃ ┗ 📜RunningPage.tsx
  ┃ ┃ ┣ 📂Signin
- ┃ ┃ ┃ ┗ 📜SigninPage.tsx
  ┃ ┃ ┗ 📂Signup
- ┃ ┃ ┃ ┗ 📜SIgnupPage.tsx
  ┃ ┣ 📂store
- ┃ ┃ ┣ 📜useCourseId.ts
- ┃ ┃ ┣ 📜useCourseStore.ts
- ┃ ┃ ┣ 📜useKakaomapStore.ts
- ┃ ┃ ┣ 📜useParsedCourse.ts
- ┃ ┃ ┣ 📜useRunningCourseStore.ts
- ┃ ┃ ┗ 📜useSelectedCourseStore.ts
  ┃ ┣ 📂styles
- ┃ ┃ ┗ 📜RunningCalendar.css
  ┃ ┣ 📂types
- ┃ ┃ ┣ 📜board.ts
- ┃ ┃ ┣ 📜communityWrite.ts
- ┃ ┃ ┣ 📜course.ts
- ┃ ┃ ┣ 📜crew.ts
- ┃ ┃ ┣ 📜home.ts
- ┃ ┃ ┣ 📜kakaoMap.ts
- ┃ ┃ ┣ 📜mypage.ts
- ┃ ┃ ┣ 📜routes.ts
- ┃ ┃ ┣ 📜running.ts
- ┃ ┃ ┣ 📜signin.ts
- ┃ ┃ ┗ 📜signup.ts
  ┃ ┣ 📂utils
- ┃ ┃ ┣ 📜auth.ts
- ┃ ┃ ┣ 📜gpxParser.ts
- ┃ ┃ ┗ 📜validation.ts
  ┃ ┣ 📜App.tsx
  ┃ ┣ 📜index.css
  ┃ ┣ 📜index.tsx
