@@ -192,8 +192,9 @@
 <br>
 
 ## 💾 ERD
-<img width="800" alt="스크린샷 2024-12-04 오후 4 03 19" src="https://github.com/user-attachments/assets/298591a5-e2ea-4cf2-bdcd-5d7f072f2bc3">
+<img width="800" alt="스크린샷 2024-12-04 오후 4 03 19" src="https://github.com/user-attachments/assets/9f09bc18-a1c2-40b4-832f-00f1193bccb2">
 <br>
+
 
 ## 👨‍🎓 기대효과
 ### 경제적 측면  
